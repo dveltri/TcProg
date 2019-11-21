@@ -1,0 +1,4 @@
+Alert: 0,Anel Anel1 mudou para modo Normal,2018/04/05 12:15:26 
+Alert: 0,Anel Anel1 Chave de foco Off,2018/04/05 12:15:26 
+Alert: 0,Anel Anel1 mudou para modo Normal,2018/04/05 12:23:37 
+Alert: 0,Anel Anel1 Chave de foco Off,2018/04/05 12:23:37 

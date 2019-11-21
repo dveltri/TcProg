@@ -1,0 +1,8 @@
+//mov 1 LogCom
+//mov 0 otu.dbug;
+//mov 0 PLC[1].NexChg;
+mov 0 PLC[1].dbug;		//todas las ins
+mov 0 PLC[2].dbug;		//todas las ins
+mov 0 PLC[3].dbug;		//todas las ins
+
+end

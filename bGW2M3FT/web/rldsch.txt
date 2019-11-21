@@ -1,0 +1,6 @@
+temp=0;
+loop1;
+add 1 temp;
+mov 0 PLC[temp].NexChg;
+< temp CPLCS loop1;
+end;

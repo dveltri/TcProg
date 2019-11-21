@@ -1,0 +1,237 @@
+
+var IniSPlan="\tgoto INICIO\n\
+#CFT:/sec.sec\n\
+#MCT:\n\
+#VAR\n\
+Nsts=1\n\
+Tsts=0\n\
+Csts=0\n\
+Cstp=0\n\
+Nstp=255\n\
+tstart=0\n\
+MCTR=0\n\
+Nmode=0\n\
+Cmode=2\n\
+temp=0\n\
+wait=0\n\
+FlasCtrl=0\n";
+//---------------------------------------------------------
+var MiddSPlan="mov 0 otu.fr\n\
+	mov io[16].val MCTR\n\
+	mov TIMERS tstart\n\
+	sub 1 tstart\n\
+	goto MAIN\n\
+\n\
+MAIN\n\
+	> Csts 253 NOMAX\n\
+	== Tmax[Csts] 0 NOMAX\n\
+	mov TIMERS temp\n\
+	sub tstart temp\n\
+	> Tmax[Csts] temp\n\
+	call LOCKSTS\n\
+NOMAX\n\
+	== 1 otu.faislado NOCTRLO\n\
+	== 1 otu.sl CTRLOTU\n\
+	== 1 otu.ff CTRLOTU\n\
+	== 0 otu.aislado CTRLOTU\n\
+NOCTRLO\n\
+	== 0 io[15].in CTRLISO\n\
+	goto CTRMAN\n\
+\n\
+CTRMAN\n\
+	mov 1 Nmode\n\
+	call CHKMODE\n\
+	delay 1000\n\
+	== io[16].val MCTR MAIN\n\
+WAITBTOFF\n\
+	delay 100\n\
+	== 1 io[16].in WAITBTOFF\n\
+	mov SIMC[Cstp] Nstp\n\
+	mov 0 out[1].val\n\
+FSTP0\n\
+	mov Nstp Cstp\n\
+	mov MCSS[Cstp] Nsts\n\
+	call SETSTS\n\
+	tmin\n\
+	plcsync PLCS SYPTO\n\
+	mov io[16].val MCTR\n\
+	mov 255 out[1].val\n\
+	goto MAIN\n\
+\n\
+CTRLOTU\n\
+	mov 2 Nmode\n\
+	call CHKMODE\n\
+	mov EOTU[Csts] Tsts\n\
+	mov 0 wait\n\
+	call FNCDemOTU\n\
+	otu Tsts Nsts\n\
+	chksts Nsts otu.step\n\
+	mov otu.step Nsts\n\
+	time 2000\n\
+	== Nsts Csts\n\
+	call CLDsts\n\
+	call SETSTS\n\
+	goto MAIN\n\
+\n\
+CTRLISO\n\
+	mov 0 Nmode\n\
+	call CHKMODE\n\
+	mov SIPL[Cstp] Nstp\n\
+	mov EIPL[Nstp] Nsts\n\
+	call FNCDemISO\n\
+	== Nstp Cstp SAMESTP\n\
+	call CLDstp\n\
+	mov Nstp Cstp\n\
+	!= Cstp CHGP SAMESTP\n\
+	agenda\n\
+	ldeil\n\
+FSTPL \n\
+	mov EIPL[CHGP] Nsts\n\
+SAMESTP\n\
+	call SETSTS\n\
+	tmin\n\
+	sync TCicle TIPL[Cstp]\n\
+	goto MAIN\n\
+\n\
+CLDstp\n\
+	mov CDL[Cstp] temp\n\
+	== 0 temp\n\
+	mov 0 in[temp].inh\n\
+	return\n\
+\n\
+FNCDemISO\n\
+	mov 0 temp\n\
+	mov LxD[Cstp] temp\n\
+	!= 0 temp\n\
+	return\n\
+	!= in[temp].inh 0\n\
+	return\n\
+	mov LgI[Cstp] Nsts\n\
+	return\n";
+
+var EndSPlan="\n\
+FLAS\n\
+	== 1 otu.ff FLASCENTRAL\n\
+	mov 1 otu.fr\n\
+	phases ColorFF\n\
+	return\n\
+	\n\
+FLASCENTRAL\n\
+	phases ColorVT\n\
+	delay 3000\n\
+	plcsync PLCS SYPTO\n\
+KEPFF\n\
+	mov 1 otu.fr\n\
+	phases ColorFF\n\
+	delay 2000\n\
+	== 1 otu.sl KEPSL\n\
+	== 1 otu.ff KEPFF\n\
+	phases ColorVT\n\
+	delay 3000\n\
+	mov TIMERS tstart\n\
+	mov 3 Cmode\n\
+	mov 0 otu.step\n\
+	mov 0 otu.fr\n\
+	return MAIN\n\
+\n\
+SLOF\n\
+	mov 1 otu.faislado\n\
+	phases ColorVT\n\
+	delay 3000\n\
+	plcsync PLCS SYPTO\n\
+KEPSL\n\
+	mov 1 otu.faislado\n\
+	mov 0 otu.fr\n\
+	phases ColorSL\n\
+	delay 2000\n\
+	== 1 otu.sl KEPSL\n\
+	mov 0 otu.faislado\n\
+	== 1 otu.ff KEPFF\n\
+	phases ColorFF\n\
+	delay 3000\n\
+	phases ColorVT\n\
+	delay 3000\n\
+	mov TIMERS tstart\n\
+	mov 3 Cmode\n\
+	mov 0 otu.step\n\
+	return MAIN\n\
+\n\
+CLDsts\n\
+	== 0 otu.aislado\n\
+	return\n\
+	mov UCD[Csts] temp\n\
+	== 0 temp\n\
+	mov 0 in[temp].inh\n\
+	return\n\
+\n\
+FNCDemOTU\n\
+	mov UxD[wait] temp\n\
+	== 0 temp NDOTU\n\
+	== in[temp].inh 0\n\
+	mov UDG[wait] Tsts\n\
+	add 1 wait\n\
+	goto FNCDemOTU\n\
+NDOTU\n\
+	== 0 otu.sl\n\
+	mov 254 Tsts\n\
+	== 0 otu.ff\n\
+	mov 255 Tsts\n\
+	return\n\
+\n\
+CHKMODE\n\
+	!= Nmode Cmode\n\
+	return\n\
+	== Nmode 0 LOCAL\n\
+	== Nmode 1 MANUAL\n\
+	== Nmode 2 CENTRAL\n\
+	mov Nmode Cmode\n\
+	return\n\
+LOCAL\n\
+	mov 0 out[1].val\n\
+	mov 255 out[2].val\n\
+	mov 0 out[3].val\n\
+	mov TIMERS tstart\n\
+	mov 0 otu.mc\n\
+	mov 1 io[14].enable\n\
+	mov 0 io[15].fail\n\
+	mov STS2STP[Csts] Nstp\n\
+	mov Nmode Cmode\n\
+	return FSTPL\n\
+MANUAL\n\
+	mov 0 out[1].val\n\
+	mov 255 out[2].val\n\
+	mov 0 out[3].val\n\
+	mov TIMERS tstart\n\
+	mov 1 otu.mc\n\
+	mov 0 Nstp\n\
+	mov 1 io[14].enable\n\
+	mov 0 io[15].fail\n\
+	plcsync PLCS SYPTO\n\
+	mov Nmode Cmode\n\
+	return FSTP0\n\
+CENTRAL\n\
+	mov 0 out[1].val\n\
+	mov 0 out[2].val\n\
+	mov 255 out[3].val\n\
+	mov TIMERS tstart\n\
+	mov 0 Csts\n\
+	mov 0 otu.mc\n\
+	mov 0 io[14].enable\n\
+	mov 1 io[15].fail\n\
+	mov Nmode Cmode\n\
+	return\n\
+\n\
+LOCKSTS\n\
+	== Nmode 0 LKM0\n\
+	== Nmode 1 LKM1\n\
+	== Nmode 2 LKM2\n\
+LKM0\n\
+	error 16 'TiempoMaximo\n\
+	return\n\
+LKM1\n\
+	mov 1 io[15].fail\n\
+	return\n\
+LKM2\n\
+	mov 1 otu.faislado\n\
+	return\n\
+end\n";

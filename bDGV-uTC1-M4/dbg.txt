@@ -1,0 +1,11 @@
+temp=0;
+loop1;
+add 1 temp;
+mov 0 PLC[temp].dbug
+mov 0 debug.opb;
+mov 0 PLC[temp].service;
+< temp CPLCS loop1;
+mov 6 PLC[1].dbug
+mov 0 PLC[1].NexChg;
+mov 0 LogCom
+end;

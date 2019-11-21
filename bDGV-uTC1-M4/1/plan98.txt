@@ -1,0 +1,20 @@
+mov 1 PLC[THIS].service
+mov 1 PLC[THIS].dbug
+tmin
+phases ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+tmin
+INICIO
+mov 0 PLC[THIS].NexChg
+phases ,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
+delay 5000
+tmin
+phases ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+delay 3000
+tmin
+agenda
+ldeil
+goto INICIO
+end
+#MD
+#CFT:
+#MCT:

@@ -1,0 +1,13 @@
+#CFT:/sec.sec;
+#MCT:;
+tiempo=30000;
+INICIO;
+phases ,4,1,4,1
+delay tiempo;
+mov 60000 PLC[2].var.tiempo
+phases ,1,4,1,4
+delay tiempo;
+agenda;
+ldeil;
+goto INICIO;
+end;

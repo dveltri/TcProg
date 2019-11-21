@@ -1,0 +1,4 @@
+temp=0;
+mov 1 PLC[1].dbug
+mov 5 PLC[1].plan
+end;

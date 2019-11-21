@@ -1,0 +1,11 @@
+tmpa1,15000,15000;
+tmpa2,20000,20000;
+mov tmpa1 PLC[1].var.tiempo
+mov tmpa2 PLC[2].var.tiempo
+lnk 0 'plc1
+log 0 PLC[1].var.tiempo
+lnk 0 13
+lnk 0 'plc2
+log 0 PLC[2].var.tiempo
+lnk 0 13
+end

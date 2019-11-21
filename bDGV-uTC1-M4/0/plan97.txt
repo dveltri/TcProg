@@ -1,0 +1,139 @@
+#CFT:sec.sec;
+#MCT:;
+loop1;
+	add 1 temp;
+	mov 13 PLC[temp].dbug
+	//mov 1 PLC[temp].lamp;
+	mov 1 PLC[temp].service;
+	//mov 3 PLC[temp].mode;
+	//mov 0 PLC[temp].error;
+< temp CPLCS loop1;
+
+	//mov 1 in[4].inf
+	//mov 1 in[4].timef
+	//mov 1 in[4].fail
+	//mov 1 in[5].inf
+	//mov 1 in[5].timef
+	phases ,0,0,0,0,0,0,0,0,0,0,0,0,0;
+	delay 100
+
+> THIS 1 INICIO;
+
+//or 1 debug.hw;		//diff phaseHw Ram
+//or 2 debug.hw;		//MCT
+//or 4 debug.hw;		//Lastime
+//or 8 debug.hw;		//Lastime iteris
+//or 16 debug.hw;		//Lastime iteris
+//or 32 debug.hw;	    //Sd card
+//or 64 debug.hw;		//Lt Report
+//or 128 debug.hw;		//Lt Report
+
+//or 1 debug.can;
+//or 2 debug.can;
+//or 4 debug.can;
+//or 8 debug.can;
+
+//or 1 debug.opb;
+//or 2 debug.opb;
+//or 4 debug.opb;
+//or 8 debug.opb;
+//or 16 debug.opb;
+//or 32 debug.opb;
+//or 64 debug.opb;
+//or 128 debug.opb;
+
+//or 1 debug.rtc;
+//or 2 debug.rtc;
+//or 4 debug.rtc;
+//or 8 debug.rtc;
+//or 16 debug.rtc;
+//or 32 debug.rtc;
+//or 64 debug.rtc;
+//or 128 debug.rtc;
+
+//or 1 debug.sd;
+//or 2 debug.sd;
+//or 4 debug.sd;
+//or 8 debug.sd;
+
+//or 1 debug.drv;
+//or 2 debug.drv;
+//or 4 debug.drv;
+//or 8 debug.drv;
+//or 16 debug.drv;
+//or 32 debug.drv;
+//or 64 debug.drv;
+//or 128 debug.drv;
+
+//or 1 debug.opct;		//funciones
+//or 2 debug.opct;		//lec buffer entrada
+//or 4 debug.opct;		//esc buffer salida
+//or 8 debug.opct;
+//or 16 debug.opct;
+//or 32 debug.opct;
+//or 64 debug.opct;
+//or 128 debug.opct;
+
+//or 1 debug.ftp;
+//or 2 debug.ftp;
+//or 4 debug.ftp;
+//or 8 debug.ftp;
+
+//or 1 debug.ui;
+//or 2 debug.ui;
+//or 4 debug.ui;
+//or 8 debug.ui;
+
+//or 1 debug.gps;
+//or 2 debug.gps;
+
+//or 1 debug.master;
+//or 2 debug.master;
+
+//or 1 debug.iteris;
+//or 2 debug.iteris;
+
+//or 3 otu.dbug;
+//or 4 otu.dbug;
+//or 8 otu.dbug;
+//or 16 otu.dbug;
+//or 64 otu.dbug;
+
+//or 1 debug.plc;
+//or 2 debug.plc;
+//or 4 debug.plc;
+//or 8 debug.plc;
+
+//or 1 debug.cft;
+//or 2 debug.cft;
+//or 4 debug.cft;
+//or 8 debug.cft;
+
+//or 1 debug.http;
+//or 2 debug.http;
+//or 4 debug.http;
+//or 8 debug.http;
+
+//or 1 debug.error;
+//or 2 debug.error;
+//or 4 debug.error;
+//or 8 debug.error;
+//or 16 debug.error;
+//or 32 debug.error;
+//or 64 debug.error;
+//or 128 debug.error;
+
+INICIO
+	mov 0 PLC[THIS].NexChg;
+	phases ,7,7,7,7,7,7,7
+	delay 5000
+	phases ,1,1,1,1,1,1,1,1,1,1,1,1,1;
+	delay 3000
+    agenda
+    ldeil
+	goto INICIO
+
+#VAR;
+int temp=0;
+
+end

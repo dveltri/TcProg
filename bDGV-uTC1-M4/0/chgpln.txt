@@ -1,0 +1,4 @@
+reload 0
+mov 7 PLC[1].dbug
+mov 6 PLC[1].plan
+end;

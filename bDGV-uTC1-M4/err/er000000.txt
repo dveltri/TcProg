@@ -1,0 +1,14 @@
+Alert[ 0],Inicio Version:150.180410,11/04/2018 15:04:03 
+Alert[ 2],Software reset,11/04/2018 15:04:03 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 15:06:21 
+Alert[ 2],Software reset,11/04/2018 15:06:21 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 15:58:43 
+Alert[ 2],Software reset,11/04/2018 15:58:43 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 16:12:16 
+Alert[ 5],Power on reset,11/04/2018 16:12:16 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 17:14:58 
+Alert[ 2],Software reset,11/04/2018 17:14:58 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 17:29:29 
+Alert[ 2],Software reset,11/04/2018 17:29:29 
+Alert[ 0],Inicio Version:150.180410,11/04/2018 17:44:49 
+Alert[ 2],Software reset,11/04/2018 17:44:49 

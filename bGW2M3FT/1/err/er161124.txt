@@ -1,0 +1,12 @@
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 07:13:06
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 07:55:21
+Error[3],No se encontro el destino del salto [Anel2] script[/plan1.eil] PC[3758065812] [¸],2016/11/24 07:55:30
+Error[3],No se encontro el destino del salto [Anel2] script[/plan1.eil] PC[3758065812] [¸],2016/11/24 07:55:40
+Error[3],No se encontro el destino del salto [Anel2] script[/plan1.eil] PC[3758065812] [¸],2016/11/24 07:55:49
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 07:58:35
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 08:04:46
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 08:08:38
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 08:25:01
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 08:59:07
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 09:53:00
+Alert,Anel Anel2 Chave de foco Off,2016/11/24 10:17:22

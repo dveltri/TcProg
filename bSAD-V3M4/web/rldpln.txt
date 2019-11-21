@@ -1,0 +1,6 @@
+temp=0;
+loop1;
+reload temp;
+add 1 temp;
+< temp CPLCS loop1;
+end;

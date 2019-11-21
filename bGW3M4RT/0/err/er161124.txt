@@ -1,0 +1,18 @@
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:13:52
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:14:41
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:15:29
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:15:52
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:20:54
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:22:41
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 10:36:36
+Alert,Anel Anel1 mudou para modo Piscante,2016/11/24 10:36:39
+Alert,Anel Anel1 mudou para modo Normal,2016/11/24 10:36:42
+Alert,Anel Anel1 mudou para modo Piscante,2016/11/24 10:36:54
+Alert,Anel Anel1 mudou para modo Normal,2016/11/24 10:36:58
+Alert,Anel Anel1 mudou para modo Piscante,2016/11/24 10:47:54
+Alert,Anel Anel1 mudou para modo Normal,2016/11/24 10:47:56
+Error[34],Tempo minimo de verde [1127ms]<[5000ms] na fase: 1,2016/11/24 10:49:51
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 10:50:07
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:10:35
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 11:14:36
+Alert,Anel Anel1 Chave de foco Off,2016/11/24 13:14:13

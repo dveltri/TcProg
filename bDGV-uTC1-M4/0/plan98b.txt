@@ -1,0 +1,23 @@
+#CFT:sec.sec;
+#MCT:;
+new gvar 4 000 ,65,65,65,65;
+loop1;
+add 1 temp;
+mov 13 PLC[temp].dbug
+mov 1 PLC[temp].service;
+< temp CPLCS loop1;
+phases ,0,0,0,0,0,0,0,0,0,0,0,0,0;
+delay 100
+> THIS 1 INICIO;
+INICIO
+mov 0 PLC[THIS].NexChg;
+phases ,18,18,18,18,18,18,18
+delay 5000
+phases ,1,1,1,1,1,1,1,1,1,1,1,1,1;
+delay 3000
+agenda
+ldeil
+goto INICIO
+#VAR;
+int temp=0;
+end

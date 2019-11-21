@@ -1,0 +1,20 @@
+goto MAIN;
+nplan=0;
+nxchg=0;
+nplc=0;
+MAIN;
+//mov 15 PLC[1].dbug
+atoi splc nplc;
+atoi splan nplan;
+atoi snxchg nxchg;
+> 1 nplc NOCHG;
+> 1 nplan NOCHG;
+> 1 nxchg NOCHG;
+add RTC nxchg;
+mov nxchg PLC[nplc].NexChg;
+mov 3 PLC[nplc].mode;
+mov nplan PLC[nplc].plan;
+cout PLC[nplc].plan;
+mov 0 PLC[nplc].error;
+NOCHG;
+end;

@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5 RTSP player example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <style>
+        body {
+            max-width: 720px;
+            margin: 50px auto;
+        }
+
+        #test_video {
+            width: 720px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        input.input, .form-inline .input-group>.form-control {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<!--<form class="form-inline">-->
+    <!--<div class="form-group">-->
+        <!--<label for="stream_url" class="">-->
+            <!--Enter your RTSP URL (H264/AAC):&nbsp;-->
+        <!--</label>-->
+        <!--<div class="input-group">-->
+            <!--<input id="stream_url" value="rtsp://192.168.10.161/H264" class="form-control input" placeholder="rtsp://your.rtsp/url">-->
+            <!--<span class="input-group-btn" style="width:0;">-->
+                <!--<button id="set_stream" class="btn btn-primary" type="button">Go!</button>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<br>-->
+        <!--<small>Note: Currently only baseline profile of H264 codec is supported</small>-->
+    <!--</div>-->
+<!--</form>-->
+<video id="test_video" controls autoplay>
+    <source src="rtsp://127.0.0.1:8554/test/">
+    <!--<source src="rtsp://11.2.3.4/H264" type="application/x-rtsp">-->
+    <!--<source src="rtsp://192.168.11.89:554/H264_LOW" type="application/x-rtsp">-->
+    <!--<source src="rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov" type="application/x-rtsp">-->
+    <!--<source src="http://www.streambox.fr/playlists/x36xhzz/x36xhzz.m3u8" type="application/x-mpegurl">-->
+    <!--<source src="http://212.113.50.162/hls2/14653256347a11c.mp4.m3u8" type="application/x-mpegurl">-->
+    <!--<source src="unix://hls.stream1:hls1/hls2/14653256347a11c.mp4.m3u8" type="application/x-mpegurl" data-master-id="1">-->
+    <!--<source src="unix://hls.stream:hls/hls2/14653256347a11c.mp4.m3u8" type="application/x-mpegurl" data-mirror-for="1">-->
+    <!--<source src="unix://hls.stream:hls//hls/vid.mp4.m3u8" type="application/x-mpegurl">-->
+</video>
+<div class="controls form">
+    <div>
+        Playback rate:&nbsp;
+        <input id="rate" class="input" type="range" min="0.5" max="5.0" value="1.0" step="0.5">
+        <output for="rate" id="rate_res">live</output>
+    </div>
+    <div>
+        <button id="to_end" class="btn btn-success">live</button>
+    </div>
+</div>
+<script src="test.bundle.js"></script>
+<script>
+    var range = document.getElementById('rate');
+    var set_live = document.getElementById('to_end');
+    var range_out = document.getElementById('rate_res');
+    var player = document.getElementById('test_video');
+    range.addEventListener('input', function () {
+        player.playbackRate = range.value;
+        range_out.innerHTML = `x${range.value}`;
+    });
+    set_live.addEventListener('click', function () {
+        range.value = 1.0;
+        range_out.innerHTML = `live`;
+        player.playbackRate = 1;
+        player.currentTime = player.buffered.end(0);//player.seekable.end(player.seekable.length - 1);
+    });
+</script>
+</body>
+</html>

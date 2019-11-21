@@ -1,0 +1,13 @@
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/11 15:13:44 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/11 15:13:44 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/11 15:13:44 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/11 15:13:44 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/11 15:13:44 
+Warning: 0,Anel Anel2 mudou para modo Normal,2016/11/11 15:13:44 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/11 15:13:44 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/11 15:13:44 
+Error: 3,No se encontro el destino del salto [Anel1] script[/plan1.eil] PC[1] ,2016/11/11 15:13:52 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/11 15:13:52 
+Warning: 0,Anel Anel1 Chave de foco On,2016/11/11 15:14:09 
+Warning: 0,Anel Anel2 Chave de foco On,2016/11/11 15:14:09 
+Warning: 0,Anel Anel3 Chave de foco On,2016/11/11 15:14:09 

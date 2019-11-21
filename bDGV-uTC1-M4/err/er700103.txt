@@ -1,0 +1,5 @@
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/03 12:13:10 
+Alert: 0,PLC Anel1 cambio para modo titilante,1970/01/03 12:13:10 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/03 12:13:47 
+Alert: 0,PLC Anel1 cambio para modo titilante,1970/01/03 12:13:47 
+Alert: 0,RTC Range error[1970/01/03 12:13:59],1970/01/03 12:13:57 

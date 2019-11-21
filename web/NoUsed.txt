@@ -1,0 +1,615 @@
+//------------------------------------------
+function DrawPlnSyn2(Plan,Text)
+{
+	var out=""
+	var phases=PLCs[PlcIdx].Phases.length;
+	var TC=0;
+	var sts=0;
+	var sts1=0;
+	var color=0;
+	var ccode=0;
+	var Error="";
+	var svg="";
+	var Y=0;
+	var X=0;
+	var X3=0;
+	var Tm=0;
+	var XEV=0;
+	var nstp=0;
+	var stp=0;
+	//-------------------------------------------------
+	for(var lock=0;lock<Plan.LCLSYCSEQSTP.length;lock++)
+	{
+		X3=parseInt(Plan.LCLSYCTSTSTP[stp]);
+		sts=parseInt(Plan.LCLSYCSTSSTP[stp])-1;
+		stp=parseInt(Plan.LCLSYCSEQSTP[stp]);
+		sts1=parseInt(Plan.LCLSYCSTSSTP[stp])-1;
+		XEV=GetEvT(PLCs[PlcIdx].Sts,sts,sts1);
+		TC+=X3+XEV;
+	}
+	Plan.LCLSYCTCI=parseInt(TC);
+	//-------------------------------------------------
+	var fullscaleX = document.body.clientWidth;
+	fullscaleX-=((fullscaleX/100)*15);	// -%15
+	fullscaleX=Math.round(fullscaleX);
+	fullscaleX-=(fullscaleX%TC);
+	var	xstp = fullscaleX/TC;
+		xstp=Math.round(xstp);
+	var fullscaleY = document.body.clientHeight;
+	var yspt = 14;
+	yspt=Math.round(yspt);
+	//------------------------------------------------
+	stp=0;
+	sts0=parseInt(Plan.LCLSYCSTSSTP[Plan.LCLSYCSEQSTP.length-1])-1;
+	for(var lock=0;lock<Plan.LCLSYCSEQSTP.length;lock++)
+	{
+		//-------------------------------------------------------------------------------------------------------------------------------------------- Tiempo de Estado
+		nstp=parseInt(Plan.LCLSYCSEQSTP[stp]);
+		sts=parseInt(Plan.LCLSYCSTSSTP[stp])-1;
+		sts1=parseInt(Plan.LCLSYCSTSSTP[nstp])-1;
+		X3=parseInt(Plan.LCLSYCTSTSTP[stp]);
+		svg+="<text fill=\"#000000\" x=\""+(X*xstp)+"\" y=\"26\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">\
+		["+String.fromCharCode(64+Plan.LCLSYCSTSSTP[stp])+":"+X3+"s]</text>";
+		//Stp:"+stp+" Sts: svg+="<line id=\"svg_13\" x1=\""+X+"\" x2=\""+X+"\" y1=\""+10+"\" y2=\""+Math.round(height/3)+"\" stroke=\"#F000F0\" fill=\"none\" stroke-width=\"2\"/>";
+		//-----------------------------------------
+		for(var phase=0;phase<phases;phase++)
+		{
+			{
+				if(sts==253)
+					ccode=0;
+				else
+					if(sts==254)
+						ccode=PHASEs[PLCs[PlcIdx].Phases[phase]].FState;
+					else
+						ccode=PLCs[PlcIdx].Sts[sts].Colors[phase];
+				color="\"#404040\"";
+				if ((ccode&0x07)==0x07)
+					ccode=0x12;
+				if (ccode&1)color="\"#F00000\"";
+				if (ccode&2)color="\"#C0C000\"";
+				if (ccode&4)color="\"#00A000\"";
+			}
+			Y=(36+(yspt*phase));
+			svg+=MkLine(ccode,color,Y,(X*xstp),((X+X3)*xstp),0,fullscaleX);
+		}
+		//-------------------------------------------------------------------------------------------------------------------------------------------- Tiempo Minimo de Estado
+		{
+			Tm=0;
+			if(sts0!=sts)
+				Tm=GetTmin2(PLCs[PlcIdx],sts0,sts);
+			if(Tm)
+			{
+				for(var phase=0;phase<phases;phase++)
+				{
+					if(sts==253)
+						ccode=0;
+					else
+						if(sts==254)
+							ccode=PHASEs[PLCs[PlcIdx].Phases[phase]].FState;
+						else
+							ccode=PLCs[PlcIdx].Sts[sts].Colors[phase];
+					color="\"#404040\"";
+					if ((ccode&0x07)==0x07)
+						ccode=0x12;
+					if (ccode&1)color="\"#800000\"";
+					if (ccode&2)color="\"#606000\"";
+					if (ccode&4)color="\"#008000\"";
+					Y=(36+(yspt*phase));
+					svg+=MkLine(ccode,color,Y,(X*xstp),((X+Tm)*xstp),0,fullscaleX);
+				}
+				Y=(36+(yspt*phases));
+				svg+="<text fill=\"#000000\" x=\""+(X*xstp)+"\" y=\""+Y+"\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">[Tm:"+Tm+"]</text>";
+			}
+		}
+		//-------------------------------------------------------------------------------------------------------------------------------------------- Tiempo Entre Verde
+		{
+			XEV=GetEvT(PLCs[PlcIdx].Sts,sts,sts1);
+			if(XEV)
+			{
+				for(var phase=0;phase<phases;phase++)
+				{
+					Y=(36+(yspt*phase));
+					ccode=0;
+					color="\"#909040\"";
+					svg+=MkLine(ccode,color,Y,((X+X3)*xstp),((X+X3+XEV)*xstp),0,fullscaleX);
+				}
+				Y=(36+(yspt*phases));
+				svg+="<text fill=\"#000000\" x=\""+((X+X3)*xstp)+"\" y=\""+Y+"\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">[EV:"+XEV+"]</text>";
+			}
+		}
+		//--------------------------------------------------------------------------------------------------------------------------------------------
+		if((Tm+1)>X3)
+		{
+			if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+			{
+				PlanGen.LCLSYCTSTSTP[nstp]+=(Tm-X3)+1;
+			}
+			Error+="["+Str_Error_Time_Stp+"	"+String.fromCharCode(64+Plan.LCLSYCSTSSTP[stp])+"]";
+			svg+="<line id=\"svg_13\" x1=\""+(((X+X3)*xstp)%fullscaleX)+"\" x2=\""+(((X+X3)*xstp)%fullscaleX)+"\" y1=\""+5+"\" y2=\""+(45+(yspt*phases))+"\" stroke=\"#F000F0\" fill=\"none\" stroke-width=\"2\"/>";
+		}
+		//--------------------------------------------------------------------------------------------------------------------------------------------
+		X+=X3;
+		X+=XEV;
+		sts0=sts;
+		stp=nstp;
+	}
+	PlanGen.LCLSYCTCI=X;
+	out+="<svg width=\""+(20+fullscaleX)+"\" height=\""+(50+(yspt*phases))+"\" xmlns=\"http://www.w3.org/2000/svg\">\n";
+	out+="<rect fill=\"#EFEFEF\" stroke=\"#000000\" stroke-width=\"0\" x=\"0\" y=\"1\" width=\""+(16+fullscaleX)+"\" height=\""+(48+(yspt*phases))+"\" />";
+	out+="<text fill=\"#000000\" x=\"10\" y=\"14\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">["+Text+"]</text>";		
+	if(Error!="")
+	{
+		ErrorMsg=Error;
+		setTimeout("alert('"+Text+":"+Error+"')",500);
+		out+="<text fill=\"#E00000\" x=\"200\" y=\"16\" stroke-width=\"0\" font-weight=\"900\" font-size=\"14\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">"+Error+"</text>";		
+		if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+			setTimeout("ShowPlanWizard(3)",2500);
+	}
+	else
+	{
+		ErrorMsg=Error;
+	}
+	out+=svg;
+	out+="</svg>";
+	return out;
+}
+
+function ModSynTime2(ELMT,J)
+{
+	var tTSTSTP=0;
+	for(var i=0;i<PlanGen.LCLSYCSEQSTP.length;i++)
+	{
+		if(i!=J)
+		tTSTSTP+=PlanGen.LCLSYCTSTSTP[i];
+	}
+	tTSTSTP+=parseInt(ELMT.value);
+	if(ChkParm('PLAN.SYN.TIME',parseInt(ELMT.value))==true) // && (PlanGen.LCLSYCTCI>=tTSTSTP)
+	{
+		PlanGen.LCLSYCTSTSTP[J]=parseInt(ELMT.value);
+		ModParm('PLAN.SYN.TIME');
+		ShowPlanWizard(3);
+	}
+	else
+	{
+		ELMT.value=PlanGen.LCLSYCTSTSTP[J];
+	}
+}
+
+function AddSynStp2()
+{
+	PlanGen.LCLSYCSEQSTP.push(0);
+	PlanGen.LCLSYCSTSSTP.push(1);
+	PlanGen.LCLSYCTSTSTP.push(10);
+	for(var j=0;j<PlanGen.LCLSYCSEQSTP.length;j++) 
+		PlanGen.LCLSYCSEQSTP[j]=((j+1)%PlanGen.LCLSYCSEQSTP.length);
+	ShowPlanWizard(3);
+}
+
+function DelSynStp2(j)
+{
+	PlanGen.LCLSYCSEQSTP.splice(j,1);
+	PlanGen.LCLSYCSTSSTP.splice(j,1);
+	PlanGen.LCLSYCTSTSTP.splice(j,1);
+	PlanGen.LCLSYCDEMSTP.splice(j,1);
+	PlanGen.LCLSYCDEMSTS.splice(j,1);
+	PlanGen.LCLSYCCLRDEM.splice(j,1);
+	for(var j=0;j<PlanGen.LCLSYCSEQSTP.length;j++) 
+		PlanGen.LCLSYCSEQSTP[j]=((j+1)%PlanGen.LCLSYCSEQSTP.length);
+	ShowPlanWizard(3);
+}
+
+function ModSynTCicle2(OBJ)
+{
+	var temp=0;
+	if(ChkParm('PLAN.CYCLE',parseInt(OBJ.value))==true)
+	{
+		temp=PlanGen.LCLSYCTCI
+		PlanGen.LCLSYCTCI=parseInt(OBJ.value);
+		for (var j = 0; j<PlanGen.LCLSYCSEQSTP.length; j++)
+			PlanGen.LCLSYCTSTSTP[j]=Math.round((PlanGen.LCLSYCTSTSTP[j]/temp)*PlanGen.LCLSYCTCI);
+		ModParm('PLAN.CYCLE');
+		ShowPlanWizard(3);
+	}
+	else
+	{
+		OBJ.value=PlanGen.LCLSYCTCI;
+	}
+}
+
+function ModSynTOffset2(OBJ)
+{
+	var temp=0;
+	if(ChkParm('PLAN.SYN.TIME',parseInt(OBJ.value))==true)
+	{
+		PlanGen.LCLSYCTOF=parseInt(OBJ.value);
+		ModParm('PLAN.CYCLE');
+		ShowPlanWizard(3);
+	}
+	else
+	{
+		OBJ.value=PlanGen.LCLSYCTOF;
+	}
+}
+
+function ShowPLNSYN2()
+{
+	var TRSTP="";
+	var TRSTS="";
+	var TRTIM="";
+	var TRLxD="";
+	var TRDELLSTP="";
+	var TRCDL="";
+	var out="";
+	for (var j = 0; j<PlanGen.LCLSYCSEQSTP.length; j++) 
+	{
+		PlanGen.LCLSYCSEQSTP[j]=((j+1)%PlanGen.LCLSYCSEQSTP.length);
+		PlanGen.LCLSYCSTSSTP[j]=parseInt(PlanGen.LCLSYCSTSSTP[j]);
+		PlanGen.LCLSYCTSTSTP[j]=parseInt(PlanGen.LCLSYCTSTSTP[j]);
+		PlanGen.LCLSYCDEMSTP[j]=parseInt(PlanGen.LCLSYCDEMSTP[j]);
+		PlanGen.LCLSYCDEMSTS[j]=parseInt(PlanGen.LCLSYCDEMSTS[j]);
+		if(PlanGen.LCLSYCDEMSTS[j]==0)
+			PlanGen.LCLSYCDEMSTS[j]=1;
+		PlanGen.LCLSYCCLRDEM[j]=0;
+		if(PlanGen.LCLSYCDEMSTP[j]==0)
+			PlanGen.DEMPRI[j]=0;
+	}
+	PlanGen.LCLSYCSTSSTP.length=PlanGen.LCLSYCSEQSTP.length;
+	PlanGen.LCLSYCTSTSTP.length=PlanGen.LCLSYCSEQSTP.length;
+	PlanGen.LCLSYCDEMSTP.length=PlanGen.LCLSYCSEQSTP.length;
+	PlanGen.LCLSYCDEMSTS.length=PlanGen.LCLSYCSEQSTP.length;
+	PlanGen.DEMPRI.length=PlanGen.LCLSYCSEQSTP.length;
+	for (var j = 0; j<PlanGen.LCLSYCSEQSTP.length; j++) 
+	{
+		if(PlanGen.LCLSYCDEMSTP[j])
+			PlanGen.LCLSYCCLRDEM[((j+1)%PlanGen.LCLSYCSEQSTP.length)]=PlanGen.LCLSYCDEMSTP[j];
+	}
+	if(PlanGen.PHC==0)
+		SetPhConf(GlobalParms.phconf);
+	else
+		SetPhConf(PLCs[PlcIdx].EV[PlanGen.PHC-1]);
+	out+="<table width=\"100%\" border=\"0\" align=\"rigth\" cellpadding=\"2\" cellspacing=\"2\" class=\"table1\" bordercolor=\"#000000\" bgcolor=\"#c0c0c0\">\n";
+	out+="<tr>";
+	out+="<td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\">";
+	out+="[ Sincronizado ]";
+	out+="</font></td>\n";
+	out+="<td align=\"rigth\" valign=\"middle\">";
+	//----------------------------------------
+	out+="<select class=\"CssSelect\" onchange=\"PlanGen.PHC=parseInt(this.value);ShowPlanWizard(3);\">\n";
+	out+="<option value=\"0\">"+Str_Default+" "+Str_OTU_Menu2+"</option>\n";
+	for(var i=1;i<=PLCs[PlcIdx].EV.length;i++)
+	{
+		out+="<option value=\""+i+"\"";
+		if(PlanGen.PHC==i)out+=" selected=\"selected\"";
+		out+=">"+Str_OTU_Menu2+" "+i+"</option>\n";
+	}
+	out+="</select>\n";
+	//----------------------------------------
+	out+="</td>\n";
+	out+="<td align=\"rigth\" valign=\"middle\">";
+	out+="<font size=\"1\" face=\"arial\">"+Str_GB_Temp_All_Cicle+"["+(PlanGen.LCLSYCTCI)+"] </font>";
+	//out+="<input tabindex=\"\" type=\"text\" class=\"CssInText\" value=\""+(PlanGen.LCLSYCTCI)+"\" size=\"3\" maxlength=\"3\" onchange=\"ModSynTCicle2(this);\"/>\n";
+	if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+	{
+		out+="<font size=\"1\" face=\"arial\">"+Str_Discrepancy+"</font>";
+		out+="<input tabindex=\"\" type=\"text\" class=\"CssInText\" value=\""+(PlanGen.LCLSYCTOF)+"\" size=\"3\" maxlength=\"3\" onchange=\"ModSynTOffset2(this);\"/>\n";
+	}
+	out+="</td>\n";
+	out+="</tr>\n";
+	//TRSTP="<tr><td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\"><input type=\"button\" class=\"CssBtn\" value=\"Add Step\" size=\"10\" onclick=\"AddSynStp2();\" tabindex=\"1\" /></font></td>\n";
+	TRSTS="<tr>";
+	TRSTS+="<td align=\"rigth\" valign=\"middle\">";
+	TRSTS+="<input type=\"button\" class=\"CssBtn\" value=\""+Str_Add_State+"\" size=\"10\" onclick=\"AddSynStp2();\" tabindex=\"1\" />";
+	TRSTS+="<font size=\"1\" face=\"arial\">"+Str_Stss+":</font>";
+	TRSTS+="</td>\n";
+	TRTIM="<tr><td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\">"+Str_Times+"</font></td>\n";
+	TRLxD="<tr><td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\">"+Str_jumps+"</font></td>\n";
+	TRCDL="<tr><td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\">"+Str_free_dem+"</font></td>\n";
+	TRDELLSTP="<tr><td align=\"rigth\" valign=\"middle\"><font size=\"1\" face=\"arial\"></font></td>\n";
+	for (var j = 0; j<PlanGen.LCLSYCSEQSTP.length; j++) 
+	{
+		//-----------------------------------------------------------
+		TRSTS+="<td align=\"left\" valign=\"top\">\n";
+		TRSTS+="<select	tabindex=\""+(3+(10*j))+"\" class=\"CssSelect\" onchange=\"PlanGen.LCLSYCSTSSTP["+j+"]=parseInt(this.value);ShowPlanWizard(3);\">\n";
+		TRSTS+="<option value=\"255\" ";
+		if(PlanGen.LCLSYCSTSSTP[j]==255)TRSTS+=" selected=\"selected\"";
+		TRSTS+=">FF</option>\n";
+		var select=0;
+		for(var i=0;i<PLCs[PlcIdx].Sts.length;i++)
+		{
+			if(ChkJmp(PlanGen.LCLSYCSTSSTP[((j+PlanGen.LCLSYCSEQSTP.length-1)%PlanGen.LCLSYCSEQSTP.length)],(i+1)))
+			{
+				TRSTS+="<option value=\""+(i+1)+"\" ";
+				if(PlanGen.LCLSYCSTSSTP[j]==(i+1))
+				{
+					TRSTS+=" selected=\"selected\"";
+					select=(i+1);
+				}
+				TRSTS+=">"+String.fromCharCode(65+i)+"</option>\n";
+			}
+		}
+		//if(!select)PlanGen.LCLASYSEQSTP[j]=255;
+		TRSTS+="</select>\n";
+		TRSTS+="</td>\n";
+		//-----------------------------------------------------------
+		TRTIM+="<td align=\"left\" valign=\"top\">\n";
+		TRTIM+=Str_Normal_Time_STS+"<input tabindex=\""+(4+(10*j))+"\" type=\"text\" class=\"CssInText\" value=\""+PlanGen.LCLSYCTSTSTP[j]+"\" size=\"3\" maxlength=\"3\" onchange=\"ModSynTime2(this,"+j+");\"/>\n";
+		TRTIM+="<br />";
+		TRTIM+="</td>\n";
+		//-----------------------------------------------------------
+		TRLxD+="<td align=\"left\" valign=\"top\">\n";
+		TRLxD+="<select tabindex=\""+(9+(10*j))+"\" class=\"CssSelect\" onchange=\"PlanGen.LCLSYCDEMSTP["+j+"]=parseInt(this.value);PlanGen.LCLSYCDEMSTS["+j+"]=PlanGen.LCLSYCSTSSTP["+j+"];PlanGen.DEMPRI["+j+"]=0;ShowPlanWizard(3);\">\n";
+		TRLxD+="<option value=\"0\">"+Str_not_jump+"</option>\n";
+		for(var i=1;i<=(HW_IOS+parseInt(GlobalParms.Inputs)+parseInt(GlobalParms.Loops));i++)
+		{
+			TRLxD+="<option value=\""+i+"\" ";
+			if(PlanGen.LCLSYCDEMSTP[j]==i)TRLxD+=" selected=\"selected\"";
+			TRLxD+=">"+Str_Demand+" "+i+"</option>\n";
+		}
+		TRLxD+="</select>\n";
+		if(PlanGen.LCLSYCDEMSTP[j])
+		{
+			TRLxD+="<select tabindex=\""+(10+(10*j))+"\" class=\"CssSelect\" onchange=\"if(this.value){PlanGen.LCLSYCDEMSTS["+j+"]=parseInt(this.value);ShowPlanWizard(3);}\">\n";
+			for(var i=0;i<PLCs[PlcIdx].Sts.length;i++)
+			{
+				if(ChkJmp(PlanGen.LCLSYCSTSSTP[j],(i+1)))
+				{
+					TRLxD+="<option value=\""+(i+1)+"\" ";
+					if(PlanGen.LCLSYCDEMSTS[j]==(i+1))
+					{
+						TRLxD+=" selected=\"selected\"";
+					}
+					TRLxD+=">"+Str_Next_Stp+" "+String.fromCharCode(65+i)+"</option>\n";
+				}
+			}
+			TRLxD+="</select>\n";
+			if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+			{
+				TRLxD+="["+Str_Priority+"<input type=\"checkbox\" onchange=\"if(this.checked==true){PlanGen.DEMPRI["+j+"]=PlanGen.LCLSYCDEMSTP["+j+"];}else{PlanGen.DEMPRI["+j+"]=0;}ShowPlanWizard(3);\" ";
+				if(PlanGen.DEMPRI[j]!=0)
+					TRLxD+= "checked=\"checked\"";
+				TRLxD+= "/> ]";
+			}
+		}
+		TRLxD+="</td>\n";
+		//-----------------------------------------------------------
+		TRCDL+="<td align=\"right\" valign=\"top\">\n";
+		if(PlanGen.LCLSYCCLRDEM[j])
+			TRCDL+="<font size=\"1\" face=\"arial\">Limpa Dem["+PlanGen.LCLSYCCLRDEM[j]+"]</font>\n";
+		else
+			TRCDL+=" ";
+		TRCDL+="</td>\n";
+		//-----------------------------------------------------------
+		TRDELLSTP+="<td align=\"left\" valign=\"top\">\n";
+		TRDELLSTP+="<input tabindex=\""+(11+(10*j))+"\" type=\"button\" class=\"CssBtn\" value=\""+Str_Del_Sep+"\" size=\"10\" onclick=\"DelSynStp2("+j+");\"/>";
+		TRDELLSTP+="</td>\n";
+		//-----------------------------------------------------------
+	}
+	TRSTS+="</tr>\n";
+	TRTIM+="</tr>\n";
+	TRSTP+="</tr>\n";
+	TRLxD+="</tr>\n";
+	TRCDL+="</tr>\n";
+	TRDELLSTP+="</tr>\n";
+	//out+=TRSTP;
+	out+=TRSTS;
+	out+=TRLxD;
+	out+=TRCDL;
+	out+=TRTIM;
+	out+=TRDELLSTP;
+	out+="</table>\n";
+	//alert(out);
+	LOG(SaveSplan2());
+	return out;
+}
+
+function RcvES3(Dados)
+{
+	var Plan= new Array();
+	var Code = Dados.responseText;
+	Code=Code.split('\n\n');
+	var p=0;
+	while(p<Code.length)
+	{
+		Code[p]=RemoveUnuseChar(Code[p]);
+		Code[p]=Code[p].trim();
+		if(Code[p]=="")
+		{
+			Code.splice(p,1);
+		}
+		else
+		{
+			Plan[p]=new Object();
+			Code[p]=Code[p].split('\n');
+			var j=0;
+			//----------------------------------------------------
+			while(j<Code[p].length)
+			{
+				Code[p][j]=RemoveUnuseChar(Code[p][j]);
+				Code[p][j]=Code[p][j].trim();
+				if(Code[p][j]=="")
+				{
+					Code[p].splice(j,1);
+				}
+				else
+				{
+					Code[p][j]=Code[p][j].split(':');
+					j++;
+				}
+			}
+			//----------------------------------------------------
+			for(j=0;j<Code[p].length;j++)
+			{
+				switch(Code[p][j][0])
+				{
+					case "PLNTYP":
+						Plan[p]=myNewCtlPlan(parseInt(Code[p][j][1]));
+					break;
+					case "DEMPRI":
+						Plan[p].DEMPRI=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "PHC":
+						Plan[p].PHC=parseInt(Code[p][j][1]);
+					break;
+					case "SEC":
+						Plan[p].SEC=Code[p][j][1];
+					break;
+					case "SYCPLC":
+						Plan[p].SYCPLC=Code[p][j][1];
+					break;
+					case "SYCPLCTOU":
+						Plan[p].SYCPLCTOU=Code[p][j][1];
+					break;
+					case "CHGSTSSTP":
+						Plan[p].CHGSTSSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					//-----------------------------------------------
+					case "LCLCHGPLN":
+						Plan[p].LCLCHGPLN=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCTCI":
+						Plan[p].LCLSYCTCI=parseInt(Code[p][j][1]);
+					break;
+					case "LCLSYCTOF":
+						Plan[p].LCLSYCTOF=parseInt(Code[p][j][1]);
+					break;
+					case "LCLSYCSEQSTP":
+						Plan[p].LCLSYCSEQSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCSTSSTP":
+						Plan[p].LCLSYCSTSSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCTSTSTP":
+						Plan[p].LCLSYCTSTSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCDEMSTP":
+						Plan[p].LCLSYCDEMSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCDEMSTS":
+						Plan[p].LCLSYCDEMSTS=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLSYCCLRDEM":
+						Plan[p].LCLSYCCLRDEM=ConvToInt(Code[p][j][1].split(','));
+					break;
+					//-----------------------------------------------
+					case "LCLASYSEQSTP":
+						Plan[p].LCLASYSEQSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYSTSSTP":
+						Plan[p].LCLASYSTSSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYTNOSTP":
+						Plan[p].LCLASYTNOSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYTMASTP":
+						Plan[p].LCLASYTMASTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYTEXSTP":
+						Plan[p].LCLASYTEXSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYTMISTP":
+						Plan[p].LCLASYTMISTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYDEXSTP":
+						Plan[p].LCLASYDEXSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYDEMSTP":
+						Plan[p].LCLASYDEMSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYSTPDEM":
+						Plan[p].LCLASYSTPDEM=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "LCLASYCLRDEM":
+						Plan[p].LCLASYCLRDEM=ConvToInt(Code[p][j][1].split(','));
+					break;
+					//------------------------------------------------
+					case "OTUSEQSTS":
+						Plan[p].OTUSEQSTS=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "OTUDEMSTS":
+						Plan[p].OTUDEMSTS=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "OTUSTSDEM":
+						Plan[p].OTUSTSDEM=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "OTUDEMCLR":
+						Plan[p].OTUDEMCLR=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "MACSEQSTP":
+						Plan[p].MACSEQSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					case "MACSTSSTP":
+						Plan[p].MACSTSSTP=ConvToInt(Code[p][j][1].split(','));
+					break;
+					//---------------------------------------
+				}
+			}
+			p++;
+		}
+	}
+	return Plan;
+}
+
+function myNewCtlPlan(PLNTYP)
+{
+	switch(PLNTYP)
+	{
+		case 0:
+			var PlanGen={
+				PLNTYP:0,
+				PHC:0,
+				SEC:"sec.sec",
+				DEMPRI:[0],
+				LCLCHGPLN:0,
+				LCLASYSEQSTP:[0],
+				LCLASYSTSSTP:[1],
+				LCLASYTNOSTP:[7],
+				LCLASYTMASTP:[20],
+				LCLASYTEXSTP:[5],
+				LCLASYTMISTP:[10],
+				LCLASYDEXSTP:[0],
+				LCLASYDEMSTP:[0],
+				LCLASYSTPDEM:[0],
+				LCLASYCLRDEM:[0],
+				}
+		break;
+		case 1:
+			var PlanGen={
+				PLNTYP:1,
+				PHC:0,
+				SEC:"sec.sec",
+				DEMPRI:[0],
+				LCLCHGPLN:0,
+				LCLSYCTCI:120,
+				LCLSYCTOF:0,
+				LCLSYCSEQSTP:[0],
+				LCLSYCSTSSTP:[1],
+				LCLSYCTSTSTP:[60],
+				LCLSYCDEMSTP:[0],
+				LCLSYCDEMSTS:[0],
+				LCLSYCCLRDEM:[0],
+				}
+		break;
+	}
+	if(document.getElementById("NewPlnPhc"))
+		PlanGen.PHC=parseInt(document.getElementById("NewPlnPhc").value);
+	return PlanGen;
+}
+
+function ChkMax(nsts,valor)
+{
+	if(ChkParm('PLAN.STS.TMPE',valor)==true  || 0==valor)
+	{
+		if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+		{
+			if(GetTmin(PLCs[PlcIdx],nsts)<valor || 0==valor)
+				return	true;
+			else
+				return	false;
+		}
+		return	true;
+	}
+	else
+	{
+		return	false;
+	}
+}

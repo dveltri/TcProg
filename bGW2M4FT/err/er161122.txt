@@ -1,0 +1,71 @@
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 14:25:07 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 14:25:07 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 14:25:07 
+Error:53,Nivel de tensao critico 884,2016/11/22 14:25:07 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:25:07 
+Warning: 0,Anel Anel2 mudou para modo Normal,2016/11/22 14:25:07 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/22 14:25:07 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/22 14:25:07 
+Error:53,Nivel de tensao critico 675,2016/11/22 14:25:07 
+Error: 3,No se encontro el destino del salto [Anel1] script[/plan1.eil] PC[1] ,2016/11/22 14:25:15 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:25:15 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:25:15 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:25:15 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:25:15 
+Error:53,Nivel de tensao critico 0,2016/11/22 14:25:19 
+Error: 3,No se encontro el destino del salto [Anel1] script[/plan1.eil] PC[1] ,2016/11/22 14:25:27 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:25:27 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:25:28 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:25:28 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:25:28 
+Error:53,Nivel de tensao critico 0,2016/11/22 14:25:31 
+Error: 3,No se encontro el destino del salto [Anel1] script[/plan1.eil] PC[1] ,2016/11/22 14:25:39 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:25:39 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 14:26:56 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 14:26:56 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 14:26:56 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 14:26:56 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 14:32:49 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 14:32:49 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 14:32:49 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 14:32:49 
+Error:53,Nivel de tensao critico 987,2016/11/22 14:32:49 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 14:32:49 
+Warning: 0,Anel Anel2 mudou para modo Normal,2016/11/22 14:32:49 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/22 14:32:49 
+Error:53,Nivel de tensao critico 876,2016/11/22 14:32:49 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/22 14:32:49 
+Error:53,Nivel de tensao critico 776,2016/11/22 14:32:49 
+Error: 3,No se encontro el destino del salto [Anel1] script[/plan1.eil] PC[1] ,2016/11/22 14:32:57 
+Warning: 0,Anel Anel1 mudou para modo Piscante,2016/11/22 14:32:57 
+Error:16,Usr TiempoMaximo [Anel3][/plan1.eil][pc:3418],2016/11/22 14:33:30 
+Warning: 0,Anel Anel3 mudou para modo Piscante,2016/11/22 14:33:30 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/22 14:33:30 
+Error:53,Nivel de tensao critico 0,2016/11/22 14:33:33 
+Error:16,Usr TiempoMaximo [Anel4][/plan1.eil][pc:3410],2016/11/22 14:33:36 
+Warning: 0,Anel Anel4 mudou para modo Piscante,2016/11/22 14:33:36 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/22 14:33:36 
+Error:53,Nivel de tensao critico 0,2016/11/22 14:33:39 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 14:46:32 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 14:46:32 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 14:46:32 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 14:46:32 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 15:41:43 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 15:41:43 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 15:41:43 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 15:41:43 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 15:44:43 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 15:44:43 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 15:44:43 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 15:44:43 
+Error:53,Nivel de tensao critico 993,2016/11/22 15:44:43 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/22 15:44:43 
+Warning: 0,Anel Anel2 mudou para modo Normal,2016/11/22 15:44:43 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/22 15:44:43 
+Error:53,Nivel de tensao critico 876,2016/11/22 15:44:43 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/22 15:44:43 
+Error:53,Nivel de tensao critico 776,2016/11/22 15:44:43 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/22 15:54:17 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/22 15:54:17 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/22 15:54:17 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/22 15:54:17 

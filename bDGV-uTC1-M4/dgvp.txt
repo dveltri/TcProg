@@ -1,0 +1,9 @@
+DgvP.Def.Lnk=2
+DgvP.Lnk8.Id=,1,255
+DgvP.Lnk8.Rute=(,31,35)(,41,45)
+DgvP.Lnk5.Id=,1,255
+DgvP.Lnk5.Rute=(,51,55)(,61,65)
+DgvP.Lnk1.Id=,1,255
+DgvP.Lnk1.Rute=(,11,15)(,21,25)
+DgvP.Lnk4.Id=,1,255
+DgvP.Lnk4.Rute=(,11,15)(,21,25)

@@ -1,0 +1,18 @@
+Script Inst ,Heap[15432],TCP/IP,2016/11/23 13:46:52
+reset by var
+,Heap[15432],Hw_Manager,2016/11/23 13:46:52
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/23 13:47:06
+Alert[2],Software reset
+,Heap[47104],X,2016/11/23 13:47:06
+Script Inst ,Heap[19160],TCP/IP,2016/11/23 13:50:07
+reset by var
+,Heap[19160],Hw_Manager,2016/11/23 13:50:07
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/23 13:50:22
+Alert[2],Software reset
+,Heap[47104],X,2016/11/23 13:50:22
+Script Inst ,Heap[12136],TCP/IP,2016/11/23 13:51:50
+reset by var
+,Heap[12136],Hw_Manager,2016/11/23 13:51:50
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/23 13:52:06
+Alert[2],Software reset
+,Heap[47104],X,2016/11/23 13:52:06

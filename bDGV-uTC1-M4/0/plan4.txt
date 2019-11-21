@@ -1,0 +1,40 @@
+#CFT:/sec.sec;
+#MCT:;
+INICIO;
+phases ,4,0,0,0
+call WBUTT
+phases ,2,0,0,0
+call WBUTT
+phases ,1,0,0,0
+call WBUTT
+phases ,0,4,0,0
+call WBUTT
+phases ,0,2,0,0
+call WBUTT
+phases ,0,1,0,0
+call WBUTT
+phases ,0,0,4,0
+call WBUTT
+phases ,0,0,2,0
+call WBUTT
+phases ,0,0,1,0
+call WBUTT
+phases ,0,0,0,4
+call WBUTT
+phases ,0,0,0,2
+call WBUTT
+phases ,0,0,0,1
+call WBUTT
+goto INICIO;
+
+WBUTT
+delay 100
+!= io[4].inh 0
+goto WBUTT
+WBUT2
+delay 100
+== io[4].inh 0
+return
+goto WBUT2
+
+end;

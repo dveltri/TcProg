@@ -1,0 +1,27 @@
+Alert: 0,RTC Range error[1970/01/01 01:16:16],1970/01/01 01:16:15 
+Alert: 0,RTC Range error[1970/01/01 01:16:26],1970/01/01 01:16:25 
+Alert: 0,RTC Range error[1970/01/01 01:16:36],1970/01/01 01:16:35 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 01:21:47 
+Alert: 0,RTC Range error[1970/01/01 01:22:13],1970/01/01 01:21:57 
+Alert: 0,RTC Range error[1970/01/01 01:22:23],1970/01/01 01:22:07 
+Alert: 0,RTC Range error[1970/01/01 01:22:33],1970/01/01 01:22:17 
+Alert: 0,RTC Range error[1970/01/01 01:22:43],1970/01/01 01:22:27 
+Alert: 0,RTC Range error[1970/01/01 01:22:53],1970/01/01 01:22:37 
+Alert: 0,PLC Anel1 cambio para modo titilante,1970/01/01 00:00:00 
+Alert: 0,Error FR_RW_ERROR access to file /autorun.dgv,1970/01/01 00:00:00 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 
+Alert: 0,RTC Range error[1970/01/01 00:00:12],1970/01/01 00:00:10 
+Alert: 0,RTC Range error[1970/01/01 00:00:22],1970/01/01 00:00:20 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:01:07 
+Alert: 0,RTC Range error[1970/01/01 00:01:19],1970/01/01 00:01:17 
+Alert: 0,RTC Range error[1970/01/01 00:01:29],1970/01/01 00:01:27 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 
+Alert: 0,RTC Range error[1970/01/01 00:00:12],1970/01/01 00:00:10 
+Alert: 0,RTC Range error[1970/01/01 00:00:22],1970/01/01 00:00:20 
+Alert: 0,RTC Range error[1970/01/01 00:00:32],1970/01/01 00:00:30 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:10 
+Alert: 0,RTC Range error[1970/01/01 00:00:23],1970/01/01 00:00:20 
+Alert: 0,RTC Range error[1970/01/01 00:00:33],1970/01/01 00:00:30 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 
+Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 

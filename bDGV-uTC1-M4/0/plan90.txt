@@ -1,0 +1,31 @@
+GMTtemp=0;
+TZtemp=0;
+INICIO;
+mov RTC GMTtemp
+mov TimeZone TZtemp
+mul -60 TZtemp
+add TZtemp GMTtemp
+mov -180 TZtemp
+//-------------------------------------------
+> GMTtemp 1480689000
+mov -120 TZtemp
+> GMTtemp 1480688000
+mov -180 TZtemp
+> GMTtemp 1480687000
+mov -120 TZtemp
+> GMTtemp 1480686000
+mov -180 TZtemp
+> GMTtemp 1480685000
+mov -120 TZtemp
+> GMTtemp 1480684000
+mov -180 TZtemp
+> GMTtemp 1480683000
+mov -120 TZtemp
+//--------------------------------------------
+mov TZtemp TimeZone
+log TimeZone
+phases ,7,7,7,7,7,7,7,7,7,7,7;
+delay 10000;
+goto INICIO;
+end;
+#CFT:/sec.sec;

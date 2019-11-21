@@ -1,0 +1,21 @@
+{
+  "name": "TcProg",
+  "productName": "Configuracionde Controlador",
+  "version": "0.0.1",
+  "description": "Programacion de controlador de transito uTC1",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^4.2.9",
+    "electron-packager": "^14.0.4",
+    "electron-rebuild": "^1.8.2",
+    "serialport": "^7.1.4"
+  },
+  "dependencies": {
+    "icmp": "^1.4.0",
+    "node-gyp": "^5.0.3",
+    "raw-socket": "^1.7.0"
+  }
+}

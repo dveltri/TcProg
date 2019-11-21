@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>Controlador de tráfego</title>
+			<script type="text/javascript">
+			function CheckOrigen()
+			{
+				window.location="./web/index.xhtml";
+/*				var url=document.location.href;
+				if(url.indexOf("file:///")==-1 && url.indexOf("127.0.0.1")==-1  && url.indexOf("localhost")==-1)
+					window.location="./web/index.xhtml";
+				document.getElementById("remotehost").disabled=false;
+				document.getElementById("Ingesar").disabled=false;*/
+			}
+			function gohome()
+			{
+				var rhost=document.getElementById('remotehost').value;
+				if(document.location.href.indexOf("file:///")!=-1)
+					window.location="./web/index.xht?rhost="+rhost;
+				else	
+					window.location="./web/index.xhtml?rhost="+rhost;
+			}
+			</script>
+	</head>
+	<body onload="CheckOrigen();">
+	<center>
+	<table  border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" width=100%>
+	 <tr> 
+	  <td align="right"> <font color="#000000" size="4" face="Verdana">Endereço IP </font></td>
+	  <td align="left">&nbsp;<input type="text"disabled="disabled"  id="remotehost" size="12" value="192.168.0.161">&nbsp;</td>
+	 </tr>
+	 <tr align="center" valign="middle"> 
+	  <td colspan="2"><input type="button" disabled="disabled"  onclick="gohome();" id="Ingesar" value="Entrar"></td>
+	 </tr>
+	</table>
+	 <a href="http://www.mozilla.org/"><img src="./web/img/ff.png"></a>
+	 </center>
+	</body>
+</html>

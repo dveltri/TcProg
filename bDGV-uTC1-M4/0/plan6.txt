@@ -1,0 +1,10 @@
+#CFT:sec.sec;
+#MCT:;
+INICIO;
+phases ,4,1,4,1,4,1,4,1,4;
+delay 18000;
+phases ,1,4,1,4,1,4,1,4,1;
+delay 18000;
+ldeil;
+goto INICIO;
+end;

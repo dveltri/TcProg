@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+	<title>Configuracion de controladores IngAv</title>
+	<link href="style.css" rel="stylesheet" type="text/css"></link>
+	<link href="pbstyle.css" rel="stylesheet" type="text/css"></link>
+	<link rel="stylesheet" type="text/css" href="dd.css" />
+	<link rel="stylesheet" type="text/css" href="contextMenu.css" />
+<style type="text/css">
+html, body,{
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.map {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	}
+
+.table1{
+		border-collapse:collapse;
+		border: 1px solid black;
+		}	
+
+div.olControlMousePosition {
+	bottom: 0em;
+	right: 3px;
+	display: block;
+	position: absolute;
+	font-family: Arial;
+	font-size: smaller;
+}
+
+div.olControlAttribution {
+	font-size: smaller; 
+	right: 3px; 
+	bottom: -1em; 
+	position: absolute; 
+	display: block;
+}
+
+body {
+	background-repeat: no-repeat;
+	background-position: 0% 35%;
+	margin:0px;
+	}
+	
+#ItemText {
+		text-decoration: none;
+		color: white;
+		font-size: 11pt;
+		font-weight: bold;
+		text-shadow: black 0.1em 0.1em 0.2em;
+	}
+
+#divFlyMnu {
+  background: #ddd;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 5px 5px rgba(64,64,64,0.3);
+  padding: 3px;
+}
+
+.select-editable { position:relative; background-color:white; border:solid grey 1px;  width:120px; height:18px; }
+.select-editable select { position:absolute; top:0px; left:0px; font-size:7pt; border:none; width:120px; margin:0; }
+.select-editable input { position:absolute; top:0px; left:0px; width:100px; padding:1px; font-size:7pt; border:none; }
+.select-editable select:focus, .select-editable input:focus { outline:none; }
+
+</style>
+
+	<script language="javascript" src="./en.js"></script>
+	<script language="javascript" src="./GlobVars.js"></script>
+	<script language="javascript" src="./fadmin.js"></script>
+	<script language="javascript" src="./SvrConf.js"></script>
+	<script language="javascript" src="./main.js"></script>
+	<script language="javascript" src="./LibDgv.js"></script>
+	<script language="javascript" src="./RcvFiles.js"></script>
+	<script language="javascript" src="./js2.js"></script>
+	<script language="javascript" src="./js3.js"></script>
+	<script language="javascript" src="./js4.js"></script>
+	<script language="javascript" src="./js5.js"></script>
+	<script language="javascript" src="./Xml.js"></script>
+	<script language="javascript" src="./Cft.js"></script>
+	<script language="javascript" src="./deepCopy.js"></script>
+	<script language="javascript" src="./SvrConf.js"></script>
+	<script language="javascript" src="./ProgLib.js"></script>
+	<script language="javascript" src="./ProgPlan.js"></script>
+	<script language="javascript" src="./ProgLogic.js"></script>
+	<script language="javascript" src="./FBNO.js"></script>
+	<script language="javascript" src="./Sch.js"></script>
+	<script language="javascript" src="./es.js"></script>
+</head>
+<body bgcolor="LightGrey" bottomMargin="5" topMargin="5" onload="Start();" >
+<center>
+<div id="divFlyMnu" onmouseover="overFlyMnu(FlyMnu.idx);" onmousemove="overFlyMnu(FlyMnu.idx);" onmouseout="outFlyMnu(FlyMnu.idx);" display="none"  class="FlyWin" ></div>
+<!-- ====================================== LOG ========================================== -->
+<div id="LOADING" class="loading-overlay">	
+	<div id="bar1" class="loading-message">
+		<font id="progressbarT" size="1" face="Verdana" data-pct="100">
+		<svg id="svg" width="200" height="200" viewPort="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+			<circle r="90" cx="100" cy="100" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
+			<circle id="progressbar" r="90" cx="100" cy="100" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
+		</svg>
+		</font>
+	</div>
+</div>
+<!-- ====================================== Main ==========================================
+<div class="tab">
+  <button class="tablinks" onclick="goWizrdPrev();">p</button>
+  <button class="tablinks" onclick="openTab(event,'Home')">Home</button>
+  <button class="tablinks" onclick="openTab(event,'Controlador')">Controlador</button>
+  <button class="tablinks" onclick="openTab(event,'Drivers')">Drivers</button>
+  <button class="tablinks" onclick="openTab(event,'Status')">Status</button>
+  <button class="tablinks" onclick="goWizrdNext();">n</button>
+</div>
+ -->
+<!-- 
+<div id="Home" class="tabcontent">
+ <input type="button" id="newf" value="New Conf" onclick="FncNewF()" />
+ <div id="AddSrc"></div>
+ <div id="ListSrc"></div>
+</div>
+ -->
+<!-- <div id="Controlador" class="tabcontent"> -->
+<div>
+ <div id="WizNavButton"></div>
+ <div id="HOME0"></div>
+ <div id="HOME1"></div>
+ <div id="HOME2"></div>
+ <div id="HOME3"></div>
+ <div id="HOME4"></div>
+ <div id="error"></div>
+ <div id="ports"></div>
+</div>
+<!-- 
+<div id="Drivers" class="tabcontent">
+ <div id="drvHOME0"></div>
+ <div id="drvHOME1"></div>
+ <div id="drvHOME2"></div>
+ <div id="drvHOME3"></div>
+ <div id="drvHOME4"></div>
+</div>
+ -->
+<div id="Status" class="tabcontent">
+ <div id="stsHOME0"></div>
+ <div id="stsHOME1"></div>
+ <div id="stsHOME2"></div>
+ <div id="stsHOME3"></div>
+ <div id="stsHOME4"></div>
+</div>
+<!-- ====================================== LOG ========================================== -->
+<div id="dgv" name="dgv" align="left" onclick=""></div>
+<!-- ===================================================================================== -->
+<div id="StatusIcon" class="FLOAT" onclick="alert(getReloadStatus());"></div>
+<!-- ===================================================================================== -->
+</center>
+ </body>
+</html>

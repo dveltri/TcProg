@@ -1,0 +1,24 @@
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/23 08:48:20 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/23 08:48:20 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/23 08:48:20 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/23 08:48:20 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/23 08:49:57 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/23 08:49:57 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/23 08:49:57 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/23 08:49:57 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/23 08:51:20 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/23 08:51:20 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/23 08:51:20 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/23 08:51:20 
+Warning: 0,Porta aberta,2016/11/23 15:13:07 
+Warning: 0,Anel Anel1 Chave de foco Off,2016/11/23 15:13:07 
+Warning: 0,Anel Anel2 Chave de foco Off,2016/11/23 15:13:07 
+Warning: 0,Anel Anel3 Chave de foco Off,2016/11/23 15:13:07 
+Warning: 0,Anel Anel4 Chave de foco Off,2016/11/23 15:13:07 
+Error:53,Nivel de tensao critico 963,2016/11/23 15:13:07 
+Warning: 0,Anel Anel2 mudou para modo Normal,2016/11/23 15:13:07 
+Warning: 0,Anel Anel1 mudou para modo Normal,2016/11/23 15:13:07 
+Warning: 0,Anel Anel3 mudou para modo Normal,2016/11/23 15:13:07 
+Error:53,Nivel de tensao critico 847,2016/11/23 15:13:07 
+Warning: 0,Anel Anel4 mudou para modo Normal,2016/11/23 15:13:07 
+Error:53,Nivel de tensao critico 746,2016/11/23 15:13:07 

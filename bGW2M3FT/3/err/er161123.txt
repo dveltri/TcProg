@@ -1,0 +1,6 @@
+Alert,Anel Anel4 Chave de foco Off,2016/11/23 13:47:09
+Error[3],No se encontro el destino del salto [Anel4] script[/plan1.eil] PC[974] [goto CTRLISO],2016/11/23 13:47:18
+Error[3],No se encontro el destino del salto [Anel4] script[/plan1.eil] PC[974] [goto CTRLISO],2016/11/23 13:47:27
+Error[3],No se encontro el destino del salto [Anel4] script[/plan1.eil] PC[974] [goto CTRLISO],2016/11/23 13:47:37
+Alert,Anel Anel4 Chave de foco Off,2016/11/23 13:50:24
+Alert,Anel Anel4 Chave de foco Off,2016/11/23 13:52:08

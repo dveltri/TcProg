@@ -1,0 +1,370 @@
+goto INICIO
+#CFT:/0/sec.sec
+#MCT:
+#VAR
+Nsts=1
+Tsts=0
+Csts=0
+Cstp=0
+Nstp=255
+tstart=0
+MCTR=0
+Nmode=0
+Cmode=1
+temp=0
+wait=0
+DEMA=0
+FlasCtrl=0
+//--------------------------------------------
+PLCS=1
+SYPTO=90000
+STS2STP,0,0,1,2,3
+SIMC,1,0
+MCSS,1,2
+//--------------------------------------------
+EOTU,1,0,1,1,1
+UxD,0,0
+UDG,0,0
+UCD,0,0,0
+T2SP,0,15000,30000,45000,60000,999999
+P2SP,0,1,2,3,0
+//--------------------------------------------
+Lstps=4
+CHGP=0
+TCicle=60000
+//--------------------------------------------
+SIPL,1,2,3,0
+EIPL,1,2,3,4,1
+TIPL,15000,30000,45000,0,60000
+//--------------------------------------------
+LxD,0,0,0,0
+LgI,1,1,1,1
+CDL,0,0,0,0
+//--------------------------------------------
+Tmax,0,64,64,64,64
+Color1,4,1,1,1,4,1,1,1
+Color2,1,4,1,1,1,4,1,1
+Color3,1,1,4,1,1,1,4,1
+Color4,1,1,1,4,1,1,1,4
+ColorVT,1,1,1,1,1,1,1,1
+ColorFF,18,18,18,18,18,18,18,18
+ColorSL,0,0,0,0,0,0,0,0
+//--------------------------------------------
+SETSTS
+!= 1 Nsts
+phases Color1
+!= 2 Nsts
+phases Color2
+!= 3 Nsts
+phases Color3
+!= 4 Nsts
+phases Color4
+== 255 Nsts FLAS
+mov 0 otu.fr
+== 254 Nsts SLOF
+== Nsts Csts
+mov TIMERS tstart
+mov Nsts otu.step
+mov Nsts Csts
+return
+//--------------------------------------------
+INICIO
+ldphc /0/phc0.ini
+mov 0 otu.fr
+mov 0 otu.sr
+mov 1 io[15].rdy
+mov 1 io[15].wmu
+mov io[16].val MCTR
+mov TIMERS tstart
+sub 1 tstart
+goto MAIN
+
+MAIN
+mov 1 io[15].rdy
+> Csts 253 NOMAX
+== Tmax[Csts] 0 NOMAX
+mov TIMERS temp
+sub tstart temp
+> Tmax[Csts] temp
+call LOCKSTS
+NOMAX
+== 1 otu.faislado NOCTRLO
+== 1 otu.sl CTRLOTU
+== 1 otu.ff CTRLOTU
+== 0 otu.aislado CTRLOTU
+NOCTRLO
+mov 1 io[15].enable
+== 1 io[15].in CTRMAN
+goto CTRLISO
+
+CTRMAN
+mov 1 Nmode
+call CHKMODE
+delay 1000
+== io[16].val MCTR MAIN
+WAITBTOFF
+delay 200
+== 1 io[16].in WAITBTOFF
+mov SIMC[Cstp] Nstp
+mov 0 io[10].val
+FSTP0
+mov Nstp Cstp
+mov MCSS[Cstp] Nsts
+call SETSTS
+tmin
+mov 0 temp
+KEEPWAIT
+delay 1000
+add 1000 temp
+mov 3 PLC[THIS].vsync
+== 0 io[15].in OUTWAIT
+> temp SYPTO
+ifpsync PLCS KEEPWAIT
+OUTWAIT
+wkuplc PLCS
+delay 2000
+mov 0 PLC[THIS].vsync
+mov io[16].val MCTR
+mov 255 io[10].val
+goto MAIN
+
+CTRLOTU
+mov 2 Nmode
+call CHKMODE
+mov EOTU[Csts] Tsts
+mov 0 wait
+call FNCDemOTU
+otu Tsts Nsts
+chksts Nsts otu.step
+mov otu.step Nsts
+time 2000
+== Nsts Csts
+call CLDsts
+call SETSTS
+goto MAIN
+
+CTRLISO
+mov 0 Nmode
+call CHKMODE
+call CLDstp
+mov SIPL[Cstp] Nstp
+mov EIPL[Nstp] Nsts
+call FNCDemISO
+mov Nstp Cstp
+!= Cstp CHGP SAMESTP
+agenda
+ldeil
+FSTPL
+SAMESTP
+call SETSTS
+tmin
+sync TCicle TIPL[Cstp]
+goto MAIN
+FNCDemISO
+mov 0 temp
+mov LxD[Cstp] temp
+!= 0 temp
+return
+!= io[temp].inh 0
+return
+mov 1 DEMA
+mov LgI[Cstp] Nsts
+return
+
+
+CLDstp
+== 1 DEMA
+return
+mov CDL[Cstp] temp
+!= 0 temp
+return
+mov 0 DEMA
+mov 0 io[temp].inh
+return
+
+FLAS
+== 1 otu.ff FLASCENTRAL
+mov 1 otu.fr
+phases ColorFF
+return
+
+FLASCENTRAL
+phases ColorVT
+delay 2000
+mov 0 temp
+WAITFF
+delay 1000
+add 1000 temp
+mov 1 PLC[THIS].vsync
+== 0 otu.ff KEPFF
+> temp SYPTO
+ifpsync PLCS WAITFF
+wkuplc PLCS
+KEPFF
+mov 0 otu.sr
+mov 1 otu.fr
+phases ColorFF
+delay 2000
+== 1 otu.sl KEPSL
+== 1 otu.ff KEPFF
+mov 0 PLC[THIS].vsync
+phases ColorVT
+delay 3000
+mov TIMERS tstart
+mov 3 Cmode
+mov 0 otu.step
+mov 0 otu.fr
+return MAIN
+
+SLOF
+mov 1 otu.faislado
+phases ColorVT
+delay 2000
+mov 0 temp
+WAITSL
+delay 1000
+add 1000 temp
+mov 1 PLC[THIS].vsync
+== 0 otu.sl KEPSL
+> temp SYPTO
+ifpsync PLCS WAITSL
+wkuplc PLCS
+KEPSL
+mov 1 otu.faislado
+mov 0 otu.fr
+mov 1 otu.sr
+phases ColorSL
+delay 2000
+== 1 otu.sl KEPSL
+mov 0 PLC[THIS].vsync
+mov 0 otu.faislado
+== 1 otu.ff KEPFF
+phases ColorFF
+delay 5000
+phases ColorVT
+delay 3000
+mov TIMERS tstart
+mov 3 Cmode
+mov 0 otu.step
+mov 0 otu.sr
+return MAIN
+
+CLDsts
+== 0 otu.aislado
+return
+mov UCD[Nsts] temp
+== 0 temp
+mov 0 io[temp].inh
+return
+
+FNCDemOTU
+mov UxD[wait] temp
+== 0 temp NDOTU
+== io[temp].inh 0
+mov UDG[wait] Tsts
+add 1 wait
+goto FNCDemOTU
+NDOTU
+== 0 otu.sl
+mov 254 Tsts
+== 0 otu.ff
+mov 255 Tsts
+return
+
+LOCKSTS
+== Nmode 0 LKM0
+== Nmode 1 LKM1
+== Nmode 2 LKM2
+LKM0
+error 16 'TiempoMaximo
+return
+LKM1
+mov 1 io[15].fail
+return
+LKM2
+mov 1 otu.faislado
+return
+
+CHKMODE
+!= Nmode Cmode
+return
+== Nmode 0 LOCAL
+== Nmode 1 MANUAL
+== Nmode 2 CENTRAL
+mov Nmode Cmode
+return
+
+MANUAL
+mov 0 io[10].val
+mov 255 io[11].val
+mov 0 io[12].val
+mov TIMERS tstart
+mov 1 otu.mc
+mov 0 Nstp
+mov 1 io[14].enable
+mov Nmode Cmode
+== 0 io[15].in
+return FSTP0
+return MAIN
+
+CENTRAL
+mov 0 io[10].val
+mov 0 io[11].val
+mov 255 io[12].val
+mov TIMERS tstart
+mov 0 Csts
+mov 0 otu.mc
+mov 0 io[14].enable
+mov 0 io[15].enable
+mov 0 io[15].fail
+mov Nmode Cmode
+return
+
+LOCAL
+mov 0 io[10].val
+mov 255 io[11].val
+mov 0 io[12].val
+mov TIMERS tstart
+mov 0 otu.mc
+mov 1 io[14].enable
+mov 1 io[15].enable
+sync TCicle 0 wait
+mov 0 Nstp
+mov 0 Nsts
+dif TCicle wait
+add TCicle wait
+add 1000 wait
+mod TCicle wait
+call T2STP
+!= Cmode 2
+mov STS2STP[Csts] Nstp
+mov Nstp Cstp
+mov EIPL[Nstp] Nsts
+mov Nmode Cmode
+return FSTPL
+
+T2STP
+> T2SP[Nstp] wait FINDSTPA
+mov Nstp Nsts
+add 1 Nstp
+goto T2STP
+FINDSTPA
+mov Nsts Cstp
+mov EIPL[Nsts] Nsts
+!= 1 Nsts
+tim2sts Color1 temp
+!= 2 Nsts
+tim2sts Color2 temp
+!= 3 Nsts
+tim2sts Color3 temp
+!= 4 Nsts
+tim2sts Color4 temp
+add wait temp 
+> T2SP[Nstp] temp FINDSTPB
+mov Nstp Nsts
+add 1 Nstp
+goto T2STP
+FINDSTPB
+mov Cstp Nstp
+return
+end

@@ -1,0 +1,52 @@
+Script Inst ,Heap[12264],TCP/IP,2016/11/24 07:12:53
+reset by var
+,Heap[12448],Hw_Manager,2016/11/24 07:12:53
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 07:13:03
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 07:13:03
+Script Inst ,Heap[14936],TCP/IP,2016/11/24 07:55:04
+reset by var
+,Heap[18240],Hw_Manager,2016/11/24 07:55:04
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 07:55:19
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 07:55:19
+Script Inst ,Heap[17392],TCP/IP,2016/11/24 07:58:18
+reset by var
+,Heap[17392],Hw_Manager,2016/11/24 07:58:18
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 07:58:33
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 07:58:33
+Script Inst ,Heap[12120],TCP/IP,2016/11/24 08:04:29
+reset by var
+,Heap[12120],Hw_Manager,2016/11/24 08:04:29
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 08:04:44
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 08:04:44
+Script Inst ,Heap[12168],TCP/IP,2016/11/24 08:08:20
+reset by var
+,Heap[15440],Hw_Manager,2016/11/24 08:08:20
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 08:08:35
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 08:08:35
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 08:24:59
+Alert[5],Power on reset
+,Heap[47104],X,2016/11/24 08:24:59
+Alert[6],External reset
+,Heap[47104],X,2016/11/24 08:24:59
+Script Inst ,Heap[12120],TCP/IP,2016/11/24 08:58:50
+reset by var
+,Heap[12120],Hw_Manager,2016/11/24 08:58:50
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 08:59:05
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 08:59:05
+Script Inst ,Heap[12280],TCP/IP,2016/11/24 09:52:43
+reset by var
+,Heap[12280],Hw_Manager,2016/11/24 09:52:43
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 09:52:57
+Alert[2],Software reset
+,Heap[47104],X,2016/11/24 09:52:57
+RstWdt.task[X][LtRwdt:0],Heap[47104],X,2016/11/24 10:17:20
+Alert[5],Power on reset
+,Heap[47104],X,2016/11/24 10:17:20
+Alert[6],External reset
+,Heap[47104],X,2016/11/24 10:17:20

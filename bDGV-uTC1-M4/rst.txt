@@ -1,0 +1,7 @@
+show "<center>Restarting Controller..<br/>
+showdate
+rst
+end
+#MD
+#CFT:
+#MCT:4294967295\00

@@ -1,0 +1,11 @@
+Error[34],Tempo minimo de verde [725ms]<[1000ms] na fase: 6,2016/11/24 07:12:52
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 07:13:06
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 07:55:21
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 07:58:35
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 08:04:46
+Error[34],Tempo minimo de verde [735ms]<[1000ms] na fase: 6,2016/11/24 08:08:20
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 08:08:38
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 08:25:01
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 08:59:07
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 09:53:00
+Alert,Anel Anel3 Chave de foco Off,2016/11/24 10:17:22

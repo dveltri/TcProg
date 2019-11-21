@@ -1,0 +1,14 @@
+#CFT:sec.sec;
+#MCT:;
+	phases ,0,0,0,0,0,0,0,0,0,0,0,0,0;
+	delay 100
+INICIO
+	phases ,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18
+	delay 5000
+	phases ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1;
+	delay 3000
+	mov 0 PLC[THIS].NexChg;
+	agenda
+	ldeil
+	goto INICIO
+end
