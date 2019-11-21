@@ -1,0 +1,7 @@
+Alert: 0,PLC Anel1 cambio para modo Normal,2019/05/19 21:28:25 
+Alert: 0,PLC Anel1 llave de focos Off,2019/05/19 21:28:25 
+Alert: 0,Auto ReIntento++ from Error[0],2019/05/19 21:28:39 
+Alert: 0,PLC Anel1 cambio para modo Normal,2019/05/19 21:29:44 
+Alert: 0,PLC Anel1 llave de focos Off,2019/05/19 21:29:44 
+Alert: 0,Auto ReIntento++ from Error[0],2019/05/19 21:29:57 
+Alert: 0,Auto ReIntento++ from Error[0],2019/05/19 21:30:07

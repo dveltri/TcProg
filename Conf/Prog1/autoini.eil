@@ -1,0 +1,37 @@
+tmp=XXXX
+mov 0 tmp
+mov 15 dbug
+//------------------------
+new MODE uint8 1
+new FFT uint8 1
+new RRT uint8 1
+//------------------------
+new TC uint32 1
+new OF uint32 1
+new EV uint8 1
+new TYP uint8 1
+new TP uint32 FPHASES
+new SEQ uint8 FPHASES
+//------------------------
+new STSLOF uint8 FPHASES
+new STSFF uint8 FPHASES
+new STSRED uint8 FPHASES
+//------------------------
+new STS1 uint8 FPHASES
+new STS2 uint8 FPHASES
+new STS3 uint8 FPHASES
+new STS var* 3
+//------------------------
+mov 3000 FFT
+mov 3000 RRT
+mov ,0,0,0,0,0,0 STSLOF
+mov ,18,18,18,18,18,18 STSFF
+mov ,1,1,1,1,1,1 STSRED
+mov ,4,1,4,1,4,1 STS1
+alias STS[0] STS1
+mov ,4,1,1,1,1,4 STS2
+alias STS[1] STS2
+mov ,1,4,1,4,1,4 STS3
+alias STS[2] STS3
+//------------------------
+end

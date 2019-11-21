@@ -1,0 +1,11 @@
+Alert[ 0],Inicio Version:150.190518,19/05/2019 21:28:25 
+Alert[ 2],Software reset,19/05/2019 21:28:25 
+Alert[ 0],Inicio Version:150.190518,19/05/2019 21:29:15 
+Alert[ 3],Watchdog reset,19/05/2019 21:29:15 
+Alert[ 0],Inicio Version:150.190518,19/05/2019 21:29:44 
+Alert[ 3],Watchdog reset,19/05/2019 21:29:44 
+Alert[ 0],Inicio Version:150.190518,01/01/1970 00:00:00 
+Alert[ 5],Power on reset,01/01/1970 00:00:00 
+Alert[ 0],Inicio Version:150.190603,01/01/1970 00:05:57 
+Alert[ 2],Software reset,01/01/1970 00:05:57 
+Error en el tipo de argumento [/autoini.eil] script[/autoini.eil] PC[521] [mov ,0,0,0,0,0,0 STSLOF]
