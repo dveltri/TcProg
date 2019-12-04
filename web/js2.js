@@ -724,7 +724,7 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"GPS[0][1]^=9;ReDraw(-1);\" "+((GPS[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"GPS.Link^=9;ReDraw(-1);\" "+((GPS.Link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -732,7 +732,7 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_Config+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+GPS[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[GPS[0][1]][2]+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+GPS.Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[GPS.Link][2]+"\" "+((GPS.Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -740,7 +740,7 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_gps_priop+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS[2][1]=this.value;ReDraw(-1);\" value=\""+(GPS[2][1])+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS.PriorityPlus=this.value;ReDraw(-1);\" value=\""+(GPS.PriorityPlus)+"\" "+((GPS.PriorityPlus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -748,7 +748,7 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_gps_priol+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS[3][1]=this.value;ReDraw(-1);\" value=\""+(GPS[3][1])+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS.PriorityMinus=this.value;ReDraw(-1);\" value=\""+(GPS.PriorityMinus)+"\" "+((GPS.PriorityMinus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -768,7 +768,7 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS[4][1]=this.value;ReDraw(-1);\" value=\""+GPS[4][1]+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS.debug=this.value;ReDraw(-1);\" value=\""+GPS.debug+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -779,11 +779,18 @@ function ShwGps()
 
 function ShwNtp()
 {
-	NTP[0][1]=parseInt(NTP[0][1]);
-	NTP[1][1]=parseInt(NTP[1][1]);
-	NTP[2][1]=parseInt(NTP[2][1]);
-	NTP[3][1]=parseInt(NTP[3][1]);
-	NTP[4][1]=parseInt(NTP[4][1]);
+	try
+	{
+	NTP.Link=parseInt(NTP.Link);
+	NTP.Interval=parseInt(NTP.Interval);
+	NTP.TimeZone=NTP.TimeZone;
+	NTP.Debug=parseInt(NTP.Debug);
+	NTP.Priority=parseInt(NTP.Priority);
+	}
+	catch(e)
+	{
+		alert("Error en los parametros de NTP"+e.message);
+	}
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Actualizacion de hora mediante NTP</font><br />\n";
 	out+="\
 	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
@@ -792,7 +799,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"NTP[0][1]^=14;ReDraw(-1);\" "+((NTP[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"NTP.Link^=14;ReDraw(-1);\" "+((NTP.Link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -800,7 +807,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Server+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+NTP[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[NTP[0][1]][2]+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+NTP.Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[NTP.Link][2]+"\" "+((NTP.Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -808,7 +815,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_ntp_Sync_tim+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP[1][1]=(this.value*1000);ReDraw(-1);\" value=\""+(NTP[1][1]/1000)+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP.Interval=(this.value*1000);ReDraw(-1);\" value=\""+(NTP.Interval/1000)+"\" "+((NTP.Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -816,7 +823,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_ntp_prio+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP[3][1]=this.value;ReDraw(-1);\" value=\""+NTP[3][1]+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP.Priority=this.value;ReDraw(-1);\" value=\""+NTP.Priority+"\" "+((NTP.Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -824,8 +831,8 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Time_Zone+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<select class=\"CssSelect\" onchange=\"NTP[2][1]=parseInt(this.value);ReDraw(-1);\" "+((NTP[2][1]==0)?'disabled="true"':"")+">\n";
-			out+=GenOptions(OptTimeZone,NTP[2][1]);
+			<select class=\"CssSelect\" onchange=\"NTP.TimeZone=parseInt(this.value);ReDraw(-1);\" "+((NTP.Link==0)?'disabled="true"':"")+">\n";
+			out+=GenOptions(OptTimeZone,NTP.TimeZone);
 			out+="</select>\n\
 			</td>\n\
 		</tr>\n";
@@ -836,7 +843,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"NTP[4][1]=this.value;ReDraw(-1);\" value=\""+NTP[4][1]+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"NTP.Debug=this.value;ReDraw(-1);\" value=\""+NTP.Debug+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}

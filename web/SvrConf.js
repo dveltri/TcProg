@@ -361,6 +361,10 @@ function AddSrcNow(ID,wac,typ)
 		PrgBk[SrcIdx].Typ=typ;
 		PrgBk[SrcIdx].host="file:/"+SvrIp;
 		PrgBk[SrcIdx].DGVFTP='info.jsp';
+		wizard=[[moni_errors],
+		[conf_general],
+		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+		[conf_Comm]];//,conf_otu		
 	}
 	if(typ==1)
 	{
@@ -370,6 +374,10 @@ function AddSrcNow(ID,wac,typ)
 		PrgBk[SrcIdx].Typ=typ;
 		PrgBk[SrcIdx].host="http://"+ID+"/";
 		PrgBk[SrcIdx].DGVFTP='info.fls';
+		wizard=[[moni_general,moni_errors],
+		[conf_general],
+		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+		[conf_Comm]];//,conf_otu
 	}
 	if(typ==2)
 	{
@@ -379,6 +387,10 @@ function AddSrcNow(ID,wac,typ)
 		PrgBk[SrcIdx].Typ=typ;
 		PrgBk[SrcIdx].host="http://"+ID+"/";
 		PrgBk[SrcIdx].DGVFTP='info.fls';
+		wizard=[[moni_general,moni_errors],
+		[conf_general],
+		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+		[conf_Comm]];//,conf_otu
 	}
 	PrgEd[SrcIdx].host=Remplace(PrgEd[SrcIdx].host,'///','//');
 	PrgBk[SrcIdx].host=Remplace(PrgBk[SrcIdx].host,'///','//');

@@ -14,6 +14,18 @@ function SetRemote()
 	}
 }
 
+function SendObj(obj)
+{
+	var out="";
+	out+=obj.getOwnPropertyNames();
+	if (typeof obj === 'object')
+	{
+		for(var o in obj)
+		{
+			out+=o.getOwnPropertyNames();
+		}
+	}
+}
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendStartup(Prg)
 {
