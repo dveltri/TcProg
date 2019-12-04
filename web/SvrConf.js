@@ -602,11 +602,7 @@ function LoadConfSrc()
 			if(PLCs[PlcIdx].Sec!="")
 			{
 				ShwPBar('Loading Conflictos...');
-				if(GlobalParms.MODEL.indexOf("M4")!=-1)
-					request=GetUrl(PrgEd[SrcIdx].host+'/'+PLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
-				else
-					request=GetUrl(PrgEd[SrcIdx].host+'/'+PLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
-					//request=GetUrl(PrgEd[SrcIdx].host+'/'+PlcIdx+'/'+PLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
+				request=GetUrl(PrgEd[SrcIdx].host+'/'+PLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
 			}
 			else
 			{
@@ -1044,7 +1040,7 @@ function RcvConfSrc(Datos)
 			case 39:// NTP.ini
 			{
 				if(Datos.status==200)
-					RcvNTP(Datos);
+					RcvFile(Datos);
 				percent=40;
 			}
 			break;
@@ -1058,7 +1054,7 @@ function RcvConfSrc(Datos)
 			case 41:// gps.ini
 			{
 				if(Datos.status==200)
-					RcvGPS(Datos);
+					RcvFile(Datos);
 				percent=42;
 			}
 			break;
@@ -1105,14 +1101,14 @@ function RcvConfSrc(Datos)
 			case 50: // dgvp.ini
 			{
 				if(Datos.status==200)
-				RcvDgvP(Datos);
+				RcvFile(Datos);
 				percent=51;
 			}
 			break;
 			case 51: // sdgvp.ini
 			{
 				if(Datos.status==200)
-				RcvSdgvp(Datos);
+					RcvFile(Datos);
 					percent=52;
 				}
 			break;
@@ -1203,7 +1199,7 @@ function RcvConfSrc(Datos)
 			case 86:// master.ini
 			{
 				if(Datos.status==200)
-					RcvMaster(Datos);
+					RcvFile(Datos);
 				percent=87;
 			}
 			break;
@@ -1865,101 +1861,100 @@ function Ed2Src(idx)
 {
 	if(idx>=PrgEd.length)
 		return;
-	PrgEd[idx].GlobalParms=	owl.deepCopy(GlobalParms);
-	PrgEd[idx].PLCs=		owl.deepCopy(PLCs);
-	PrgEd[idx].PHASEs=		owl.deepCopy(PHASEs);
-	PrgEd[idx].IOs=			owl.deepCopy(IOs);
-	PrgEd[idx].Srv=			owl.deepCopy(Srv);
-	PrgEd[idx].Links=		owl.deepCopy(Links);
-	PrgEd[idx].Errors=		owl.deepCopy(Errors);
-	PrgEd[idx].ErrorsCfg=	owl.deepCopy(ErrorsCfg);
+	PrgEd[idx].GlobalParms=	GlobalParms;
+	PrgEd[idx].PLCs=		PLCs;
+	PrgEd[idx].PHASEs=		PHASEs;
+	PrgEd[idx].IOs=			IOs;
+	PrgEd[idx].Srv=			Srv;
+	PrgEd[idx].Links=		Links;
+	PrgEd[idx].Errors=		Errors;
+	PrgEd[idx].ErrorsCfg=	ErrorsCfg;
 	//--------------------------------------------------- Modulos
-	PrgEd[idx].OTU=			owl.deepCopy(OTU);
-	PrgEd[idx].DefIn=		owl.deepCopy(DefIn);
-	PrgEd[idx].OPCT=		owl.deepCopy(OPCT);
-	PrgEd[idx].Master=		owl.deepCopy(Master);
-	PrgEd[idx].Iteris=		owl.deepCopy(Iteris);
-	PrgEd[idx].DgvSoft=		owl.deepCopy(DgvSoft);
-	PrgEd[idx].NTP=			owl.deepCopy(NTP);
-	PrgEd[idx].GPS=			owl.deepCopy(GPS);
-	PrgEd[idx].DgvP=		owl.deepCopy(DgvP);
-	PrgEd[idx].SdgvP=		owl.deepCopy(SdgvP);
+	PrgEd[idx].OTU=			OTU;
+	PrgEd[idx].DefIn=		DefIn;
+	PrgEd[idx].OPCT=		OPCT;
+	//PrgEd[idx].Mstr=		Mstr;
+	PrgEd[idx].Iteris=		Iteris;
+	PrgEd[idx].DgvSoft=		DgvSoft;
+	//PrgEd[idx].NTP=		NTP;
+	//PrgEd[idx].GPS=		GPS;
+	//PrgEd[idx].DgvP=		DgvP;
+	//PrgEd[idx].SdgvP=		SdgvP;
 }
 function Ed2Bk(idx)
 {
 	if(idx>=PrgEd.length)
 		return;
-	PrgBk[idx].GlobalParms=	owl.deepCopy(GlobalParms);
-	PrgBk[idx].PLCs=		owl.deepCopy(PLCs);
-	PrgBk[idx].PHASEs=		owl.deepCopy(PHASEs);
-	PrgBk[idx].IOs=			owl.deepCopy(IOs);
-	PrgBk[idx].Srv=			owl.deepCopy(Srv);
-	//PrgBk[idx].drv=		owl.deepCopy(drv);
-	PrgBk[idx].Links=		owl.deepCopy(Links);
-	PrgBk[idx].Errors=		owl.deepCopy(Errors);
-	PrgBk[idx].ErrorsCfg=	owl.deepCopy(ErrorsCfg);
+	PrgBk[idx].GlobalParms=	GlobalParms;
+	PrgBk[idx].PLCs=		PLCs;
+	PrgBk[idx].PHASEs=		PHASEs;
+	PrgBk[idx].IOs=			IOs;
+	PrgBk[idx].Srv=			Srv;
+	//PrgBk[idx].drv=		drv;
+	PrgBk[idx].Links=		Links;
+	PrgBk[idx].Errors=		Errors;
+	PrgBk[idx].ErrorsCfg=	ErrorsCfg;
 	//--------------------------------------------------- Modulos
-	PrgBk[idx].OTU=			owl.deepCopy(OTU);
-	PrgBk[idx].DefIn=		owl.deepCopy(DefIn);
-	PrgBk[idx].OPCT=		owl.deepCopy(OPCT);
-	PrgBk[idx].Master=		owl.deepCopy(Master);
-	PrgBk[idx].Iteris=		owl.deepCopy(Iteris);
-	PrgBk[idx].DgvSoft=		owl.deepCopy(DgvSoft);
-	PrgBk[idx].NTP=			owl.deepCopy(NTP);
-	PrgBk[idx].GPS=			owl.deepCopy(GPS);
-	PrgBk[idx].DgvP=		owl.deepCopy(DgvP);
-	PrgBk[idx].SdgvP=		owl.deepCopy(SdgvP);
+	PrgBk[idx].OTU=			OTU;
+	PrgBk[idx].DefIn=		DefIn;
+	PrgBk[idx].OPCT=		OPCT;
+	PrgBk[idx].Mstr=		PrgEd[idx].Mstr;
+	PrgBk[idx].Iteris=		Iteris;
+	PrgBk[idx].DgvSoft=		DgvSoft;
+	PrgBk[idx].NTP=			PrgEd[idx].NTP;
+	PrgBk[idx].GPS=			PrgEd[idx].GPS;
+	PrgBk[idx].DgvP=		PrgEd[idx].DgvP;
+	PrgBk[idx].SdgvP=		PrgEd[idx].SdgvP;
 }
 function Src2Ed(idx)
 {
 	if(idx>=PrgEd.length)
 		return;
-	//GlobalParms= new Object();
-	GlobalParms=	owl.deepCopy(PrgEd[idx].GlobalParms);
-	PLCs=			owl.deepCopy(PrgEd[idx].PLCs);
-	PHASEs=			owl.deepCopy(PrgEd[idx].PHASEs);
-	IOs=			owl.deepCopy(PrgEd[idx].IOs);
-	Srv=			owl.deepCopy(PrgEd[idx].Srv);
-	//drv=			owl.deepCopy(drv);
-	Links=			owl.deepCopy(PrgEd[idx].Links);
-	Errors=			owl.deepCopy(PrgEd[idx].Errors);
-	ErrorsCfg=		owl.deepCopy(PrgEd[idx].ErrorsCfg);
+	GlobalParms=			PrgEd[idx].GlobalParms;
+	PLCs=					PrgEd[idx].PLCs;
+	PHASEs=					PrgEd[idx].PHASEs;
+	IOs=					PrgEd[idx].IOs;
+	Srv=					PrgEd[idx].Srv;
+	//drv=			
+	Links=					PrgEd[idx].Links;
+	Errors=					PrgEd[idx].Errors;
+	ErrorsCfg=				PrgEd[idx].ErrorsCfg;
 	//--------------------------------------------------- Modulos
-	OTU=			owl.deepCopy(PrgEd[idx].OTU);
-	DefIn=			owl.deepCopy(PrgEd[idx].DefIn);
-	OPCT=			owl.deepCopy(PrgEd[idx].OPCT);
-	Master=			owl.deepCopy(PrgEd[idx].Master);
-	Iteris=			owl.deepCopy(PrgEd[idx].Iteris);
-	DgvSoft=		owl.deepCopy(PrgEd[idx].DgvSoft);
-	NTP=			owl.deepCopy(PrgEd[idx].NTP);
-	GPS=			owl.deepCopy(PrgEd[idx].GPS);
-	DgvP=			owl.deepCopy(PrgEd[idx].DgvP);
-	SdgvP=			owl.deepCopy(PrgEd[idx].SdgvP);
+	OTU=					PrgEd[idx].OTU;
+	DefIn=					PrgEd[idx].DefIn;
+	OPCT=					PrgEd[idx].OPCT;
+	Mstr=					PrgEd[idx].Mstr;
+	Iteris=					PrgEd[idx].Iteris;
+	DgvSoft=				PrgEd[idx].DgvSoft;
+	NTP=					PrgEd[idx].NTP;
+	GPS=					PrgEd[idx].GPS;
+	DgvP=					PrgEd[idx].DgvP;
+	SdgvP=					PrgEd[idx].SdgvP;
 }
 function Bk2edbk(idx)
 {
 	if(idx>=PrgEd.length)
 		return;
-	BkGlobalParms=	owl.deepCopy(PrgBk[idx].GlobalParms);
-	BkPLCs=			owl.deepCopy(PrgBk[idx].PLCs);
-	BkPHASEs=		owl.deepCopy(PrgBk[idx].PHASEs);
-	BkIOs=			owl.deepCopy(PrgBk[idx].IOs);
-	BkSrv=			owl.deepCopy(PrgBk[idx].Srv);
-	//BkHdrv=		owl.deepCopy(drv);
-	BkLinks=		owl.deepCopy(PrgBk[idx].Links);
-	BkErrors=		owl.deepCopy(PrgBk[idx].Errors);
-	BkErrorsCfg=	owl.deepCopy(PrgBk[idx].ErrorsCfg);
+	BkGlobalParms=			PrgBk[idx].GlobalParms;
+	BkPLCs=					PrgBk[idx].PLCs;
+	BkPHASEs=				PrgBk[idx].PHASEs;
+	BkIOs=					PrgBk[idx].IOs;
+	BkSrv=					PrgBk[idx].Srv;
+	//BkHdrv=				drv;
+	BkLinks=				PrgBk[idx].Links;
+	BkErrors=				PrgBk[idx].Errors;
+	BkErrorsCfg=			PrgBk[idx].ErrorsCfg;
 	//--------------------------------------------------- Modulos
-	BkOTU=			owl.deepCopy(PrgBk[idx].OTU);
-	BkDefIn=		owl.deepCopy(PrgBk[idx].DefIn);
-	BkOPCT=			owl.deepCopy(PrgBk[idx].OPCT);
-	BkMaster=		owl.deepCopy(PrgBk[idx].Master);
-	BkIteris=		owl.deepCopy(PrgBk[idx].Iteris);
-	BkDgvSoft=		owl.deepCopy(PrgBk[idx].DgvSoft);
-	NTP=			owl.deepCopy(PrgBk[idx].NTP);
-	GPS=			owl.deepCopy(PrgBk[idx].GPS);
-	DgvP=			owl.deepCopy(PrgBk[idx].DgvP);
-	SdgvP=			owl.deepCopy(PrgBk[idx].SdgvP);
+	BkOTU=					PrgBk[idx].OTU;
+	BkDefIn=				PrgBk[idx].DefIn;
+	BkOPCT=					PrgBk[idx].OPCT;
+	BkMstr=					PrgBk[idx].Mstr;
+	BkIteris=				PrgBk[idx].Iteris;
+	BkDgvSoft=				PrgBk[idx].DgvSoft;
+	NTP=					PrgBk[idx].NTP;
+	GPS=					PrgBk[idx].GPS;
+	DgvP=					PrgBk[idx].DgvP;
+	SdgvP=					PrgBk[idx].SdgvP;
 }
 
 //---------------------------------------

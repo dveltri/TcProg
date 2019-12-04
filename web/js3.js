@@ -513,13 +513,13 @@ function SendMaster(Prg)
 	UpData="";
 	UpFile="master.ini"
 	seek=0;
-	for(var i=0;i<Prg.Master.length;i++)
+	for(var i=0;i<Prg.Mstr.length;i++)
 	{
-		for(var j=0;j<(Prg.Master[i].length-1);j++)
+		for(var j=0;j<(Prg.Mstr[i].length-1);j++)
 		{
-			UpData+=Prg.Master[i][j]+":";
+			UpData+=Prg.Mstr[i][j]+":";
 		}
-		UpData+=Prg.Master[i][j]+"\n";
+		UpData+=Prg.Mstr[i][j]+"\n";
 	}
 	return UpData;
 }

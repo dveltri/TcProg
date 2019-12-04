@@ -1151,19 +1151,6 @@ function RcvOTU2(Datos)
 	//-----------------------------------
 }	// */
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvDgvP(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=RemComment(Datos)
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	for(var j=0;j<Datos.length;j++)
-	{
-		Datos[j]=Datos[j].split("=");
-	}
-	DgvP=Datos.slice();
-}
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvSdgvp(Datos)
 {
 	var ptr;
@@ -1299,28 +1286,6 @@ function RcvSdgvp(Datos)
 	}
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvMaster(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
-	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			i++;
-		}
-	}
-	Master.length=0;
-	Master=Datos.slice();
-}
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvIteris(Datos)
 {
 	Datos=Datos.responseText;
@@ -1343,7 +1308,7 @@ function RcvIteris(Datos)
 	Iteris=Datos.slice();
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvNTP(Datos)
+function RcvFile(Datos)
 {
 	Datos=Datos.responseText;
 	Datos=Datos.split("\n");
@@ -1358,38 +1323,25 @@ function RcvNTP(Datos)
 		else
 		{
 			Datos[i]=Datos[i].split(":");
+			if(Datos[i].length==1)
+				Datos[i]=Datos[i][0].split("=");
+			Datos[i][0]=Datos[i][0].split(".");
+			addobj(PrgEd[SrcIdx],Datos[i][0],Datos[i][1]);
 			i++;
 		}
 	}
-	NTP.length=0;
-	NTP=Datos.slice();
 }
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvGPS(Datos)
+function addobj(obj,vname,val)
 {
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
+	for(i=0;i<vname.length;i++)
 	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			i++;
-		}
+		if(!obj[vname[i]])
+			if(i<(vname.length-1))
+				obj[vname[i]]=new Object();
+			else
+				obj[vname[i]]=val;
+		obj=obj[vname[i]];
 	}
-	GPS.length=0;
-	GPS=Datos.slice();
-}
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvDGV(Datos)
-{
-	DgvSoft=Datos.responseText;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 percent=5;

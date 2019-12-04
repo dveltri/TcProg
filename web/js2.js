@@ -716,11 +716,6 @@ function ShwATZ()
 
 function ShwGps()
 {
-	GPS[0][1]=parseInt(	GPS[0][1]);
-	Links[GPS[0][1]][2]=GPS[1][1];
-	GPS[2][1]=parseInt(	GPS[2][1]);
-	GPS[3][1]=parseInt(	GPS[3][1]);
-	GPS[4][1]=parseInt(	GPS[4][1]);
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Configuracion GPS</font><br />\n";
 	out+="\
 	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\

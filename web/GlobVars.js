@@ -60,7 +60,7 @@ AllConf.ErrorsCfg = new Array();
 AllConf.OTU = new Object();
 AllConf.DefIn = new Array();
 AllConf.OPCT = new Array();
-AllConf.Master = new Object();
+AllConf.Mstr = new Object();
 AllConf.Iteris = new Object();
 AllConf.DgvSoft = new Array();
 //----------------------------------------------------
@@ -78,7 +78,7 @@ var Errors = new Array();
 var OTU = AllConf.OTU;
 var DefIn = AllConf.DefIn;
 var OPCT = AllConf.OPCT;
-var Master = AllConf.Master;
+var Mstr = AllConf.Mstr;
 var Iteris = AllConf.Iteris;
 var DgvSoft = AllConf.DgvSoft;
 //--------------------------------------------------- const
