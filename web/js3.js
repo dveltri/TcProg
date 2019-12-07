@@ -149,47 +149,47 @@ function genPhc()
 {
 	var out="";
 	var color=0;
-	for(var j=0;j<PHASEs.length;j++)
+	for(var j=0;j<PrgEd[SrcIdx].PHASEs.length;j++)
 	{
-		if(PHASEs[j].FlagsWeb==0)
+		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
 		{
-			out+=""+PHASEs[j].Numero;
-			out+=","+Math.abs(PHASEs[j].MskError);
-			out+=","+PHASEs[j].FState;
-			out+=","+(PHASEs[j].MiRT+(PHASEs[j].AMiRT<<8));
-			out+=" "+(PHASEs[j].MiYT+(PHASEs[j].AMiYT<<8));
-			out+=" "+(PHASEs[j].MiGT+(PHASEs[j].AMiGT<<8));
-			out+=","+PHASEs[j].MaRT;
-			out+=" "+PHASEs[j].MaYT;
-			out+=" "+PHASEs[j].MaGT;
-			out+=","+PHASEs[j].TOEE;
-			out+=","+PHASEs[j].TOEC;
+			out+=""+PrgEd[SrcIdx].PHASEs[j].Numero;
+			out+=","+Math.abs(PrgEd[SrcIdx].PHASEs[j].MskError);
+			out+=","+PrgEd[SrcIdx].PHASEs[j].FState;
+			out+=","+(PrgEd[SrcIdx].PHASEs[j].MiRT+(PrgEd[SrcIdx].PHASEs[j].AMiRT<<8));
+			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiYT+(PrgEd[SrcIdx].PHASEs[j].AMiYT<<8));
+			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiGT+(PrgEd[SrcIdx].PHASEs[j].AMiGT<<8));
+			out+=","+PrgEd[SrcIdx].PHASEs[j].MaRT;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaYT;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaGT;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEE;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEC;
 			out+=","
 			color=255;
-			for(var i=0;i<PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
 			{
-				if(color!=PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
 				{
-					color=PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
 			{
-				if(color!=PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
 				{
-					color=PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";
-			out+=","+PHASEs[j].PotLR;
-			out+=" "+PHASEs[j].PotLY;
-			out+=" "+PHASEs[j].PotLG;
-			out+=","+PHASEs[j].Type;
-			out+=","+PHASEs[j].Name;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].PotLR;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLY;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLG;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].Type;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].Name;
 			out+="\n";
 		}
 	}
@@ -201,12 +201,12 @@ function genEv()
 	var Tout="";
 	var Ttime=0;
 	var j=0;
-	if(!PLCs[PlcIdx])
+	if(!PrgEd[SrcIdx].PLCs[PlcIdx])
 	 return "";
-	for(var x=0;x<PLCs[PlcIdx].Phases.length;x++)
+	for(var x=0;x<PrgEd[SrcIdx].PLCs[PlcIdx].Phases.length;x++)
 	{
-		j=PLCs[PlcIdx].Phases[x];
-		if(PHASEs[j].FlagsWeb==0)
+		j=PrgEd[SrcIdx].PLCs[PlcIdx].Phases[x];
+		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
 		{
 			out+=""+PHASEs[j].Numero;
 			out+=",";
@@ -217,22 +217,22 @@ function genEv()
 			out+=",";
 			out+=",";
 			color=255;
-			for(var i=0;i<PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
 			{
-				if(color!=PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
 				{
-					color=PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
 			{
-				if(color!=PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
 				{
-					color=PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";

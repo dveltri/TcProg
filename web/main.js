@@ -97,7 +97,6 @@ function ShwStatus(menuItem, browserWindow, event)
 {
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
-	Src2Ed(SrcIdx);
 	WizrdIdx=0;
 	Widx=WiS;
 	ReDraw(wizard[Widx][WizrdIdx]);
@@ -108,7 +107,6 @@ function ShwGeneral(menuItem, browserWindow, event)
 {
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
-	Src2Ed(SrcIdx);
 	WizrdIdx=0;
 	Widx=WiG;
 	ReDraw(wizard[Widx][WizrdIdx]);
@@ -118,7 +116,6 @@ function ShwUtility(menuItem, browserWindow, event)
 {
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
-	Src2Ed(SrcIdx);
 	WizrdIdx=0;
 	Widx=WiF;
 	ReDraw(wizard[Widx][WizrdIdx]);
@@ -128,7 +125,6 @@ function ShwDrvs(menuItem, browserWindow, event)
 {
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
-	Src2Ed(SrcIdx);
 	WizrdIdx=0;
 	Widx=WiD;
 	ReDraw(wizard[Widx][WizrdIdx]);
@@ -139,7 +135,6 @@ function ReloadSrc(menuItem, browserWindow, event)
 {
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
-	Src2Ed(SrcIdx);
 	LoadConfSrc();
 }
 function FncNewF()

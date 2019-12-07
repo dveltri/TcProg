@@ -29,7 +29,7 @@ var EndPlan="end\n";
 function ShowStss()
 {
 	var out="";
-	var PlnSts=PLCs[PlcIdx].Sts;
+	var PlnSts=PLCs()[PlcIdx].Sts;
 	out+="<table border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" class=\"table1\" >\n";// width=\"90%\"
 	out+="<tr>\n";
 	out+="<td valign=\"top\" align=\"center\">\n";
@@ -38,12 +38,12 @@ function ShowStss()
 	out+="<td valign=\"top\" align=\"center\">\n";
 	out+="<font size=\"1\" face=\"arial\">"+Str_Name_Stage+"</font>\n";
 	out+="</td>\n";
-	for(var y=0;y<PHASEs.length;y++)
+	for(var y=0;y<PHASEs().length;y++)
 	{
-		if(PHASEs[y].PLC&(1<<PlcIdx))
+		if(PHASEs()[y].PLC&(1<<PlcIdx))
 		{
 			out+="<td valign=\"top\" align=\"center\">\n";
-			out+="<font size=\"1\" face=\"arial\">"+PHASEs[y].Name+"</font>\n";
+			out+="<font size=\"1\" face=\"arial\">"+PHASEs()[y].Name+"</font>\n";
 			out+="</td>\n";
 		}
 	}
@@ -72,20 +72,20 @@ function ShowSts(nsts)
 	var colorn=0;
 	var PhN=0;
 	var out="";
-	var PlnSts=PLCs[PlcIdx].Sts[nsts];
+	var PlnSts=PLCs()[PlcIdx].Sts[nsts];
 	if(!PlnSts.Name)
 		PlnSts.Name=""+String.fromCharCode(65+nsts);
 		out+="<td align=\"center\">\n";
-	out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\""+PlnSts.Name+"\" size=\"8\" maxlength=\"8\" onchange=\"PLCs["+PlcIdx+"].Sts["+nsts+"].Name=this.value;ReDraw(-1);\" />\n";
+	out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\""+PlnSts.Name+"\" size=\"8\" maxlength=\"8\" onchange=\"PLCs()["+PlcIdx+"].Sts["+nsts+"].Name=this.value;ReDraw(-1);\" />\n";
 	out+="</td>\n";
 	for (var j = 0; j<PlnSts.Colors.length; j++)
 	{
-		if(PHASEs[j].PLC&(1<<PlcIdx))
+		if(PHASEs()[j].PLC&(1<<PlcIdx))
 		{
 			out+="<td align=\"center\" valign=\"middle\" height=\"10\" width=\"10\" onclick=\"ChgColSts("+nsts+","+j+");\" ";
 			//out+="class=\"table2\" style=\"background-color:rgb("+((Color>>16)&255)+","+((Color>>8)&255)+","+(Color&255)+")\" ";
 			out+=">\n";
-			out+=ShwMov(PlnSts.Colors[j],PHASEs[j].Type);
+			out+=ShwMov(PlnSts.Colors[j],PHASEs()[j].Type);
 			//out+=color2svg(PlnSts.Colors[j],"");
 			out+="</td>\n";
 		}
@@ -97,7 +97,7 @@ function UpSts(s)
 {
 	var t=0;
 	var tmp;
-	var PlnSts=PLCs[PlcIdx].Sts;
+	var PlnSts=PLCs()[PlcIdx].Sts;
 	t=(PlnSts.length+s-1)%PlnSts.length;
 	tmp=PlnSts[t].Name;
 	PlnSts[t].Name=PlnSts[s].Name;
@@ -172,22 +172,22 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 	var Tvr=0;
 	var Trv=0;
 	var Tke=0;
-	var PlnSts=PLCs[PlcIdx].Sts;
+	var PlnSts=PLCs()[PlcIdx].Sts;
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
 		Color1=PlnSts[TP1].Colors[ph];
 		Color2=PlnSts[TP2].Colors[ph];
 		if(Color1==1 && Color2==4)
-			if(Trv<PHASEs[ph].R2V.length)
-				Trv=PHASEs[ph].R2V.length;
+			if(Trv<PHASEs()[ph].R2V.length)
+				Trv=PHASEs()[ph].R2V.length;
 		if(Color1==4 && Color2==1)
-			if(Tvr<PHASEs[ph].V2R.length)
-				Tvr=PHASEs[ph].V2R.length;
+			if(Tvr<PHASEs()[ph].V2R.length)
+				Tvr=PHASEs()[ph].V2R.length;
 	}
 	Tev=Tvr+Trv;
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
-		if(PHASEs[ph].PLC&(1<<PlcIdx))
+		if(PHASEs()[ph].PLC&(1<<PlcIdx))
 		{
 			Color1=PlnSts[TP1].Colors[ph];
 			Color2=PlnSts[TP2].Colors[ph];
@@ -197,17 +197,17 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==4 && Color2==1)
 			{
-				if(PHASEs[ph].V2R.length)
+				if(PHASEs()[ph].V2R.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-(Trv+PHASEs[ph].V2R.length);
+					Tke=Tev-(Trv+PHASEs()[ph].V2R.length);
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs[ph].V2R.length; j++)
+					for (j=0; j<PHASEs()[ph].V2R.length; j++)
 					{
-						out+=MkLine(PHASEs[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(PHASEs()[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
-					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+PHASEs[ph].V2R.length)),X+(xstp*Tev));
+					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+PHASEs()[ph].V2R.length)),X+(xstp*Tev));
 				}
 				else
 				{
@@ -216,15 +216,15 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==1 && Color2==4)
 			{
-				if(PHASEs[ph].R2V.length)
+				if(PHASEs()[ph].R2V.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-PHASEs[ph].R2V.length;
+					Tke=Tev-PHASEs()[ph].R2V.length;
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs[ph].R2V.length; j++)
+					for (j=0; j<PHASEs()[ph].R2V.length; j++)
 					{
-						out+=MkLine(PHASEs[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(PHASEs()[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
 				}
 				else
@@ -296,7 +296,7 @@ function cosDeg(num)
 
 function chgColor(plc,nsts,ColIdx,posibles)
 {
-	var PlnStsCol=PLCs[plc].Sts[nsts].Colors[ColIdx];
+	var PlnStsCol=PLCs()[plc].Sts[nsts].Colors[ColIdx];
 	var temp=posibles.indexOf(PlnStsCol);
 	temp++;
 	temp%=posibles.length;
@@ -321,7 +321,7 @@ function ChgColSts(nsts,j)
 	{
 		MSKtemp=MSKC_OR.slice();
 	}
-	PLCs[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs[PlcIdx].Sts[nsts].Colors[j],MSKtemp);
+	PLCs()[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs()[PlcIdx].Sts[nsts].Colors[j],MSKtemp);
 	ReDraw(conf_sts);
 }
 
@@ -329,14 +329,14 @@ function ChkCFTSts(nsts,ncolor)
 {
 	var color=4;
 	var PhN=0;
-	PhN=ncolor;//PLCs[PlcIdx].Sts[nsts].Color[ncolor];
-	if(!(color&0x30) && color&0x06 && PHASEs[PhN].Sec.length)
+	PhN=ncolor;//PLCs()[PlcIdx].Sts[nsts].Color[ncolor];
+	if(!(color&0x30) && color&0x06 && PHASEs()[PhN].Sec.length)
 	{
-		for (var i = 0; i<PHASEs[PhN].Sec.length; i++)
+		for (var i = 0; i<PHASEs()[PhN].Sec.length; i++)
 		{
-			if(PHASEs[PhN].Sec[i]!=null && PHASEs[PhN].Sec[i]>0)
+			if(PHASEs()[PhN].Sec[i]!=null && PHASEs()[PhN].Sec[i]>0)
 			{
-				if((PLCs[PlcIdx].Sts[nsts].Colors[i]&0x30)==0 && (PLCs[PlcIdx].Sts[nsts].Colors[i]&0x06)!=0)
+				if((PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x30)==0 && (PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x06)!=0)
 					return false;
 			}
 		}
@@ -764,12 +764,12 @@ function ChekInst(linea)
 
 function GetVRT(ph)
 {
-	return PHASEs[ph].V2R.length;
+	return PHASEs()[ph].V2R.length;
 }
 
 function GetRVT(ph)
 {
-	return PHASEs[ph].R2V.length;
+	return PHASEs()[ph].R2V.length;
 }
 
 function GetEvT(PlnSts,sts1,sts2)
@@ -824,13 +824,13 @@ function GetTmin2(PLC,sts1,sts2)
 			{
 				if(PLC.Sts[sts1].Colors[i]==1)
 				{
-					tiempot=PHASEs[i].MiGT;
-					evt=PHASEs[i].R2V.length
+					tiempot=PHASEs()[i].MiGT;
+					evt=PHASEs()[i].R2V.length
 				}
 				else
 				{
-					tiempot=PHASEs[i].MiRT;
-					evt=PHASEs[i].V2R.length
+					tiempot=PHASEs()[i].MiRT;
+					evt=PHASEs()[i].V2R.length
 				}
 				if(tiempo<tiempot)
 					tiempo=tiempot;
@@ -855,9 +855,9 @@ function GetTmin(PLC,sts)
 		{
 			ph=i;//PLC.Phases[i];
 			if(PLC.Sts[sts].Colors[i]==4)
-				tiempot=PHASEs[ph].MiGT;
+				tiempot=PHASEs()[ph].MiGT;
 			if(PLC.Sts[sts].Colors[i]==1)
-				tiempot=PHASEs[ph].MiRT;
+				tiempot=PHASEs()[ph].MiRT;
 			if(tiempo<tiempot)
 				tiempo=tiempot;
 		}
@@ -869,17 +869,17 @@ function GetTmin(PLC,sts)
 
 function SubSts(Nsts)
 {
-	PLCs[PlcIdx].Sts.splice(Nsts,1);
+	PLCs()[PlcIdx].Sts.splice(Nsts,1);
 	ModParm("pPLCs.Sts");
 }
 
 function AddSts()
 {
-	var Nsts=PLCs[PlcIdx].Sts.length
-	PLCs[PlcIdx].Sts[Nsts]=new Object();
-	PLCs[PlcIdx].Sts[Nsts].Colors= new Array();
-	for (var j = 0; j<PLCs[PlcIdx].Phases.length; j++)
-		PLCs[PlcIdx].Sts[Nsts].Colors[j]=1;
+	var Nsts=PLCs()[PlcIdx].Sts.length
+	PLCs()[PlcIdx].Sts[Nsts]=new Object();
+	PLCs()[PlcIdx].Sts[Nsts].Colors= new Array();
+	for (var j = 0; j<PLCs()[PlcIdx].Phases.length; j++)
+		PLCs()[PlcIdx].Sts[Nsts].Colors[j]=1;
 	ModParm("pPLCs.Sts");
 }
 
@@ -888,7 +888,7 @@ function RcvPlns(Dados)
 	var Code = Dados.responseText;
 	var j=0;
 	var i=0;
-	PLCs[PlcIdx].Plans= new Array();
+	PLCs()[PlcIdx].Plans= new Array();
 	Code=Code.split('\n\n');
 	PlnIdx=0;
 	while(PlnIdx<Code.length)
@@ -901,7 +901,7 @@ function RcvPlns(Dados)
 		}
 		else
 		{
-			PLCs[PlcIdx].Plans[PlnIdx]=new Object();
+			PLCs()[PlcIdx].Plans[PlnIdx]=new Object();
 			Code[PlnIdx]=Code[PlnIdx].split('\n');
 			//----------------------------------------------------
 			j=0;
@@ -925,70 +925,70 @@ function RcvPlns(Dados)
 				switch(Code[PlnIdx][j][0])
 				{
 					case "PLNTYP":
-						PLCs[PlcIdx].Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
+						PLCs()[PlcIdx].Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
 					break;
 					case "PHC":
-						PLCs[PlcIdx].Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
+						PLCs()[PlcIdx].Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTCI":	// tiempo de ciclo
-						if(PLCs[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs[PlcIdx].Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
+						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
+							PLCs()[PlcIdx].Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTOF":
-						if(PLCs[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs[PlcIdx].Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
+						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
+							PLCs()[PlcIdx].Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLASYDEMTYP":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs[PlcIdx].Plans[PlnIdx].Dem[i].Typ=Dados[i];
+							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
+								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
+							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Typ=Dados[i];
 						}
 					break;
 					case "LCLSYCDEMNUM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs[PlcIdx].Plans[PlnIdx].Dem[i].Num=Dados[i];
+							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
+								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
+							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Num=Dados[i];
 						}
 					break;
 					case "LCLASYDEXSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs[PlcIdx].Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
+							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
+								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
+							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
 						}
 					break;
 					case "LCLLGCSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
-						PLCs[PlcIdx].Plans[PlnIdx].Logic=new Array()
-						PLCs[PlcIdx].Plans[PlnIdx].Logic=Dados.slice()
+						PLCs()[PlcIdx].Plans[PlnIdx].Logic=new Array()
+						PLCs()[PlcIdx].Plans[PlnIdx].Logic=Dados.slice()
 					break;
 					case "LGC":
-						i=PLCs[PlcIdx].Plans[PlnIdx].LGCs.length;
-						PLCs[PlcIdx].LGCs[i]=new Object();
-						PLCs[PlcIdx].LGCs[i].Name=Code[PlnIdx][j][1];
-						PLCs[PlcIdx].LGCs[i].Code=Code[PlnIdx][j][2];
+						i=PLCs()[PlcIdx].Plans[PlnIdx].LGCs.length;
+						PLCs()[PlcIdx].LGCs[i]=new Object();
+						PLCs()[PlcIdx].LGCs[i].Name=Code[PlnIdx][j][1];
+						PLCs()[PlcIdx].LGCs[i].Code=Code[PlnIdx][j][2];
 					break;
 					case "LCLASYTNOSTP":
 					case "LCLSYCTSTSTP":	//vector de tiempos de estados
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs[PlcIdx].Plans[PlnIdx].TP=new Array()
-						PLCs[PlcIdx].Plans[PlnIdx].TP=Dados.slice()
+						PLCs()[PlcIdx].Plans[PlnIdx].TP=new Array()
+						PLCs()[PlcIdx].Plans[PlnIdx].TP=Dados.slice()
 					break;
 					case "PLNDIMTYP":
-						PLCs[PlcIdx].Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
+						PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "PLNDIM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs[PlcIdx].Plans[PlnIdx].Dim=new Array()
-						PLCs[PlcIdx].Plans[PlnIdx].Dim=Dados.slice()
+						PLCs()[PlcIdx].Plans[PlnIdx].Dim=new Array()
+						PLCs()[PlcIdx].Plans[PlnIdx].Dim=Dados.slice()
 					break;
 				}
 			}
@@ -1100,17 +1100,17 @@ function myNewPlan(PLNTYP)
 				DimTyp:0,
 				Dim:[100]
 			}
-			PlanGen.TP.length=PLCs[PlcIdx].Sts.length;
+			PlanGen.TP.length=PLCs()[PlcIdx].Sts.length;
 			PlanGen.TP.splice(0,PlanGen.TP.length)
-			for(j=0;j<PLCs[PlcIdx].Sts.length;j++)
+			for(j=0;j<PLCs()[PlcIdx].Sts.length;j++)
 			{
-				STe=(PLCs[PlcIdx].Sts.length+j+1);
-				STe=(STe%PLCs[PlcIdx].Sts.length);
+				STe=(PLCs()[PlcIdx].Sts.length+j+1);
+				STe=(STe%PLCs()[PlcIdx].Sts.length);
 				STi=j;
 				PlanGen.TP[j]=10;
-				PlanGen.TP[j]+=GetTmin(PLCs[PlcIdx],j);
+				PlanGen.TP[j]+=GetTmin(PLCs()[PlcIdx],j);
 				PlanGen.TC+=PlanGen.TP[j];
-				PlanGen.TC+=GetEvT(PLCs[PlcIdx].Sts,STi,STe);
+				PlanGen.TC+=GetEvT(PLCs()[PlcIdx].Sts,STi,STe);
 				PlanGen.Logic[j]="";
 				PlanGen.Dem[j]=new Object();
 				PlanGen.Dem[j].Typ=0;
@@ -1131,16 +1131,16 @@ function myNewPlan(PLNTYP)
 				DimTyp:0,
 				Dim:[]
 			}
-			PlanGen.TP.length=PLCs[PlcIdx].Sts.length;
-			for(j=0;j<PLCs[PlcIdx].Sts.length;j++)
+			PlanGen.TP.length=PLCs()[PlcIdx].Sts.length;
+			for(j=0;j<PLCs()[PlcIdx].Sts.length;j++)
 			{
-				STe=(PLCs[PlcIdx].Sts.length+j+1);
-				STe=(STe%PLCs[PlcIdx].Sts.length);
+				STe=(PLCs()[PlcIdx].Sts.length+j+1);
+				STe=(STe%PLCs()[PlcIdx].Sts.length);
 				STi=j;
 				PlanGen.TP[j]=10;
-				PlanGen.TP[j]+=GetTmin(PLCs[PlcIdx],j);
+				PlanGen.TP[j]+=GetTmin(PLCs()[PlcIdx],j);
 				PlanGen.TC+=PlanGen.TP[j];
-				PlanGen.TC+=GetEvT(PLCs[PlcIdx].Sts,STi,STe);
+				PlanGen.TC+=GetEvT(PLCs()[PlcIdx].Sts,STi,STe);
 				PlanGen.Logic[j]="";
 				PlanGen.Dem[j]=new Object();
 				PlanGen.Dem[j].Typ=0;
@@ -1161,16 +1161,16 @@ function myNewPlan(PLNTYP)
 				DimTyp:0,
 				Dim:[]
 			}
-			PlanGen.TP.length=PLCs[PlcIdx].Sts.length;
-			for(j=0;j<PLCs[PlcIdx].Sts.length;j++)
+			PlanGen.TP.length=PLCs()[PlcIdx].Sts.length;
+			for(j=0;j<PLCs()[PlcIdx].Sts.length;j++)
 			{
-				STe=(PLCs[PlcIdx].Sts.length+j+1);
-				STe=(STe%PLCs[PlcIdx].Sts.length);
+				STe=(PLCs()[PlcIdx].Sts.length+j+1);
+				STe=(STe%PLCs()[PlcIdx].Sts.length);
 				STi=j;
 				PlanGen.TP[j]=10;
-				PlanGen.TP[j]+=GetTmin(PLCs[PlcIdx],j);
+				PlanGen.TP[j]+=GetTmin(PLCs()[PlcIdx],j);
 				PlanGen.TC+=PlanGen.TP[j];
-				PlanGen.TC+=GetEvT(PLCs[PlcIdx].Sts,STi,STe);
+				PlanGen.TC+=GetEvT(PLCs()[PlcIdx].Sts,STi,STe);
 				PlanGen.Logic[j]="";
 				PlanGen.Dem[j]=new Object();
 				PlanGen.Dem[j].Typ=0;

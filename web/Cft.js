@@ -32,26 +32,26 @@ function RcvSec(Datos)
 		for(var cft=0;cft<Datos.length;cft++)
 		{
 			PhN=parseInt("0"+Datos[cft][0]);
-			if(PhN<PHASEs.length)
+			if(PhN<PHASEs().length)
 			{
 				Datos[cft]=Datos[cft].slice(1);
-				PHASEs[PhN].Sec= new Array();
+				PHASEs()[PhN].Sec= new Array();
 				for(var i=0;i<Datos[cft].length;i++)
 				{
 					Datos[cft][i]=Datos[cft][i].split(',');
 					var x=parseInt("0"+Datos[cft][i][0]);
-					PHASEs[PhN].Sec[x]=parseInt("0"+Datos[cft][i][1])+1;
+					PHASEs()[PhN].Sec[x]=parseInt("0"+Datos[cft][i][1])+1;
 				}
 			}
 		}
 	}
-	for(var y=0;y<PHASEs.length;y++)
+	for(var y=0;y<PHASEs().length;y++)
 	{
-		for(var x=0;x<PHASEs.length;x++)
+		for(var x=0;x<PHASEs().length;x++)
 		{
-			if(PHASEs[y].Sec[x]==null)
+			if(PHASEs()[y].Sec[x]==null)
 			{
-				PHASEs[y].Sec[x]=0;
+				PHASEs()[y].Sec[x]=0;
 			}
 		}
 	}
@@ -60,27 +60,27 @@ function RcvSec(Datos)
 function ModTCft()
 {
 	tiempo=parseInt(document.getElementById("CftTime").value);
-	for(var y=0;y<PHASEs.length;y++)
+	for(var y=0;y<PHASEs().length;y++)
 	{
-		for(var x=0;x<PHASEs[y].Sec.length;x++)
+		for(var x=0;x<PHASEs()[y].Sec.length;x++)
 		{
-			if(PHASEs[y].Sec[x] && PHASEs[y].Sec[x]>0)
-				PHASEs[y].Sec[x]=tiempo+1;
+			if(PHASEs()[y].Sec[x] && PHASEs()[y].Sec[x]>0)
+				PHASEs()[y].Sec[x]=tiempo+1;
 		}
 	}
 }
 function ModCft(x,y)
 {
 	tiempo=parseInt("0"+document.getElementById("CftTime").value);
-	if(PHASEs[y].Sec[x]==null || PHASEs[y].Sec[x]==0)
+	if(PHASEs()[y].Sec[x]==null || PHASEs()[y].Sec[x]==0)
 	{
-		PHASEs[y].Sec[x]=tiempo+1;
-		PHASEs[x].Sec[y]=tiempo+1;
+		PHASEs()[y].Sec[x]=tiempo+1;
+		PHASEs()[x].Sec[y]=tiempo+1;
 		}
 	else
 	{
-		PHASEs[y].Sec[x]=0;
-		PHASEs[x].Sec[y]=0;
+		PHASEs()[y].Sec[x]=0;
+		PHASEs()[x].Sec[y]=0;
 	}
 	ReDraw(-1);
 }
@@ -94,36 +94,36 @@ function ShwSec()
 	out+="</td>\n";
 	var x=0;
 	var X=0;
-	for(var x=0;x<PHASEs.length;x++)
+	for(var x=0;x<PHASEs().length;x++)
 	{
-		if(PHASEs[x].PLC&(1<<PlcIdx))
+		if(PHASEs()[x].PLC&(1<<PlcIdx))
 		{
 			out+="\t\t<td class=\"table3\" "+((x&1)?"":"bgcolor=\"#bbb\"")+" align=\"center\">";
-			out+="<font size=\"1\" face=\"arial\">"+PHASEs[x].Name+"</font>\n";
+			out+="<font size=\"1\" face=\"arial\">"+PHASEs()[x].Name+"</font>\n";
 			out+="</td>\n";
 		}
 	}
 	out+="\t</tr>\n";
-	for(var y=0;y<PHASEs.length;y++)
+	for(var y=0;y<PHASEs().length;y++)
 	{
-		if(PHASEs[y].PLC&(1<<PlcIdx))
+		if(PHASEs()[y].PLC&(1<<PlcIdx))
 		{
 			out+="\t<tr valign=\"middle\">\n";
 			out+="\t\t<td class=\"table3\" "+((y&1)?"":"bgcolor=\"#bbb\"")+" align=\"center\">";
-			out+="<font size=\"1\" face=\"arial\">"+PHASEs[y].Name+"</font>\n";
+			out+="<font size=\"1\" face=\"arial\">"+PHASEs()[y].Name+"</font>\n";
 			out+="</td>\n";
-			for(var x=0;x<PHASEs.length;x++)
+			for(var x=0;x<PHASEs().length;x++)
 			{
-				if(PHASEs[y].Sec[x]==null)
+				if(PHASEs()[y].Sec[x]==null)
 				{
-					PHASEs[y].Sec[x]=0;
+					PHASEs()[y].Sec[x]=0;
 					if(x!=y)
-						PHASEs[y].Sec[x]=1;
+						PHASEs()[y].Sec[x]=1;
 				}
-				if(PHASEs[x].PLC&(1<<PlcIdx))
+				if(PHASEs()[x].PLC&(1<<PlcIdx))
 				{
 					out+="\t\t<td class=\"table3\" ";
-					if(PHASEs[y].Sec[x]>0)
+					if(PHASEs()[y].Sec[x]>0)
 						out+=(((x&1)^(y&1))?"bgcolor=\"#ebb\"":"bgcolor=\"#fbb\"");
 					else
 						out+=(((x&1)^(y&1))?"bgcolor=\"#beb\"":"bgcolor=\"#bfb\"");
@@ -131,7 +131,7 @@ function ShwSec()
 					if(x!=y)
 					{
 						out+="<input type=\"checkbox\" onclick=\"ModCft("+x+","+y+");\" ";
-						if(PHASEs[y].Sec[x]>0)
+						if(PHASEs()[y].Sec[x]>0)
 							out+="checked=\"checked\"";
 						out+=" />";
 					}
@@ -152,13 +152,13 @@ function clearStsCft(Sts)
 {
 	for(var s=0;s<Sts.length;s++)
 	{
-		for(var x=0;x<PHASEs.length;x++)
+		for(var x=0;x<PHASEs().length;x++)
 		{
 			if(Sts[s]&(1<<x))
 			{
-				for(var y=0;y<PHASEs.length;y++)
+				for(var y=0;y<PHASEs().length;y++)
 				{
-					if(PHASEs[x].Sec[y]>0)
+					if(PHASEs()[x].Sec[y]>0)
 					{
 						if(s!=y  && Sts[s]&(1<<y))
 						{
@@ -185,20 +185,20 @@ function CalcCft()
 	var rt=0;
 	var stas=0;	
 	used=new Array();
-	for(var s=0;s<PHASEs.length;s++)
+	for(var s=0;s<PHASEs().length;s++)
 	{
-		stas=(1<<PHASEs.length);
+		stas=(1<<PHASEs().length);
 		stas--;
-		for(var x=0;x<PHASEs.length;x++)
+		for(var x=0;x<PHASEs().length;x++)
 		{
-			if(PHASEs[s].Sec[x]!=null && PHASEs[s].Sec[x]>0)
+			if(PHASEs()[s].Sec[x]!=null && PHASEs()[s].Sec[x]>0)
 			{
 				if(s!=x && stas&(1<<x))
 					stas^=(1<<x);
 			}
 			else
 			{
-				PHASEs[s].Sec[x]=0;
+				PHASEs()[s].Sec[x]=0;
 			}
 		}
 		if(Sts.indexOf(stas)==-1)
@@ -248,32 +248,32 @@ function CalcCft()
 		}
 	}
 	while(rt!=-1);// */
-	PLCs[PlcIdx].Sts.length=0;
+	PLCs()[PlcIdx].Sts.length=0;
 	for(var y=0;y<Sts.length;y++)
 	{
-		idx=PLCs[PlcIdx].Sts.length;
-		PLCs[PlcIdx].Sts[idx]=new Object();
-		PLCs[PlcIdx].Sts[idx].Colors=new Array();
-		for(var x=0;x<PHASEs.length;x++)
+		idx=PLCs()[PlcIdx].Sts.length;
+		PLCs()[PlcIdx].Sts[idx]=new Object();
+		PLCs()[PlcIdx].Sts[idx].Colors=new Array();
+		for(var x=0;x<PHASEs().length;x++)
 		{
-			if(PHASEs[x].PLC&(1<<PlcIdx))
+			if(PHASEs()[x].PLC&(1<<PlcIdx))
 			{
 				if(Sts[y]&(1<<x))
 				{
-					PLCs[PlcIdx].Sts[idx].Colors[x]=4;
+					PLCs()[PlcIdx].Sts[idx].Colors[x]=4;
 				}
 				else
 				{
-					PLCs[PlcIdx].Sts[idx].Colors[x]=1;
+					PLCs()[PlcIdx].Sts[idx].Colors[x]=1;
 				}
 			}
 			else
 			{
-				PLCs[PlcIdx].Sts[idx].Colors[x]=18;
+				PLCs()[PlcIdx].Sts[idx].Colors[x]=18;
 			}
 		}
 	}
-	//PLCs[PlcIdx].Sts=owl.deepCopy(Sts);
+	//PLCs()[PlcIdx].Sts=owl.deepCopy(Sts);
 }
 function SendSec(Prg)
 {
@@ -284,7 +284,7 @@ function SendSec(Prg)
 	UpFile="sec.sec";
 	if(!Prg.PLCs[PlcIdx])
 		return "";
-	for(var y=0;y<PHASEs.length;y++)
+	for(var y=0;y<Prg.PHASEs.length;y++)
 	{
 		UpData+="("+y+")";
 		for(var x=0;x<Prg.PHASEs[y].Sec.length;x++)
