@@ -456,15 +456,16 @@ function SendGPS(Prg)
 	UpType="txt";
 	UpData="";
 	UpFile="gps.ini"
+	UpData=obj2txt("GPS",Prg.GPS);
 	seek=0;
-	for(var i=0;i<Prg.GPS.length;i++)
+	/*for(var i=0;i<Prg.GPS.length;i++)
 	{
 		for(var j=0;j<(Prg.GPS[i].length-1);j++)
 		{
 			UpData+=Prg.GPS[i][j]+":";
 		}
 		UpData+=Prg.GPS[i][j]+"\n";
-	}
+	}// */
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -478,14 +479,15 @@ function SendNTP(Prg)
 	UpData="";
 	UpFile="ntp.ini"
 	seek=0;
-	for(var i=0;i<Prg.NTP.length;i++)
+	UpData=obj2txt("NTP",Prg.NTP);
+	/*for(var i=0;i<Prg.NTP.length;i++)
 	{
 		for(var j=0;j<(Prg.NTP[i].length-1);j++)
 		{
 			UpData+=Prg.NTP[i][j]+":";
 		}
 		UpData+=Prg.NTP[i][j]+"\n";
-	}
+	}// */
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
