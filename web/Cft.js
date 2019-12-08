@@ -273,7 +273,6 @@ function CalcCft()
 			}
 		}
 	}
-	//PLCs()[PlcIdx].Sts=owl.deepCopy(Sts);
 }
 function SendSec(Prg)
 {

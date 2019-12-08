@@ -893,7 +893,7 @@ function setVname(obj)
 function ShwAddNewSql(evt)
 {
 	var out="";
-	updTVar(owl.deepCopy(VarTree),"","");
+	updTVar(VarTree.clone(),"","");
 	out+="<font size=\"1\" face=\"Verdana\">"+Str_Select+" "+Str_Variable+"</font>\n<br />";
 	out+=getTree(TVars,"setVname");
 	showFlyMnu(evt,{idx:123456,HTML:out,TimeOut:0});

@@ -1,3 +1,0 @@
-Alert: 0,PLC Anel1 cambio para modo Normal,1970/01/01 00:00:00 
-Alert: 0,PLC Anel1 llave de focos Off,1970/01/01 00:00:00 
-Alert: 0,PLC PLC cambio para modo Normal,1970/01/01 00:05:57

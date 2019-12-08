@@ -105,44 +105,44 @@ function rcvGbVars(Datos)
 	//---------------------------------
 	temp=Datos.substring(20,24);
 	tempV=ByToInt(temp);
-	GlobalParms.Version=tempV;
-	GlobalVars.Version=tempV;
-	if(PrgEd[SrcIdx].GlobalParms)
-		PrgEd[SrcIdx].GlobalParms.Version=tempV;
+	GlobalParms().Version=tempV;
+	GlobalVars().Version=tempV;
+	if(GlobalParms())
+		GlobalParms().Version=tempV;
 	out1+="<table border=\"0\">\n";
 	out1+="<tr>\n";
 	out1+="<td align=\"center\">"
-	out1+="<font size=\"2\" face=\"arial\">"+(GlobalParms.Version/1000000)+"</font>";
+	out1+="<font size=\"2\" face=\"arial\">"+(GlobalParms().Version/1000000)+"</font>";
 	out1+="</td>";
 	out1+="</tr>"
 	out1+="</table>\n";
 	//---------------------------------
 	temp=Datos.substring(57,61);
 	tempV=ByToInt(temp);
-	GlobalVars.Log=			(tempV&0xFF);
-	GlobalVars.Sync=		((tempV>> 8)&0x03);
-	GlobalVars.UdtRTC=		((tempV>>10)&0x01)
-	GlobalVars.GPS_Connect=	((tempV>>11)&0x01)
-	GlobalVars.GPS_Dv=		((tempV>>12)&0x01)
-	GlobalVars.GPS_Dat=		((tempV>>13)&0x01)
-	GlobalVars.Door=		((tempV>>14)&0x01)
+	GlobalVars().Log=			(tempV&0xFF);
+	GlobalVars().Sync=		((tempV>> 8)&0x03);
+	GlobalVars().UdtRTC=		((tempV>>10)&0x01)
+	GlobalVars().GPS_Connect=	((tempV>>11)&0x01)
+	GlobalVars().GPS_Dv=		((tempV>>12)&0x01)
+	GlobalVars().GPS_Dat=		((tempV>>13)&0x01)
+	GlobalVars().Door=		((tempV>>14)&0x01)
 	out2+=ShwGPSSignal(((tempV>>11)&0x07));
-	outX+="<font size=\"2\" face=\"arial\">Log:"+			GlobalVars.Log+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">Sync:"+  		GlobalVars.Sync+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">UpdateRTC:"+		GlobalVars.UdtRTC+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">Gps Conected:"+	GlobalVars.GPS_Connect+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">Gps data valid:"+GlobalVars.GPS_Dv+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">Gps data new:"+	GlobalVars.GPS_Dat+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">Rack Door open:"+GlobalVars.Door+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Log:"+			GlobalVars().Log+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Sync:"+  		GlobalVars().Sync+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">UpdateRTC:"+		GlobalVars().UdtRTC+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Gps Conected:"+	GlobalVars().GPS_Connect+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Gps data valid:"+GlobalVars().GPS_Dv+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Gps data new:"+	GlobalVars().GPS_Dat+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">Rack Door open:"+GlobalVars().Door+"</font><br/>\n";
 	//----------------------------------------------------
 	temp=Datos.substring(64,68)
 	tempV=ByToInt(temp);
-	GlobalVars.time_t_mm=tempV;
+	GlobalVars().time_t_mm=tempV;
 	temp=Datos.substring(68,72);
 	tempV=ByToInt(temp);
-	GlobalVars.time_t_s=tempV;
-	outX+="<font size=\"2\" face=\"arial\">time_t_mm:"+GlobalVars.time_t_mm+"</font><br/>\n";
-	outX+="<font size=\"2\" face=\"arial\">time_t_s:"+GlobalVars.time_t_s+"</font><br/>\n";
+	GlobalVars().time_t_s=tempV;
+	outX+="<font size=\"2\" face=\"arial\">time_t_mm:"+GlobalVars().time_t_mm+"</font><br/>\n";
+	outX+="<font size=\"2\" face=\"arial\">time_t_s:"+GlobalVars().time_t_s+"</font><br/>\n";
 	//---------------------------------
 	out3+="<table border=\"0\">\n";
 	temp=Datos.substring(16,20);
@@ -204,7 +204,7 @@ function rcvGbVars(Datos)
 	out5+="</table>\n";
 	//-------------------------------------------------------------------------------------------------------
 	out+="<table border=\"0\" cellpadding=\"5\" cellspacing=\"1\" >\n";
-	out+="<tr><td colspan=\"2\"><b><u><font size=\"3\" color=\"#0bb\" face=\"arial\">"+GlobalParms.ID+"</font></u></b></td></tr>\n";
+	out+="<tr><td colspan=\"2\"><b><u><font size=\"3\" color=\"#0bb\" face=\"arial\">"+GlobalParms().ID+"</font></u></b></td></tr>\n";
 	out+="<tr><td colspan=\"2\"><hr /></td></tr>\n";
 	out+="<tr>\n";
 	out+="<td valign=\"middle\" align=\"center\"><font size=\"3\" face=\"arial\"> "+Str_Version+" </font></td>\n";
@@ -271,89 +271,89 @@ function rcvTcSts(Datos)
 	{
 		temp=Datos.substring(pPLC+0,pPLC+4);
 		tempV=ByToInt(temp);
-		if((tempV&0x0F)==0)PLCs[plcidx].Mode=Str_MD_Error;
-		if((tempV&0x0F)==1)PLCs[plcidx].Mode=Str_MD_Flashing;
-		if((tempV&0x0F)==2)PLCs[plcidx].Mode=Str_MD_Off;
-		if((tempV&0x0F)==3)PLCs[plcidx].Mode=Str_MD_Normal;
-		if((tempV&0x0F)==4)PLCs[plcidx].Mode=Str_MD_Normal_lock;
-		if((tempV&0x0F)==5)PLCs[plcidx].Mode=Str_MD_Remote;
-		if((tempV&0x0F)==6)PLCs[plcidx].Mode=Str_MD_Manual;
-		if((tempV&0x0F)==7)PLCs[plcidx].Mode=Str_MD_StpByStp;
-		PLCs[plcidx].Emergency=	((tempV>>4)&0x03);
-		PLCs[plcidx].Lamp=		((tempV&64)!=0x00);
-		PLCs[plcidx].Service=	((tempV&128)!=0x00);
-		PLCs[plcidx].ErrorOut=	((tempV>>8)&0x0F);
-		PLCs[plcidx].ReIntento=	((tempV>>12)&0x07);
-		PLCs[plcidx].PLCn=		((tempV>>15)&0x07);
-		PLCs[plcidx].ReLoadPlan=((tempV>>18)&0x01);
-		PLCs[plcidx].EntreVerde=((tempV>>21)&0x01);
-		PLCs[plcidx].Tmin=		((tempV>>30)&0x01);
-		PLCs[plcidx].wmu=		((tempV>>31)&0x01);
+		if((tempV&0x0F)==0)PLCs()[plcidx].Mode=Str_MD_Error;
+		if((tempV&0x0F)==1)PLCs()[plcidx].Mode=Str_MD_Flashing;
+		if((tempV&0x0F)==2)PLCs()[plcidx].Mode=Str_MD_Off;
+		if((tempV&0x0F)==3)PLCs()[plcidx].Mode=Str_MD_Normal;
+		if((tempV&0x0F)==4)PLCs()[plcidx].Mode=Str_MD_Normal_lock;
+		if((tempV&0x0F)==5)PLCs()[plcidx].Mode=Str_MD_Remote;
+		if((tempV&0x0F)==6)PLCs()[plcidx].Mode=Str_MD_Manual;
+		if((tempV&0x0F)==7)PLCs()[plcidx].Mode=Str_MD_StpByStp;
+		PLCs()[plcidx].Emergency=	((tempV>>4)&0x03);
+		PLCs()[plcidx].Lamp=		((tempV&64)!=0x00);
+		PLCs()[plcidx].Service=	((tempV&128)!=0x00);
+		PLCs()[plcidx].ErrorOut=	((tempV>>8)&0x0F);
+		PLCs()[plcidx].ReIntento=	((tempV>>12)&0x07);
+		PLCs()[plcidx].PLCn=		((tempV>>15)&0x07);
+		PLCs()[plcidx].ReLoadPlan=((tempV>>18)&0x01);
+		PLCs()[plcidx].EntreVerde=((tempV>>21)&0x01);
+		PLCs()[plcidx].Tmin=		((tempV>>30)&0x01);
+		PLCs()[plcidx].wmu=		((tempV>>31)&0x01);
 		//---------------------------------
 		temp=Datos.substring(pPLC+4,pPLC+28);
-		PLCs[plcidx].SyncRef=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].SyncRef=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+28,pPLC+43);
-		PLCs[plcidx].Plan_File=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].Plan_File=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+43,pPLC+68);
-		PLCs[plcidx].Name=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].Name=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+68,pPLC+92);
-		PLCs[plcidx].Location=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].Location=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+92,pPLC+96);
-		PLCs[plcidx].LSTCHG=ByToInt(temp);
+		PLCs()[plcidx].LSTCHG=ByToInt(temp);
 		temp=Datos.substring(pPLC+96,pPLC+100);
-		PLCs[plcidx].NEXCHG=ByToInt(temp);
+		PLCs()[plcidx].NEXCHG=ByToInt(temp);
 		temp=Datos.substring(pPLC+100,pPLC+114);
-		PLCs[plcidx].Server=temp.substring(0,temp.search("\0"));
-		PLCs[plcidx].TimeOutMode=Datos.charCodeAt(pPLC+115);
+		PLCs()[plcidx].Server=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].TimeOutMode=Datos.charCodeAt(pPLC+115);
 		temp=Datos.substring(pPLC+116,pPLC+131);
-		PLCs[plcidx].scheduler=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].scheduler=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+131,pPLC+146);
-		PLCs[plcidx].scheduler=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].scheduler=temp.substring(0,temp.search("\0"));
 		//---------------------------------
-		PLCs[plcidx].PHASE_COD_OUT=Datos.charCodeAt(pPLC+146);
-		PLCs[plcidx].Plan=		Datos.charCodeAt(pPLC+147);
-		PLCs[plcidx].IniPlan=	Datos.charCodeAt(pPLC+148);
-		PLCs[plcidx].OffPlan=	Datos.charCodeAt(pPLC+149);
-		PLCs[plcidx].FlashPlan=	Datos.charCodeAt(pPLC+150);
+		PLCs()[plcidx].PHASE_COD_OUT=Datos.charCodeAt(pPLC+146);
+		PLCs()[plcidx].Plan=		Datos.charCodeAt(pPLC+147);
+		PLCs()[plcidx].IniPlan=	Datos.charCodeAt(pPLC+148);
+		PLCs()[plcidx].OffPlan=	Datos.charCodeAt(pPLC+149);
+		PLCs()[plcidx].FlashPlan=	Datos.charCodeAt(pPLC+150);
 		temp=Datos.substring(pPLC+152,pPLC+156);
-		PLCs[plcidx].Number=	ByToInt(temp);
+		PLCs()[plcidx].Number=	ByToInt(temp);
 		temp=Datos.substring(pPLC+164,pPLC+168);
-		PLCs[plcidx].ErrorCode=	ByToInt(temp); //convierte el codigo de error
+		PLCs()[plcidx].ErrorCode=	ByToInt(temp); //convierte el codigo de error
 		temp=String(Datos.substring(pPLC+168,pPLC+StructSizePLC));
 		temp=Remplace(temp,"<","&#60;");
 		temp=Remplace(temp,">","&#62;");
-		PLCs[plcidx].ErrorMsg=temp.substring(0,temp.search("\0"));
+		PLCs()[plcidx].ErrorMsg=temp.substring(0,temp.search("\0"));
 		//---------------------------------
 		out+="<table border=\"0\" align=\"center\" cellpadding=\"5\" cellspacing=\"1\" >\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Ubicacion+" </font></td>\n";
-		out+="<td><a href=\"http://www.google.com/maps/place/"+PLCs[plcidx].Location+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+PLCs[plcidx].Location+" </font></a></td>\n";
+		out+="<td><a href=\"http://www.google.com/maps/place/"+PLCs()[plcidx].Location+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Location+" </font></a></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Controller_Number+" </font></td>\n";
-		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs[plcidx].Number+" </font></td>\n";
+		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Number+" </font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Mode+" </font></td>\n";
-		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs[plcidx].Mode+"<br />";
-		out+=((PLCs[plcidx].Lamp!=0)?(Str_Lamp+"<br />"):"");
-		out+=((PLCs[plcidx].Service!=0)?(Str_Service+""):"");
+		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Mode+"<br />";
+		out+=((PLCs()[plcidx].Lamp!=0)?(Str_Lamp+"<br />"):"");
+		out+=((PLCs()[plcidx].Service!=0)?(Str_Service+""):"");
 		out+="</font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Plan+" </font></td>\n";
-		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs[plcidx].Plan+" </font></td>\n";
+		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Plan+" </font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
-		tempV=PLCs[plcidx].NEXCHG*1000;
+		tempV=PLCs()[plcidx].NEXCHG*1000;
 		dat = new Date(tempV);
 		tempV+=(dat.getTimezoneOffset()*60000);
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
@@ -362,12 +362,12 @@ function rcvTcSts(Datos)
 		out+="<td><font size=\"2\" face=\"arial\"> "+dgvdatef(new Date(tempV))+" </font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
-		if(PLCs[plcidx].ErrorCode!=0)
+		if(PLCs()[plcidx].ErrorCode!=0)
 		{
 			out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 			out+="<tr>\n";
 			out+="<td><font size=\"2\" face=\"arial\"> "+Str_Errors+" </font></td>\n";
-			out+="<td><font size=\"2\" face=\"arial\"> "+PLCs[plcidx].ErrorCode+":"+PLCs[plcidx].ErrorMsg+"</font></td>\n";
+			out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].ErrorCode+":"+PLCs()[plcidx].ErrorMsg+"</font></td>\n";
 			out+="</tr>\n";
 		}
 		//-----------------------------
@@ -450,7 +450,7 @@ function rcvphases1(Datos)
 		outX+="<td align=\"right\" valign=\"top\"    class=\"hrtd\" width=\"50\" ><font size=\"1\" face=\"Arial\">\n";
 		//---------------------------------//Nombre de phase
 		{
-			out1+=PHASEs[j].Name;
+			out1+=PHASEs()[j].Name;
 		}
 		//--------------------------------- PLC Diming Link
 		{
@@ -474,7 +474,7 @@ function rcvphases1(Datos)
 			color=Datos.charCodeAt(phase+1);
 			outX+=(color&0x07);
 			outX+="]<br />\n";
-			out3+=ShwMov((color&0x07),PHASEs[j].Type);
+			out3+=ShwMov((color&0x07),PHASEs()[j].Type);
 		}
 		//--------------------------------- Extra Data
 		{
@@ -969,8 +969,8 @@ function rcvIOs(Datos)
 		temp=Datos.substring(StructSizeIO*inidx+0,StructSizeIO*inidx+4);
 		itemp=ByToInt(temp);
 		ioflags[hindex][inidx]=itemp;
-		IOs[inidx].Type=(itemp&1);
-		IOs[inidx].Mode=((itemp>>14)&3);
+		IOs()[inidx].Type=(itemp&1);
+		IOs()[inidx].Mode=((itemp>>14)&3);
 		if(itemp&1)// es entrada?
 		{
 			//--------------------------------- Muestras
@@ -1040,20 +1040,20 @@ function rcvIOs2()
 	out4+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Occupation+"&#160;</b></font></td>\n";
 	while(Tcount<Number_Of_Inputs)
 	{
-		if(IOs[Tcount].Name.indexOf("NoShw")==-1)
+		if(IOs()[Tcount].Name.indexOf("NoShw")==-1)
 		{
 			Pcount++;
 			out1+="<td rowspan=\"4\" class=\"hrvert\" align=\"center\"></td>\n";
-			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+IOs[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
+			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+IOs()[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
 			temp=ioflags[hindex][Tcount];
 			if(ioflags[hindex] && ioflags[hindex][Tcount]&1)
 			{
 				out2+="<td align=\"center\"><font size=\"2\" face=\"arial\"><b>";
-				if(IOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 					out2+=Str_InputOnOff
-				if(IOs[Tcount].Mode==1)
+				if(IOs()[Tcount].Mode==1)
 					out2+=Str_InputF
-				if(IOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 					out2+=Str_InputAD
 				if((ioflags[hindex][Tcount]&0x10)==0)
 					out2+=Str_disabled+"<br/>";
@@ -1072,12 +1072,12 @@ function rcvIOs2()
 					out2+="4";
 				out2+="</b>&#160;</font></td>\n";
 				//----------------------
-				if(IOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
 				}
-				if(IOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
@@ -1085,7 +1085,7 @@ function rcvIOs2()
 				//----------------------
 				out4+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;";
 				times=(tiempo[hindex][Tcount]-tiempo[hindexO][Tcount]);
-				if(IOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 				{
 					out4+="%";
 					ocup=(ocupacion[hindex][Tcount]-ocupacion[hindexO][Tcount]);
@@ -1097,7 +1097,7 @@ function rcvIOs2()
 					else
 						ocup=Math.round((1000*ocup)/times)/10;
 				}
-				if(IOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 				{
 					ocup=(ocupacion[hindex][Tcount]);
 				}

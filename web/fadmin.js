@@ -394,7 +394,7 @@ function ShwFileAdmin()
 				case "sch":
 				case "eil":
 				case "esy":
-				case "es2":						//Marcio - TESC - nova extensão para arquivo ASM
+				case "es2":						//Marcio - TESC - nova extensï¿½o para arquivo ASM
 				case "es3":						//
 				case "sec":
 				case "fct":

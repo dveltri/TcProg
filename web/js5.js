@@ -90,9 +90,9 @@ function RstSch()
 	TimeScheduler[0].Hs[0].Plan="99";
 	for(var j=0;j<GlobalParms.Controllers;j++)
 	{
-		PLCs[j].HolyDays=owl.deepCopy(HolyDays);
-		PLCs[j].WeekDays=owl.deepCopy(WeekDays);
-		PLCs[j].TimeScheduler=owl.deepCopy(TimeScheduler);
+		PLCs[j].HolyDays=HolyDays.clone();
+		PLCs[j].WeekDays=WeekDays.clone();
+		PLCs[j].TimeScheduler=TimeScheduler.clone();
 	}
 	ModParm("PLCs.Sch");
 }

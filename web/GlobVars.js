@@ -1,7 +1,20 @@
 var PrgBk= new Array();
 var PrgEd= new Array();
-//var SrcFiles=	['/startup.ini','/phconf.ini','/plcs.ini',PLCs[PlcIdx].Sec,PLCs[PlcIdx].Scheduler,'/ip.ini','/ntp.ini','/opct.ini','/gps.ini','/dgvp.ini','/sdgvp.ini','/error.ini','/plans.ini','/def_in.ini'];
-//var SrcFunc=	[RcvStartup			,RcvPhConf		,RcvPlc		 ,RcvSec					,RcvAgenda						 ,RcvIP		 ,RcvNTP		,RcvOPCT		,RcvGPS		 ,RcvDgvP		 ,RcvSdgvp		,RcvError		 ,RcvES3			,RcvDefIn			];
+/*var SrcFiles=[
+	'/startup.ini',RcvStartup,
+	'/phconf.ini',RcvPhConf,
+	'/plcs.ini',RcvPlc,
+	GetSec(SrcIdx,PlcIdx),RcvSec,
+	GetSch(SrcIdx,PlcIdx),RcvAgenda, 
+	'/ip.ini',RcvIP, 
+	'/ntp.ini' ,RcvNTP,
+	'/opct.ini',RcvOPCT,
+	'/gps.ini',RcvGPS,
+	'/dgvp.ini',RcvDgvP,
+	'/sdgvp.ini',RcvSdgvp,
+	'/error.ini',RcvError,
+	'/plans.ini',RcvES3,
+	'/def_in.ini',RcvDefIn]; //*/ 
 //--------------------------------------------------
 var SrcIdx=0;
 var TrgIdx=0;

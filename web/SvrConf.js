@@ -1,18 +1,21 @@
-function GlobalParms(i){if(i==undefined)return PrgEd[SrcIdx].GlobalParms;	else return PrgEd[i].GlobalParms;}
-function PLCs(i){		if(i==undefined)return PrgEd[SrcIdx].PLCs;			else return PrgEd[i].PLCs;}
-function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;		else return PrgEd[i].PHASEs;}
-function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;		else return PrgEd[i].ErrorsCfg;}
-function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;		else return PrgEd[i].Iteris;}
-function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].SDgvP;			else return PrgEd[i].SDgvP;}
-function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].GPS;			else return PrgEd[i].GPS;}
-function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;			else return PrgEd[i].IOs;}
-function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;			else return PrgEd[i].OPCT;}
-function OTU(i){		if(i==undefined)return PrgEd[SrcIdx].OTU;			else return PrgEd[i].OTU;}
-function DefIn(i){		if(i==undefined)return PrgEd[SrcIdx].DefIn;			else return PrgEd[i].DefIn;}
-function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].NTP;			else return PrgEd[i].NTP;}
-function DGVFTP(i){		if(i==undefined)return PrgEd[SrcIdx].DGVFTP;		else return PrgEd[i].DGVFTP;}
-function HOST(i){		if(i==undefined)return PrgEd[SrcIdx].host;			else return PrgEd[i].host;}
-function Links(i){		if(i==undefined)return PrgEd[SrcIdx].Links;			else return PrgEd[i].Links;}
+function GlobalParms(i){if(i==undefined)return PrgEd[SrcIdx].GlobalParms;		else return PrgEd[i].GlobalParms;}
+function GlobalVars(i){	if(i==undefined)return PrgEd[SrcIdx].GlobalVars;		else return PrgEd[i].GlobalVars;}
+function PLCs(i){		if(i==undefined)return PrgEd[SrcIdx].PLCs;				else return PrgEd[i].PLCs;}
+function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return PrgEd[i].PHASEs;}
+function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
+function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
+function SDgvP(i){		if(i==undefined)return PrgEd[SrcIdx].SDgvP;				else return PrgEd[i].SDgvP;}
+function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].GPS;				else return PrgEd[i].GPS;}
+function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;				else return PrgEd[i].IOs;}
+function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;				else return PrgEd[i].OPCT;}
+function OTU(i){		if(i==undefined)return PrgEd[SrcIdx].OTU;				else return PrgEd[i].OTU;}
+function DefIn(i){		if(i==undefined)return PrgEd[SrcIdx].DefIn;				else return PrgEd[i].DefIn;}
+function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].NTP;				else return PrgEd[i].NTP;}
+function DGVFTP(i){		if(i==undefined)return PrgEd[SrcIdx].DGVFTP;			else return PrgEd[i].DGVFTP;}
+function HOST(i){		if(i==undefined)return PrgEd[SrcIdx].host;				else return PrgEd[i].host;}
+function Links(i){		if(i==undefined)return PrgEd[SrcIdx].Links;				else return PrgEd[i].Links;}
+function GetSec(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Sec;		else return PrgEd[i].PLCs[x].Sec;}
+function GetSch(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Scheduler;	else return PrgEd[i].PLCs[x].Scheduler;}
 
 function ShwLoadHd()
 {
@@ -129,7 +132,7 @@ function ShwSaveIP()
 	out+="</table>\n";
 	out+="</form>";
 	document.getElementById("HOME1").innerHTML=out;
-	}
+}
 function send2ip()
 {
 	PrgBk[TrgIdx].host="http://"+GetEth();
@@ -365,16 +368,16 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].IOs = new Array();
 	PrgEd[SrcIdx].Srv = new Array();
 	PrgEd[SrcIdx].Links = new Array();
-	PrgEd[SrcIdx].NTP = new Array();
+	PrgEd[SrcIdx].NTP = new Object();
 	PrgEd[SrcIdx].SDgvP=new Object();
-	PrgEd[SrcIdx].GPS = new Array();
-	PrgEd[SrcIdx].ErrorsCfg = new Array();
+	PrgEd[SrcIdx].GPS = new Object();
+	PrgEd[SrcIdx].ErrorsCfg = new Object();
 	PrgEd[SrcIdx].OTU = new Object();
-	PrgEd[SrcIdx].DefIn = new Array();
-	PrgEd[SrcIdx].OPCT = new Array();
+	PrgEd[SrcIdx].DefIn = new Object();
+	PrgEd[SrcIdx].OPCT = new Object();
 	PrgEd[SrcIdx].Mstr = new Object();
 	PrgEd[SrcIdx].Iteris = new Object();
-	PrgEd[SrcIdx].DgvSoft = new Array();
+	PrgEd[SrcIdx].DgvSoft = new Object();
 	PrgEd[SrcIdx].GlobalParms.ID=ID;
 	//--------------------------------------------------------------
 	percent=0;
@@ -1024,9 +1027,9 @@ function RcvConfSrc(Datos)
 				if(Datos.status==200)
 				{
 					RcvAgenda(Datos);
-					PrgEd[SrcIdx].PLCs[PlcIdx].HolyDays=HolyDays;
-					PrgEd[SrcIdx].PLCs[PlcIdx].WeekDays=WeekDays;//owl.deepCopy()
-					PrgEd[SrcIdx].PLCs[PlcIdx].TimeScheduler=TimeScheduler;//owl.deepCopy();
+					PrgEd[SrcIdx].PLCs[PlcIdx].HolyDays=HolyDays.clone();
+					PrgEd[SrcIdx].PLCs[PlcIdx].WeekDays=WeekDays.clone();
+					PrgEd[SrcIdx].PLCs[PlcIdx].TimeScheduler=TimeScheduler.clone();
 				}
 				PlcIdx++;
 				percent+=2;
@@ -1034,9 +1037,9 @@ function RcvConfSrc(Datos)
 				{
 					if(PrgEd[SrcIdx].PLCs[i-1].Scheduler==PrgEd[SrcIdx].PLCs[i].Scheduler)
 					{
-						PrgEd[SrcIdx].PLCs[i].HolyDays=HolyDays;//owl.deepCopy();
-						PrgEd[SrcIdx].PLCs[i].WeekDays=WeekDays;//owl.deepCopy();
-						PrgEd[SrcIdx].PLCs[i].TimeScheduler=TimeScheduler;//owl.deepCopy();
+						PrgEd[SrcIdx].PLCs[i].HolyDays=HolyDays.clone();
+						PrgEd[SrcIdx].PLCs[i].WeekDays=WeekDays.clone();
+						PrgEd[SrcIdx].PLCs[i].TimeScheduler=TimeScheduler.clone();
 						PlcIdx++;
 						percent+=2;
 					}
@@ -1126,7 +1129,7 @@ function RcvConfSrc(Datos)
 			case 51: // sdgvp.ini
 			{
 				if(Datos.status==200)
-					RcvSdgvp(Datos); //RcvFile
+					RcvSDgvP(Datos); //RcvFile
 					percent=52;
 				}
 			break;
@@ -1761,8 +1764,8 @@ function SendConf()
 					SetPhConf(PrgBk[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
 				else
 					SetPhConf(PrgBk[SrcIdx].GlobalParms.phconf);
-				UpdateTimes(PrgBk[SrcIdx].PrgEd[SrcIdx].PLCs[PlcIdx],PlanGen);
-				ttemp=SaveCtrlParms(PrgBk[SrcIdx].PrgEd[SrcIdx].PLCs[PlcIdx],PrgBk[SrcIdx].GlobalParms,PlanGen);
+				UpdateTimes(PrgBk[SrcIdx].PLCs[PlcIdx],PlanGen);
+				ttemp=SaveCtrlParms(PrgBk[SrcIdx].PLCs[PlcIdx],PrgBk[SrcIdx].GlobalParms,PlanGen);
 				//------------------------
 				PlanGen=PrgEd[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
 				if(PlanGen.EV!=0)
@@ -1824,7 +1827,8 @@ function SendConf()
 			break;
 			case 97:
 			{
-				request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldall.dgv',fncnone);
+				if(PrgBk[TrgIdx].Typ!=0)
+					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldall.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}
@@ -1832,7 +1836,8 @@ function SendConf()
 			case 98:
 			{
 				//rst pln
-				request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldpln.dgv',fncnone);
+				if(PrgBk[TrgIdx].Typ!=0)
+					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldpln.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}
@@ -1840,7 +1845,8 @@ function SendConf()
 			case 99:
 			{
 				//rst sch
-				request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldsch.dgv',fncnone);
+				if(PrgBk[TrgIdx].Typ!=0)
+					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldsch.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}

@@ -2,12 +2,12 @@
 function SetRemote()
 {
 	Reload|=0x100;
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(GlobalParms().MODEL.indexOf("M3")!=-1)
 	{
 		HW_IOS=9;
 		PhasesStructSize=56;
 	}
-	if(GlobalParms.MODEL.indexOf("M4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+	if(GlobalParms().MODEL.indexOf("M4")!=-1 || GlobalParms().MODEL.indexOf("GW")==-1)
 	{
 		HW_IOS=16;
 		PhasesStructSize=60;
@@ -109,7 +109,7 @@ function SendStartup(Prg)
 		UpData+="IniRed 3\n";
 	if(Prg.GlobalParms.ATZ && (Prg.GlobalParms.MODEL.indexOf("GW4")!=-1 || Prg.GlobalParms.MODEL.indexOf("GW")==-1))
 	{
-		var ATZ=owl.deepCopy(Prg.GlobalParms.ATZ);
+		var ATZ=Prg.GlobalParms.ATZ.clone();
 		for(var i=0;i<ATZ.length;i+=2)
 		{
 			dt = new Date(ATZ[i]+" 00:00:00 GMT+0:00");
@@ -360,17 +360,13 @@ function SendDGV(Prg)
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendDgvP(Prg)
 {
+	var rslt="";
 	UpMode=10;
 	UpPath="/";
 	UpType="txt";
 	seek=0;
 	UpFile="dgvp.ini"
-	UpData=Prg.DgvP.slice();
-	for(var j=0;j<UpData.length;j++)
-	{
-		UpData[j]=UpData[j].join("=");
-	}
-	UpData=UpData.join("\n");
+	UpData=obj2txt("DgvP",Prg.DgvP);
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -381,15 +377,16 @@ function SendSdgvP(Prg)
 	UpPath="/";
 	UpType="txt";
 	UpFile="sdgvp.ini"
-	UpData ="SDgvP.Link="+Prg.SdgvP.Link+"\n"
-	UpData+="SDgvP.SrvId="+Prg.SdgvP.SrvId+"\n"
-	UpData+="SDgvP.debug="+Prg.SdgvP.Debug+"\n"
-	if(Prg.SdgvP.Tsk)
+	//UpData=obj2txt("SDgvP",Prg.SDgvP);
+	UpData ="SDgvP.Link="+Prg.SDgvP.Link+"\n"
+	UpData+="SDgvP.SrvId="+Prg.SDgvP.SrvId+"\n"
+	UpData+="SDgvP.debug="+Prg.SDgvP.Debug+"\n"
+	if(Prg.SDgvP.Tsk)
 	{
-		for(var idx=0;idx<Prg.SdgvP.Tsk.length;idx++)
+		for(var idx=0;idx<Prg.SDgvP.Tsk.length;idx++)
 		{
-			UpData+="SDgvP.Tsk"+idx+","+Prg.SdgvP.Tsk[idx].Period+",20,"+Prg.SdgvP.Tsk[idx].IDsrv+",255,"+Prg.SdgvP.Tsk[idx].Sck+","+Prg.SdgvP.Tsk[idx].Sck+",0,0,0";
-			switch(Prg.SdgvP.Tsk[idx].Sck)
+			UpData+="SDgvP.Tsk"+idx+","+Prg.SDgvP.Tsk[idx].Period+",20,"+Prg.SDgvP.Tsk[idx].IDsrv+",255,"+Prg.SDgvP.Tsk[idx].Sck+","+Prg.SDgvP.Tsk[idx].Sck+",0,0,0";
+			switch(Prg.SDgvP.Tsk[idx].Sck)
 			{
 				case 2:
 				{
@@ -398,19 +395,19 @@ function SendSdgvP(Prg)
 				break;
 				case 252:
 				{
-					for(var i=0;i<Prg.SdgvP.Tsk[idx].cmps.length;i++)
+					for(var i=0;i<Prg.SDgvP.Tsk[idx].cmps.length;i++)
 					{
-						if(GlobalParms.MODEL.indexOf("M3")!=-1)
+						if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 						{
-							seek=DgvPM3.indexOf(Prg.SdgvP.Tsk[idx].cmps[i]);
+							seek=DgvPM3.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
 							{
 								temp+=DgvPM3[seek+1];
 							}
 						}
-						if(GlobalParms.MODEL.indexOf("M4")!=-1)
+						if(Prg.GlobalParms.MODEL.indexOf("M4")!=-1)
 						{
-							seek=DgvPM4.indexOf(Prg.SdgvP.Tsk[idx].cmps[i]);
+							seek=DgvPM4.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
 							{
 								temp+=DgvPM4[seek+1];
@@ -428,7 +425,7 @@ function SendSdgvP(Prg)
 			}
 			UpData+="\n"
 		}
-	}
+	}// */
 	seek=0;
 	return UpData;
 }
@@ -473,6 +470,8 @@ function SendGPS(Prg)
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendNTP(Prg)
 {
+	if(!Prg.NTP)
+		return "";
 	UpMode=10;
 	UpPath="/";
 	UpType="txt";
@@ -582,8 +581,8 @@ function SendOTU(Prg)
 	UpData+="\n";
 	if(Prg.OTU.CftPLCs.length)
 	{
-		Prg.OTU.CftPLCs.length=GlobalParms.Controllers;
-		for(var i=0;i<GlobalParms.Controllers;i++)
+		Prg.OTU.CftPLCs.length=Prg.GlobalParms.Controllers;
+		for(var i=0;i<Prg.GlobalParms.Controllers;i++)
 		{
 			UpData+="CFT"+i+":"
 			if(Prg.OTU.CftPLCs[i])
@@ -796,7 +795,7 @@ function SendPlan98A(Prg)
 	if(!PLCs[PlcIdx])
 		return "";
 	SelIObyModel(Prg.GlobalParms.MODEL);
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 		UpData="#CFT:sec.sec;\n";
 	else
 		UpData="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";
@@ -926,7 +925,7 @@ function SendPlan97(Prg)
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan97.eil"
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 		out+="#CFT:sec.sec;\n";
 	else
 		out+="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";

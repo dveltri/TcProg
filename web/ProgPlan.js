@@ -36,7 +36,7 @@ function UpdateTimes(PLC,Pln)
 		var Tev=0;
 		var sTPi=GetTpi(Pln.TP,0);
 		var Sts=PLC.Sts;
-		//-------------------------------------------
+		//------------------------------------------- ajusta tamaños de vectores
 		while(Pln.TP.length<Sts.length)
 			Pln.TP.push(0);
 		Pln.TP.length=Sts.length;
@@ -46,10 +46,11 @@ function UpdateTimes(PLC,Pln)
 		while(Pln.Logic.length<Sts.length)
 			Pln.Logic.push("");
 		Pln.Logic.length=Sts.length;
-		//-------------------------------------------
+		//------------------------------------------- convierte a enteros
 		for(var i=0;i<Sts.length;i++)
 		{
 			Pln.TP[i]=parseInt("0"+Pln.TP[i]);
+			TC+=Pln.TP[i];
 			Pln.Dem[i].Typ=parseInt("0"+Pln.Dem[i].Typ);
 			Pln.Dem[i].Num=parseInt("0"+Pln.Dem[i].Num);
 			Pln.Dem[i].Clr=parseInt("0"+Pln.Dem[i].Clr);
@@ -62,7 +63,10 @@ function UpdateTimes(PLC,Pln)
 		Pln.EV=parseInt("0"+Pln.EV);
 		Pln.T2S=new Array();
 		Pln.SEQ=new Array();
+		if(TC==0)
+			Pln.TP[0]=Pln.TC;
 		idx=0;
+		TC=0;
 		TPi=sTPi;
 		do
 		{
@@ -82,7 +86,7 @@ function UpdateTimes(PLC,Pln)
 			TPi=TPn;
 			idx++;
 		}
-		while(TPi!=sTPi);
+		while(TPi!=sTPi && idx<Pln.TP.length);
 		if(Pln.Typ==0)
 			Pln.TC=TC;
 		if(Pln.Typ==1)
@@ -769,37 +773,58 @@ function ShwAddDem(stp)
 }
 
 //------------------------------------------
+ /*
+	 Devuelve el el anterior numero de paso de el
+	 que pide si tiene un tiempo diferente de 0
+	 asignado de lo contrario busca hasta encontrar uno
+ */
 function GetTpp(TP,S)
 {
 		S+=TP.length;
 		S--;
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S+=TP.length;
 			S--;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }
+ /*
+	 Devuelve el numero de paso que se le pide
+	 si tiene un tiempo diferente de 0 asignado
+	 de lo contrario busca hasta encontrar uno
+ */
 function GetTpi(TP,S)
 {
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S++;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }
+ /*
+	 Devuelve el el proximo numero de paso de el
+	 que pide si tiene un tiempo diferente de 0
+	 asignado de lo contrario busca hasta encontrar uno
+ */
 function GetTpn(TP,S)
 {
 		S++;
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S++;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }

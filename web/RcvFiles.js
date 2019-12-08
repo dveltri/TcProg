@@ -544,6 +544,7 @@ function RcvPlc(Datos)
 				break;
 				case "Scheduler":
 					PLCs()[j].Scheduler=Datos[i][1].slice();
+					PrgEd[SrcIdx][PLCs()[j].Scheduler]=new Object();
 				break;
 				case "Location":
 					PLCs()[j].Location=Datos[i][1].slice();
@@ -691,12 +692,12 @@ function RcvPh_Conf(Datos)
 				}
 			}
 			//RemoveUnusedItem(PHASEs[PhN].V2R);
-			if(GlobalParms.Time_Out_Electrical_Error<160)
-				GlobalParms.Time_Out_Electrical_Error=160;
-			if(GlobalParms.Time_Out_Consumption_Error<256)
-				GlobalParms.Time_Out_Consumption_Error=256;
-			PHASEs[PhN].TOEE=GlobalParms.Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-			PHASEs[PhN].TOEC=GlobalParms.Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+			if(GlobalParms().Time_Out_Electrical_Error<160)
+				GlobalParms().Time_Out_Electrical_Error=160;
+			if(GlobalParms().Time_Out_Consumption_Error<256)
+				GlobalParms().Time_Out_Consumption_Error=256;
+			PHASEs[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
+			PHASEs[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
 			PHASEs[PhN].PLC=0;
 			//PHASEs[PhN].Sec= new Array();
 			j++;
@@ -770,8 +771,8 @@ function SetPhConf(Datos)
 				if(Datos[j][6]!="")
 					if(isNaN(Datos[j][6])!=true)
 						PHASEs()[PhN].TOEC=parseInt("0"+Datos[j][6]);
-				//PHASEs()[PhN].TOEE=GlobalParms.Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-				//PHASEs()[PhN].TOEC=GlobalParms.Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+				//PHASEs()[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
+				//PHASEs()[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
 				//-----------------------------------------
 				if(Datos[j][7]!="")
 				{
@@ -1063,7 +1064,7 @@ function RcvOTU2(Datos)
 	var i=0;
 	var j=0;
 	Datos=Datos.split("\n\n");
-	OTU.CftPLCs= new Array(GlobalParms.Controllers);
+	OTU().CftPLCs= new Array(GlobalParms().Controllers);
 	for(var j=0;j<Datos.length;j++)
 	{
 		Datos[j]=Datos[j].split("\n");
@@ -1082,10 +1083,10 @@ function RcvOTU2(Datos)
 	{
 		DatosT=Datos[0][0].split(":");
 		if(DatosT[0]=="Comm")
-			OTU.Link=parseInt("0"+DatosT[1]);
+			OTU().Link=parseInt("0"+DatosT[1]);
 		DatosT=Datos[0][1].split(":");
 		if(DatosT[0]=="G1G2")
-			OTU.G1G2=parseInt("0"+DatosT[1]);
+			OTU().G1G2=parseInt("0"+DatosT[1]);
 	}
 	//-----------------------------------CFT
 	{
@@ -1096,21 +1097,21 @@ function RcvOTU2(Datos)
 			if(temp!=-1)
 			{
 				DatosT[j]=DatosT[j].substr(3);
-				//OTU.CftPLCs[temp] = new Object();
+				//OTU().CftPLCs[temp] = new Object();
 				DatosT[j]=DatosT[j].split(':');
 				temp=parseInt("0"+DatosT[j][0])
-				OTU.CftPLCs[temp]=DatosT[j][1].split(',');
-				for(var i=0;i<OTU.CftPLCs[temp].length;i++)
+				OTU().CftPLCs[temp]=DatosT[j][1].split(',');
+				for(var i=0;i<OTU().CftPLCs[temp].length;i++)
 				{
-					OTU.CftPLCs[temp][i]=OTU.CftPLCs[temp][i].split('a');
-					OTU.CftPLCs[temp][i]=ConvToInt(OTU.CftPLCs[temp][i]);
+					OTU().CftPLCs[temp][i]=OTU().CftPLCs[temp][i].split('a');
+					OTU().CftPLCs[temp][i]=ConvToInt(OTU().CftPLCs[temp][i]);
 				}
 			}
 		}
 	}
-	OTU.BitCofigRx=new Array();
-	OTU.BitCofigTx=new Array();
-	OTU.FO=0;
+	OTU().BitCofigRx=new Array();
+	OTU().BitCofigTx=new Array();
+	OTU().FO=0;
 	//-----------------------------------RX
 	if(Datos[2])
 	{
@@ -1122,10 +1123,10 @@ function RcvOTU2(Datos)
 			{
 				DatosT[j]=DatosT[j].substr(2);
 				DatosT[j]=DatosT[j].split(',');
-				OTU.BitCofigRx[OTU.BitCofigRx.length]=new Object();
-				OTU.BitCofigRx[OTU.BitCofigRx.length-1].NBit=parseInt("0"+DatosT[j][0]);
-				OTU.BitCofigRx[OTU.BitCofigRx.length-1].Fnc=DatosT[j][1];
-				OTU.BitCofigRx[OTU.BitCofigRx.length-1].Parms=DatosT[j].slice(2,DatosT[j].length);
+				OTU().BitCofigRx[OTU().BitCofigRx.length]=new Object();
+				OTU().BitCofigRx[OTU().BitCofigRx.length-1].NBit=parseInt("0"+DatosT[j][0]);
+				OTU().BitCofigRx[OTU().BitCofigRx.length-1].Fnc=DatosT[j][1];
+				OTU().BitCofigRx[OTU().BitCofigRx.length-1].Parms=DatosT[j].slice(2,DatosT[j].length);
 			}
 		}
 	}
@@ -1142,16 +1143,16 @@ function RcvOTU2(Datos)
 				DatosT[j]=DatosT[j].split(',');
 				if(DatosT[j][1]=="FO")
 				{
-					OTU.FO=parseInt("0"+DatosT[j][0]);
-					if(OTU.FO)
-						OTU.FO++;
+					OTU().FO=parseInt("0"+DatosT[j][0]);
+					if(OTU().FO)
+						OTU().FO++;
 				}
 				else
 				{
-					OTU.BitCofigTx[OTU.BitCofigTx.length]=new Object();
-					OTU.BitCofigTx[OTU.BitCofigTx.length-1].NBit=parseInt("0"+DatosT[j][0]);
-					OTU.BitCofigTx[OTU.BitCofigTx.length-1].Fnc=DatosT[j][1];
-					OTU.BitCofigTx[OTU.BitCofigTx.length-1].Parms=DatosT[j].slice(2,DatosT[j].length);
+					OTU().BitCofigTx[OTU().BitCofigTx.length]=new Object();
+					OTU().BitCofigTx[OTU().BitCofigTx.length-1].NBit=parseInt("0"+DatosT[j][0]);
+					OTU().BitCofigTx[OTU().BitCofigTx.length-1].Fnc=DatosT[j][1];
+					OTU().BitCofigTx[OTU().BitCofigTx.length-1].Parms=DatosT[j].slice(2,DatosT[j].length);
 				}
 			}
 		}
@@ -1159,7 +1160,7 @@ function RcvOTU2(Datos)
 	//-----------------------------------
 }// */
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvSdgvp(Datos)
+function RcvSDgvP(Datos)
 {
 	var ptr;
 	var tmpt="";
@@ -1169,125 +1170,125 @@ function RcvSdgvp(Datos)
 	Datos=RemComment(Datos)
 	Datos=Datos.split("\n");
 	RemoveUnusedItem(Datos);
-	//SdgvP()=null;
-	//SdgvP()=new Object();
-	SdgvP().Tsk=null;
-	SdgvP().Link=0;
-	SdgvP().Debug=255;
+	//SDgvP()=null;
+	//SDgvP()=new Object();
+	SDgvP().Tsk=null;
+	SDgvP().Link=0;
+	SDgvP().Debug=255;
 	//-----------------------------------
 	for(var j=0;j<Datos.length;j++)
 	{
 		ptr=Datos[j].indexOf("SDgvP.Link=");
 		if(ptr!=-1)
 		{
-			SdgvP().Link=parseInt("0"+Datos[j].substring(ptr+11));
+			SDgvP().Link=parseInt("0"+Datos[j].substring(ptr+11));
 		}
 		ptr=Datos[j].indexOf("SDgvP.SrvId=");
 		if(ptr!=-1)
 		{
-			SdgvP().SrvId=parseInt("0"+Datos[j].substring(ptr+12));
+			SDgvP().SrvId=parseInt("0"+Datos[j].substring(ptr+12));
 		}
 		ptr=Datos[j].indexOf("SDgvP.debug=");
 		if(ptr!=-1)
 		{
-			SdgvP().Debug=parseInt("0"+Datos[j].substring(ptr+12));
+			SDgvP().Debug=parseInt("0"+Datos[j].substring(ptr+12));
 		}
 		ptr=Datos[j].indexOf("SDgvP.Tsk");
 		if(ptr!=-1)
 		{
-			if(!SdgvP().Tsk)
+			if(!SDgvP().Tsk)
 			{
-				SdgvP().Tsk=new Array();
+				SDgvP().Tsk=new Array();
 			}
 			tmpt=Datos[j].substring(ptr+9);
 			idx=parseInt("0"+tmpt);
-			if(!SdgvP().Tsk[idx])
-				SdgvP().Tsk[idx]=new Object();
-			SdgvP().Tsk[idx].IDsrv=254;
-			SdgvP().Tsk[idx].Sck=2;
-			SdgvP().Tsk[idx].Period=10;
+			if(!SDgvP().Tsk[idx])
+				SDgvP().Tsk[idx]=new Object();
+			SDgvP().Tsk[idx].IDsrv=254;
+			SDgvP().Tsk[idx].Sck=2;
+			SDgvP().Tsk[idx].Period=10;
 			ptr=Datos[j].indexOf(",");	//Tsk
 			if(ptr!=-1)
 			{
-				SdgvP().Tsk[idx].cmps=Datos[j].substring(ptr+1);	//Byte Period
-				SdgvP().Tsk[idx].Period=parseInt("0"+SdgvP().Tsk[idx].cmps);
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=Datos[j].substring(ptr+1);	//Byte Period
+				SDgvP().Tsk[idx].Period=parseInt("0"+SDgvP().Tsk[idx].cmps);
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
-				SdgvP().Tsk[idx].IDsrv=parseInt("0"+SdgvP().Tsk[idx].cmps);
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
+				SDgvP().Tsk[idx].IDsrv=parseInt("0"+SDgvP().Tsk[idx].cmps);
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
-				SdgvP().Tsk[idx].Sck=parseInt("0"+SdgvP().Tsk[idx].cmps);
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
+				SDgvP().Tsk[idx].Sck=parseInt("0"+SDgvP().Tsk[idx].cmps);
 				//------------------------------------------
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
 				//------------------------------------------
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
-				SdgvP().Tsk[idx].Size=parseInt("0"+SdgvP().Tsk[idx].cmps);
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
+				SDgvP().Tsk[idx].Size=parseInt("0"+SDgvP().Tsk[idx].cmps);
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
-				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<8;
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
+				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<8;
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
-				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<16;
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
+				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<16;
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
-				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<24;
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
+				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<24;
 				//------------------------------------------
-				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr);// Data String
-				if(GlobalParms.MODEL.indexOf("M3")!=-1)
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr);// Data String
+				if(GlobalParms().MODEL.indexOf("M3")!=-1)
 				{
 					for(var i=0;i<DgvPM3.length;i+=2)
 					{
-						SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
+						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
 					}
 				}
-				if(GlobalParms.MODEL.indexOf("M4")!=-1)
+				if(GlobalParms().MODEL.indexOf("M4")!=-1)
 				{
 					for(var i=0;i<DgvPM4.length;i+=2)
 					{
-						SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
+						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
 					}
 				}
-				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.split(',');
-				RemoveUnusedItem(SdgvP().Tsk[idx].cmps);				
+				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.split(',');
+				RemoveUnusedItem(SDgvP().Tsk[idx].cmps);				
 			}
 			//------------------------------------------
 		}
@@ -1359,6 +1360,40 @@ function addobj(obj,vname,val)
 		}
 		obj=obj[vname[i]];
 	}
+}
+function obj2txt(base,obj)
+{
+	var out="";
+	var rslt;
+	for (var prop in obj)
+	{
+		rslt=Object.prototype.toString.call(obj[prop]);
+		if((rslt == '[object Undefined]')||(rslt == '[object Function]')||(rslt == '[object Null]'))
+		{
+		}
+		else
+		{
+			if(rslt == '[object Object]')
+			{
+				out+=obj2txt(base+"."+prop.toString(),obj[prop]);
+			}
+			else
+			{
+				if(rslt == "[object Array]")
+				{
+					for (var i = 0; i < obj[prop].length; i++)
+					{
+						out+=obj2txt(base+"."+prop.toString()+"["+i+"]",obj[prop][i]);
+					}
+				}
+				else
+				{
+					out+=base+"."+prop.toString()+"="+obj[prop].toString()+"\n";
+				}
+			}
+		}
+	}
+	return out;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 percent=5;

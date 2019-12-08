@@ -278,13 +278,15 @@ Object.compare = function (obj1, obj2)
 };
 Object.prototype.clone = Array.prototype.clone = function()
 {
-	var rslt=Object.prototype.toString.call(this)
+	var rslt=Object.prototype.toString.call(this);
     if (rslt == '[object Array]')
     {
 		var clone = [];
-		for (i in this)
+		clone.length=this.length;
+		for (var i = 0; i < this.length; i++)
 		{
-			clone.push(i.clone());
+			if (typeof (this[i]) != 'undefined')
+				clone[i]=this[i].clone();
 		}
         return clone;
     } 
@@ -298,21 +300,29 @@ Object.prototype.clone = Array.prototype.clone = function()
 				if (this.hasOwnProperty(prop))
 				{
 					if (typeof (this[prop]) != 'undefined')
-						clone[prop] = this[prop].clone();
+					{
+						rslt=Object.prototype.toString.call(this[prop]);
+						if((rslt == '[object Array]') || (rslt == '[object Object]'))
+							clone[prop] = this[prop].clone();
+						else
+							clone[prop] = this[prop];
+					}
 					else
+					{
 						clone[prop] = undefined;
+					}
 				}
 			}
 			return clone;
 		}
 		else
 		{
-			return this;
+			return this.getval();
 		}
 	}
 }
 
-Object.prototype.getval = Array.prototype.clone = function()
+Object.prototype.getval = Array.prototype.getval = function()
 {
 	if(isNaN(this))
 	{
@@ -323,6 +333,7 @@ Object.prototype.getval = Array.prototype.clone = function()
 		var rslt=Object.prototype.toString.call(this)
 		if((rslt == '[object Boolean]') 
 		||(rslt == '[object Undefined]') 
+		||(rslt == '[object Function]') 
 		||(rslt == '[object Null'))
 		{
 			return this;

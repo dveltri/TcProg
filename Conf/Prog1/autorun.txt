@@ -1,6 +1,0 @@
-new STS0 1 00 [object Object]
-new STS1 1 00 [object Object]
-new STS2 1 00 [object Object]
-new STSs 1 30 [object Object][object Object][object Object]
-new TST 1 00 16,16,16
-new STS2STP 1 00 ,16,32,48new STS2STP 1 00 ,0,1,2
