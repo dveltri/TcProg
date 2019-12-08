@@ -11,22 +11,6 @@
 0x200 Recommend (X)
 0x400 Error Consistence
 0x800 Modified	*/
-var BkGlobalParms
-var BkPLCs;
-var BkPHASEs;
-var BkIOs;
-var BkSrv;
-var BkHdrv;
-var BkLinks;
-var BkErrorsCfg;
-var BkErrors;
-//--------------------------------------------------- Modulos
-var BkOTU;
-var BkDefIn;
-var BkOPCT;
-var BkMaster;
-var BkIteris;
-var BkDgvSoft;
 //-------------------------------------------------------
 var ParmType=[{
 FncChk:0,Nombre:"GlobalParms.MAC"						,Type:"str",Unit:1,MaxLen:[2,2],Range:[['0','9'],['A','F'],['a','f']]			,Reload:0x100,Modified:0,Child:[],AlerTxt:"debe ingresar 2 caracteres y deben pertenecer a los siguientes rangos ['0','9']or['A','F']or['a','f']"},{
@@ -106,9 +90,9 @@ function RstSch()
 	TimeScheduler[0].Hs[0].Plan="99";
 	for(var j=0;j<GlobalParms.Controllers;j++)
 	{
-		PLCs[j].HolyDays=owl.deepCopy(HolyDays);
-		PLCs[j].WeekDays=owl.deepCopy(WeekDays);
-		PLCs[j].TimeScheduler=owl.deepCopy(TimeScheduler);
+		PLCs[j].HolyDays=HolyDays.clone();
+		PLCs[j].WeekDays=WeekDays.clone();
+		PLCs[j].TimeScheduler=TimeScheduler.clone();
 	}
 	ModParm("PLCs.Sch");
 }

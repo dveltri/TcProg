@@ -2,18 +2,30 @@
 function SetRemote()
 {
 	Reload|=0x100;
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(GlobalParms().MODEL.indexOf("M3")!=-1)
 	{
 		HW_IOS=9;
 		PhasesStructSize=56;
 	}
-	if(GlobalParms.MODEL.indexOf("M4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+	if(GlobalParms().MODEL.indexOf("M4")!=-1 || GlobalParms().MODEL.indexOf("GW")==-1)
 	{
 		HW_IOS=16;
 		PhasesStructSize=60;
 	}
 }
 
+function SendObj(obj)
+{
+	var out="";
+	out+=obj.getOwnPropertyNames();
+	if (typeof obj === 'object')
+	{
+		for(var o in obj)
+		{
+			out+=o.getOwnPropertyNames();
+		}
+	}
+}
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendStartup(Prg)
 {
@@ -97,7 +109,7 @@ function SendStartup(Prg)
 		UpData+="IniRed 3\n";
 	if(Prg.GlobalParms.ATZ && (Prg.GlobalParms.MODEL.indexOf("GW4")!=-1 || Prg.GlobalParms.MODEL.indexOf("GW")==-1))
 	{
-		var ATZ=owl.deepCopy(Prg.GlobalParms.ATZ);
+		var ATZ=Prg.GlobalParms.ATZ.clone();
 		for(var i=0;i<ATZ.length;i+=2)
 		{
 			dt = new Date(ATZ[i]+" 00:00:00 GMT+0:00");
@@ -137,47 +149,47 @@ function genPhc()
 {
 	var out="";
 	var color=0;
-	for(var j=0;j<PHASEs.length;j++)
+	for(var j=0;j<PrgEd[SrcIdx].PHASEs.length;j++)
 	{
-		if(PHASEs[j].FlagsWeb==0)
+		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
 		{
-			out+=""+PHASEs[j].Numero;
-			out+=","+Math.abs(PHASEs[j].MskError);
-			out+=","+PHASEs[j].FState;
-			out+=","+(PHASEs[j].MiRT+(PHASEs[j].AMiRT<<8));
-			out+=" "+(PHASEs[j].MiYT+(PHASEs[j].AMiYT<<8));
-			out+=" "+(PHASEs[j].MiGT+(PHASEs[j].AMiGT<<8));
-			out+=","+PHASEs[j].MaRT;
-			out+=" "+PHASEs[j].MaYT;
-			out+=" "+PHASEs[j].MaGT;
-			out+=","+PHASEs[j].TOEE;
-			out+=","+PHASEs[j].TOEC;
+			out+=""+PrgEd[SrcIdx].PHASEs[j].Numero;
+			out+=","+Math.abs(PrgEd[SrcIdx].PHASEs[j].MskError);
+			out+=","+PrgEd[SrcIdx].PHASEs[j].FState;
+			out+=","+(PrgEd[SrcIdx].PHASEs[j].MiRT+(PrgEd[SrcIdx].PHASEs[j].AMiRT<<8));
+			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiYT+(PrgEd[SrcIdx].PHASEs[j].AMiYT<<8));
+			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiGT+(PrgEd[SrcIdx].PHASEs[j].AMiGT<<8));
+			out+=","+PrgEd[SrcIdx].PHASEs[j].MaRT;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaYT;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaGT;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEE;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEC;
 			out+=","
 			color=255;
-			for(var i=0;i<PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
 			{
-				if(color!=PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
 				{
-					color=PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
 			{
-				if(color!=PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
 				{
-					color=PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";
-			out+=","+PHASEs[j].PotLR;
-			out+=" "+PHASEs[j].PotLY;
-			out+=" "+PHASEs[j].PotLG;
-			out+=","+PHASEs[j].Type;
-			out+=","+PHASEs[j].Name;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].PotLR;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLY;
+			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLG;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].Type;
+			out+=","+PrgEd[SrcIdx].PHASEs[j].Name;
 			out+="\n";
 		}
 	}
@@ -189,12 +201,12 @@ function genEv()
 	var Tout="";
 	var Ttime=0;
 	var j=0;
-	if(!PLCs[PlcIdx])
+	if(!PrgEd[SrcIdx].PLCs[PlcIdx])
 	 return "";
-	for(var x=0;x<PLCs[PlcIdx].Phases.length;x++)
+	for(var x=0;x<PrgEd[SrcIdx].PLCs[PlcIdx].Phases.length;x++)
 	{
-		j=PLCs[PlcIdx].Phases[x];
-		if(PHASEs[j].FlagsWeb==0)
+		j=PrgEd[SrcIdx].PLCs[PlcIdx].Phases[x];
+		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
 		{
 			out+=""+PHASEs[j].Numero;
 			out+=",";
@@ -205,22 +217,22 @@ function genEv()
 			out+=",";
 			out+=",";
 			color=255;
-			for(var i=0;i<PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
 			{
-				if(color!=PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
 				{
-					color=PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
 			{
-				if(color!=PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
 				{
-					color=PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";
@@ -348,17 +360,13 @@ function SendDGV(Prg)
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendDgvP(Prg)
 {
+	var rslt="";
 	UpMode=10;
 	UpPath="/";
 	UpType="txt";
 	seek=0;
 	UpFile="dgvp.ini"
-	UpData=Prg.DgvP.slice();
-	for(var j=0;j<UpData.length;j++)
-	{
-		UpData[j]=UpData[j].join("=");
-	}
-	UpData=UpData.join("\n");
+	UpData=obj2txt("DgvP",Prg.DgvP);
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -369,15 +377,16 @@ function SendSdgvP(Prg)
 	UpPath="/";
 	UpType="txt";
 	UpFile="sdgvp.ini"
-	UpData ="SDgvP.Link="+Prg.SdgvP.Link+"\n"
-	UpData+="SDgvP.SrvId="+Prg.SdgvP.SrvId+"\n"
-	UpData+="SDgvP.debug="+Prg.SdgvP.Debug+"\n"
-	if(Prg.SdgvP.Tsk)
+	//UpData=obj2txt("SDgvP",Prg.SDgvP);
+	UpData ="SDgvP.Link="+Prg.SDgvP.Link+"\n"
+	UpData+="SDgvP.SrvId="+Prg.SDgvP.SrvId+"\n"
+	UpData+="SDgvP.debug="+Prg.SDgvP.Debug+"\n"
+	if(Prg.SDgvP.Tsk)
 	{
-		for(var idx=0;idx<Prg.SdgvP.Tsk.length;idx++)
+		for(var idx=0;idx<Prg.SDgvP.Tsk.length;idx++)
 		{
-			UpData+="SDgvP.Tsk"+idx+","+Prg.SdgvP.Tsk[idx].Period+",20,"+Prg.SdgvP.Tsk[idx].IDsrv+",255,"+Prg.SdgvP.Tsk[idx].Sck+","+Prg.SdgvP.Tsk[idx].Sck+",0,0,0";
-			switch(Prg.SdgvP.Tsk[idx].Sck)
+			UpData+="SDgvP.Tsk"+idx+","+Prg.SDgvP.Tsk[idx].Period+",20,"+Prg.SDgvP.Tsk[idx].IDsrv+",255,"+Prg.SDgvP.Tsk[idx].Sck+","+Prg.SDgvP.Tsk[idx].Sck+",0,0,0";
+			switch(Prg.SDgvP.Tsk[idx].Sck)
 			{
 				case 2:
 				{
@@ -386,19 +395,19 @@ function SendSdgvP(Prg)
 				break;
 				case 252:
 				{
-					for(var i=0;i<Prg.SdgvP.Tsk[idx].cmps.length;i++)
+					for(var i=0;i<Prg.SDgvP.Tsk[idx].cmps.length;i++)
 					{
-						if(GlobalParms.MODEL.indexOf("M3")!=-1)
+						if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 						{
-							seek=DgvPM3.indexOf(Prg.SdgvP.Tsk[idx].cmps[i]);
+							seek=DgvPM3.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
 							{
 								temp+=DgvPM3[seek+1];
 							}
 						}
-						if(GlobalParms.MODEL.indexOf("M4")!=-1)
+						if(Prg.GlobalParms.MODEL.indexOf("M4")!=-1)
 						{
-							seek=DgvPM4.indexOf(Prg.SdgvP.Tsk[idx].cmps[i]);
+							seek=DgvPM4.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
 							{
 								temp+=DgvPM4[seek+1];
@@ -416,7 +425,7 @@ function SendSdgvP(Prg)
 			}
 			UpData+="\n"
 		}
-	}
+	}// */
 	seek=0;
 	return UpData;
 }
@@ -447,34 +456,38 @@ function SendGPS(Prg)
 	UpType="txt";
 	UpData="";
 	UpFile="gps.ini"
+	UpData=obj2txt("GPS",Prg.GPS);
 	seek=0;
-	for(var i=0;i<Prg.GPS.length;i++)
+	/*for(var i=0;i<Prg.GPS.length;i++)
 	{
 		for(var j=0;j<(Prg.GPS[i].length-1);j++)
 		{
 			UpData+=Prg.GPS[i][j]+":";
 		}
 		UpData+=Prg.GPS[i][j]+"\n";
-	}
+	}// */
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendNTP(Prg)
 {
+	if(!Prg.NTP)
+		return "";
 	UpMode=10;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="ntp.ini"
 	seek=0;
-	for(var i=0;i<Prg.NTP.length;i++)
+	UpData=obj2txt("NTP",Prg.NTP);
+	/*for(var i=0;i<Prg.NTP.length;i++)
 	{
 		for(var j=0;j<(Prg.NTP[i].length-1);j++)
 		{
 			UpData+=Prg.NTP[i][j]+":";
 		}
 		UpData+=Prg.NTP[i][j]+"\n";
-	}
+	}// */
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -570,8 +583,8 @@ function SendOTU(Prg)
 	UpData+="\n";
 	if(Prg.OTU.CftPLCs.length)
 	{
-		Prg.OTU.CftPLCs.length=GlobalParms.Controllers;
-		for(var i=0;i<GlobalParms.Controllers;i++)
+		Prg.OTU.CftPLCs.length=Prg.GlobalParms.Controllers;
+		for(var i=0;i<Prg.GlobalParms.Controllers;i++)
 		{
 			UpData+="CFT"+i+":"
 			if(Prg.OTU.CftPLCs[i])
@@ -784,7 +797,7 @@ function SendPlan98A(Prg)
 	if(!PLCs[PlcIdx])
 		return "";
 	SelIObyModel(Prg.GlobalParms.MODEL);
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 		UpData="#CFT:sec.sec;\n";
 	else
 		UpData="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";
@@ -914,7 +927,7 @@ function SendPlan97(Prg)
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan97.eil"
-	if(GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
 		out+="#CFT:sec.sec;\n";
 	else
 		out+="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";

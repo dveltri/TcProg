@@ -74,22 +74,22 @@ function ReDraw(Fnc)
 			RsrcIdx=0;
 			Resource[0]=new Object();
 			Resource[0].Element=document.getElementById("InfoIO");
-			Resource[0].url=PrgEd[SrcIdx].host+"/ios.bin"
+			Resource[0].url=HOST()+"/ios.bin"
 			Resource[0].Fnc=rcvIOs;
 			Resource[1]=new Object();
 			Resource[1].Element=document.getElementById("InfoGV");
-			Resource[1].url=PrgEd[SrcIdx].host+"/GbVars.bin"
+			Resource[1].url=HOST()+"/GbVars.bin"
 			Resource[1].Fnc=rcvGbVars;
 			Resource[2]=new Object();
 			Resource[2].Element=document.getElementById("InfoTC");
-			Resource[2].url=PrgEd[SrcIdx].host+"/plcs.bin"
+			Resource[2].url=HOST()+"/plcs.bin"
 			Resource[2].Fnc=rcvTcSts;
 			Resource[3]=new Object();
 			Resource[3].Element=document.getElementById("InfoPH");
-			Resource[3].url=PrgEd[SrcIdx].host+"/phases.bin"
+			Resource[3].url=HOST()+"/phases.bin"
 			Resource[3].Fnc=rcvphases1;
 			//Resource[4].Element=document.getElementById("HOME5");
-			//Resource[4].url=PrgEd[SrcIdx].host+"/"+PlcIdx+"iplc.bin";
+			//Resource[4].url=HOST()+"/"+PlcIdx+"iplc.bin";
 			//Resource[4].Fnc=rcvInterprete;
 		}
 		break;
@@ -133,7 +133,7 @@ function ReDraw(Fnc)
 		case conf_sts:
 		{
 			document.getElementById("HOME1").innerHTML=ShowStss();
-			if(GlobalParms.MODEL.indexOf("RT")!=-1)
+			if(GlobalParms().MODEL.indexOf("RT")!=-1)
 				ShwArne2();
 		}
 		break;
@@ -170,12 +170,12 @@ function ReDraw(Fnc)
 		break;
 /* //-----------------------------------------------------
 		case conf_planMC:
-			PlanGen=PLCs[PlcIdx].McPlan;
+			PlanGen=PLCs()[PlcIdx].McPlan;
 			ShowPlanWizard(1);
 		break;
 		//-----------------------------------------------------
 		case conf_planOTU:
-			PlanGen=PLCs[PlcIdx].OTUPlan;
+			PlanGen=PLCs()[PlcIdx].OTUPlan;
 			ShowPlanWizard(2);
 		break;
 		//-----------------------------------------------------
@@ -190,126 +190,126 @@ function ReDraw(Fnc)
 function ShwPHHW()
 {
 	var j=0;
-	for(j=0;j<PLCs[PlcIdx].Phases.length;j++)
-		PLCs[PlcIdx].Phases[j]=parseInt(PLCs[PlcIdx].Phases[j]);
+	for(j=0;j<PLCs()[PlcIdx].Phases.length;j++)
+		PLCs()[PlcIdx].Phases[j]=parseInt(PLCs()[PlcIdx].Phases[j]);
 	SetEv();
-	PLCs[PlcIdx].Phases=PLCs[PlcIdx].Phases.sort(sortI);
+	PLCs()[PlcIdx].Phases=PLCs()[PlcIdx].Phases.sort(sortI);
 	//------------------------------------------------------------------------------------
 	var out="<table border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"0\" class=\"table1\" bordercolor=\"#000000\" bgcolor=\"#ccc\" >\n";
 	out+="<tr bgcolor=\"#bbb\" >\n<td></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out+="<td "+((j&1)?"":"bgcolor=\"#ccc\"")+" align=\"center\" >";
 		out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\"";
-		out+=PHASEs[j].Name;
-		out+="\" size=\"8\" maxlength=\"10\" onchange=\"PHASEs["+j+"].Name=this.value;\" />\n";
+		out+=PHASEs()[j].Name;
+		out+="\" size=\"8\" maxlength=\"10\" onchange=\"PHASEs()["+j+"].Name=this.value;\" />\n";
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
 	//-------------------
 	out+="<tr bgcolor=\"#ccc\" >\n<td ><font size=\"1\" face=\"arial\">"+Str_Enabled+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out +="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].PLC^="+(1<<PlcIdx)+";\" "+(PHASEs[j].PLC&(1<<PlcIdx)?"checked=\"checked\"":"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out +="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].PLC^="+(1<<PlcIdx)+";\" "+(PHASEs()[j].PLC&(1<<PlcIdx)?"checked=\"checked\"":"")+" /></td>\n";
 	out+="</tr>\n";
 	//-------------------
 	out+="<tr bgcolor=\"#bbb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Type_Phase+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out+="<td >\n";
-		out+="<select class=\"CssSelect\" onchange=\"PHASEs["+j+"].Type=this.value;PHASEs["+j+"].FState=FStateTyp[this.value];ReDraw(-1);\">\n";
-		out+=GenOptions(OptPhTyp,PHASEs[j].Type);
+		out+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].Type=this.value;PHASEs()["+j+"].FState=FStateTyp[this.value];ReDraw(-1);\">\n";
+		out+=GenOptions(OptPhTyp,PHASEs()[j].Type);
 		out+="</select>\n";
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
 	//-------------------
 	out+="<tr bgcolor=\"#ccc\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Flashing+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out+="<td align=\"center\" valign=\"middle\" >\n";
-		out+="<select class=\"CssSelect\" onchange=\"PHASEs["+j+"].FState=this.value;ReDraw(-1);\">\n";
-		if(PHASEs[j].Type!=1)
-			out+=GenOptions(OptColorFF,PHASEs[j].FState);
+		out+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].FState=this.value;ReDraw(-1);\">\n";
+		if(PHASEs()[j].Type!=1)
+			out+=GenOptions(OptColorFF,PHASEs()[j].FState);
 		else
-			out+=GenOptions(OptColorFFp,PHASEs[j].FState);
+			out+=GenOptions(OptColorFFp,PHASEs()[j].FState);
 		out+="</select><br />\n";
-		//out+=color2svg(PHASEs[j].FState,"");
-		out+=ShwMov(PHASEs[j].FState,PHASEs[j].Type);
+		//out+=color2svg(PHASEs()[j].FState,"");
+		out+=ShwMov(PHASEs()[j].FState,PHASEs()[j].Type);
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
 	//-------------------
 	out+="<tr bgcolor=\"#aca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_minimum_Green+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out+="<td >\n";
-		out+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs[j].MiGT+"\" onchange=\"PHASEs["+j+"].MiGT=this.value;\" />\n";
+		out+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs()[j].MiGT+"\" onchange=\"PHASEs()["+j+"].MiGT=this.value;\" />\n";
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
 	//-------------------
 	out+="<tr bgcolor=\"#bdb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_maximum_Green+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out+="<td >\n";
-		out+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs[j].MaGT+"\" onchange=\"PHASEs["+j+"].MaGT=this.value;\" />\n";
+		out+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs()[j].MaGT+"\" onchange=\"PHASEs()["+j+"].MaGT=this.value;\" />\n";
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
 	//-------------------
 	var out2="<tr bgcolor=\"#aca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Err_Electric_Green+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000300;ReDraw(-1);\" "+((PHASEs[j].MskError&0x00000300)?"":"checked=\"checked\"")+" />";
-		if(PHASEs[j].MskError&0x00000300)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000300;ReDraw(-1);\" "+((PHASEs()[j].MskError&0x00000300)?"":"checked=\"checked\"")+" />";
+		if(PHASEs()[j].MskError&0x00000300)
 			out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------
 	out2+="<tr bgcolor=\"#bdb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Lack_Green+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x04000000;ReDraw(-1);\" "+((PHASEs[j].MskError&0x04000000)?"":"checked=\"checked\"")+" />";
-		if(PHASEs[j].MskError&0x04000000)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x04000000;ReDraw(-1);\" "+((PHASEs()[j].MskError&0x04000000)?"":"checked=\"checked\"")+" />";
+		if(PHASEs()[j].MskError&0x04000000)
 			out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	/*//-------------------
 	out2+="<tr bgcolor=\"#aca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Partial_Lack_Green+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000400;\" "+(PHASEs[j].MskError&0x00000400?"":"checked=\"checked\"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000400;\" "+(PHASEs()[j].MskError&0x00000400?"":"checked=\"checked\"")+" /></td>\n";
 	out2+="</tr>\n";
 	//-------------------*/
 	/*out2+="<tr bgcolor=\"#cca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_minimum_Yellow+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >\n";
-		out2+="<select class=\"CssSelect\" onchange=\"PHASEs["+j+"].MiYT=this.value;\">\n";
-		out2+=GenOption1(PhTimMin,PHASEs[j].MiYT);
+		out2+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].MiYT=this.value;\">\n";
+		out2+=GenOption1(PhTimMin,PHASEs()[j].MiYT);
 		out2+="</select>\n";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------*/
 	/*out2+="<tr bgcolor=\"#ddb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_maximum_Yellow+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >\n";
-		out2+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs[j].MaYT+"\" />\n";
+		out2+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs()[j].MaYT+"\" />\n";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------*/
 	out2+="<tr bgcolor=\"#cca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Err_Electric_Yellow+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >";
-		if(PHASEs[j].Type!=1)
+		if(PHASEs()[j].Type!=1)
 		{
-			out2+="<input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000030;ReDraw(-1);\" "+(PHASEs[j].MskError&0x00000030?"":"checked=\"checked\"")+" />";
-			if(PHASEs[j].MskError&0x00000030)
+			out2+="<input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000030;ReDraw(-1);\" "+(PHASEs()[j].MskError&0x00000030?"":"checked=\"checked\"")+" />";
+			if(PHASEs()[j].MskError&0x00000030)
 				out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		}
 		out2+="</td>\n";
@@ -317,13 +317,13 @@ function ShwPHHW()
 	out2+="</tr>\n";
 	//-------------------
 	out2+="<tr bgcolor=\"#ddb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Lack_Yellow+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >";
-		if(PHASEs[j].Type!=1)
+		if(PHASEs()[j].Type!=1)
 		{
-			out2+="<input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x02000000;ReDraw(-1);\" "+(PHASEs[j].MskError&0x02000000?"":"checked=\"checked\"")+" />";
-			if(PHASEs[j].MskError&0x02000000)
+			out2+="<input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x02000000;ReDraw(-1);\" "+(PHASEs()[j].MskError&0x02000000?"":"checked=\"checked\"")+" />";
+			if(PHASEs()[j].MskError&0x02000000)
 				out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		}
 		out2+="</td>\n";
@@ -331,63 +331,63 @@ function ShwPHHW()
 	out2+="</tr>\n";
 	/*//-------------------
 	out2+="<tr bgcolor=\"#cca\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Partial_Lack_Yellow+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000040;\" "+(PHASEs[j].MskError&0x00000040?"":"checked=\"checked\"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000040;\" "+(PHASEs()[j].MskError&0x00000040?"":"checked=\"checked\"")+" /></td>\n";
 	out2+="</tr>\n";
 	//-------------------*/
 	/*out2+="<tr bgcolor=\"#caa\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_minimum_Red+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >\n";
-		out2+="<select class=\"CssSelect\" onchange=\"PHASEs["+j+"].MiRT=this.value;\">\n";
-		out2+=GenOption1(PhTimMin,PHASEs[j].MiRT);
+		out2+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].MiRT=this.value;\">\n";
+		out2+=GenOption1(PhTimMin,PHASEs()[j].MiRT);
 		out2+="</select>\n";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------*/
 	/*out2+="<tr bgcolor=\"#dbb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Time_maximum_Red+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
 		out2+="<td >\n";
-		out2+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs[j].MaRT+"\" />\n";
+		out2+="<input class=\"CssInText\" size=\"1\" maxlength=\"3\" value=\""+PHASEs()[j].MaRT+"\" />\n";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------*/
 	out2+="<tr bgcolor=\"#dbb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Err_Electric_Red+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000003;ReDraw(-1);\" "+(PHASEs[j].MskError&0x00000003?"":"checked=\"checked\"")+" />";
-		if(PHASEs[j].MskError&0x00000003)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000003;ReDraw(-1);\" "+(PHASEs()[j].MskError&0x00000003?"":"checked=\"checked\"")+" />";
+		if(PHASEs()[j].MskError&0x00000003)
 			out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	//-------------------
 	out2+="<tr bgcolor=\"#caa\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Lack_Red+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
+	for(j=0;j<PHASEs().length;j++)
 	{
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x01000000;ReDraw(-1);\" "+(PHASEs[j].MskError&0x01000000?"":"checked=\"checked\"")+" />";
-		if(PHASEs[j].MskError&0x01000000)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x01000000;ReDraw(-1);\" "+(PHASEs()[j].MskError&0x01000000?"":"checked=\"checked\"")+" />";
+		if(PHASEs()[j].MskError&0x01000000)
 			out2+="<font size=\"1\" color=\"#f00\" face=\"arial\">"+Str_Error_inhibido+"</font>";
 		out2+="</td>\n";
 	}
 	out2+="</tr>\n";
 	/*//-------------------
 	out2+="<tr bgcolor=\"#caa\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Partial_Lack_Red+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00000004;\" "+(PHASEs[j].MskError&0x00000004?"":"checked=\"checked\"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00000004;\" "+(PHASEs()[j].MskError&0x00000004?"":"checked=\"checked\"")+" /></td>\n";
 	out2+="</tr>\n";
 	//-----------------------------------------------------------------------
 	out2+="<tr bgcolor=\"#bbb\">\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Check_Time_minimum+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x00015000;\" "+(PHASEs[j].MskError&0x00015000?"":"checked=\"checked\"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x00015000;\" "+(PHASEs()[j].MskError&0x00015000?"":"checked=\"checked\"")+" /></td>\n";
 	out2+="</tr>\n";
 	//-------------------
 	out2+="<tr>\n<td ><font size=\"1\" face=\"arial\">"+Str_Error+" "+Str_Fail_Report+"</font></td>\n";
-	for(j=0;j<PHASEs.length;j++)
-		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs["+j+"].MskError^=0x80000000;\" "+(PHASEs[j].MskError&0x80000000?"":"checked=\"checked\"")+" /></td>\n";
+	for(j=0;j<PHASEs().length;j++)
+		out2+="<td ><input type=\"checkbox\" onclick=\"PHASEs()["+j+"].MskError^=0x80000000;\" "+(PHASEs()[j].MskError&0x80000000?"":"checked=\"checked\"")+" /></td>\n";
 	out2+="</tr>\n";
 	//-------------------*/
 	out2+="</table>";
@@ -403,7 +403,7 @@ function DelAllErrors()
 	{
 		if(PrgEd[SrcIdx].Typ)
 		{
-			GetUrlB(PrgEd[SrcIdx].host+"/"+PrgEd[SrcIdx].DGVFTP+"?mode=256&path="+Errors[DelIdxAll].Path+"&file="+Errors[DelIdxAll].Name,NextDelError);
+			GetUrlB(HOST()+"/"+DGVFTP()+"?mode=256&path="+Errors[DelIdxAll].Path+"&file="+Errors[DelIdxAll].Name,NextDelError);
 		}
 	}
 }
@@ -442,7 +442,7 @@ function ShowErrorFileList()
 	for(var x=0;x<Errors.length;x++)
 	{
 		temp=Errors[x].Name.substr(2);
-		out+="<a href=\""+PrgEd[SrcIdx].host+(Errors[x].Path+"/").replace("//","/")+HTMLEncode(Errors[x].Name)+"?WAC="+WAC+"\" target=\"_blank\">\n";
+		out+="<a href=\""+HOST()+(Errors[x].Path+"/").replace("//","/")+HTMLEncode(Errors[x].Name)+"?WAC="+WAC+"\" target=\"_blank\">\n";
 		out+="<img src=\"./img/save1.png\" width=\"20\" height=\"20\" border=\"0\" />";
 		out+="</a>";
 		out+="<a href=\"\" onclick=\"UpFile='"+HTMLEncode(Errors[x].Name)+"';UpPath='"+Errors[x].Path+"';UpType='txt';rcvERR(Errors["+x+"].Datos);return false\">\n";
@@ -452,8 +452,8 @@ function ShowErrorFileList()
 		else
 		{
 			pidx=parseInt(Errors[x].Path.substr(1));
-			if(pidx<PLCs.length)
-				out+=PLCs[pidx].Name;
+			if(pidx<PLCs().length)
+				out+=PLCs()[pidx].Name;
 			else
 				out+="No Name";
 		}
@@ -463,9 +463,9 @@ function ShowErrorFileList()
 		{
 			out+="<a href=\"\" onclick=\"if(confirm('"+Str_Delet+" ["+HTMLEncode(Errors[x].Name)+"]?')){DelErr="+x+";"
 			if(PrgEd[SrcIdx].Typ)
-				out+="GetUrlB('"+PrgEd[SrcIdx].host+"/"+PrgEd[SrcIdx].DGVFTP+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
+				out+="GetUrlB('"+HOST()+"/"+DGVFTP()+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
 			else
-				out+="GetUrlB('"+PrgEd[SrcIdx].host+"/"+PrgEd[SrcIdx].DGVFTP+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
+				out+="GetUrlB('"+HOST()+"/"+DGVFTP()+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
 			out+="}return false;\">\n";
 			out+="<img src=\"./img/defile.png\" width=\"16\" height=\"16\" border=\"0\" />";
 			out+="</a>";
@@ -589,7 +589,7 @@ function ShwEthernet()
 	<font size=\"1\" face=\"arial\">"+Str_Name_device+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.ID=this.value\" type=\"text\" class=\"CssInText\" size=\"25\" value=\""+GlobalParms.ID+"\" />\n\
+	<input onchange=\"GlobalParms().ID=this.value\" type=\"text\" class=\"CssInText\" size=\"25\" value=\""+GlobalParms().ID+"\" />\n\
 	</td>\n\
 	</tr>\n\
 	</table><hr />\n";
@@ -600,7 +600,7 @@ function ShwEthernet()
 	<font size=\"1\" face=\"arial\">"+Str_Passwords+"</font><br />\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.Web_Access_Code_RO=this.value\" type=\"password\" class=\"CssInText\" size=\"5\" value=\""+GlobalParms.Web_Access_Code_RO+"\" /><br />\n\
+	<input onchange=\"GlobalParms().Web_Access_Code_RO=this.value\" type=\"password\" class=\"CssInText\" size=\"5\" value=\""+GlobalParms().Web_Access_Code_RO+"\" /><br />\n\
 	</td>\n\
 	</tr>\n\
 	<tr align=\"left\">\n\
@@ -608,7 +608,7 @@ function ShwEthernet()
 	<font size=\"1\" face=\"arial\">"+Str_Confirm+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.Web_Access_Code_RW=this.value\" type=\"password\" class=\"CssInText\" size=\"5\" value=\""+GlobalParms.Web_Access_Code_RW+"\" />\n\
+	<input onchange=\"GlobalParms().Web_Access_Code_RW=this.value\" type=\"password\" class=\"CssInText\" size=\"5\" value=\""+GlobalParms().Web_Access_Code_RW+"\" />\n\
 	</td>\n\
 	</tr>\n\
 	</table>\n";
@@ -623,10 +623,10 @@ function ShwEthernet()
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\">\n\
-	<input onchange=\"GlobalParms.ETH[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.ETH0[0]+"\" />\n\
-	<input onchange=\"GlobalParms.ETH[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.ETH0[1]+"\" />\n\
-	<input onchange=\"GlobalParms.ETH[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.ETH0[2]+"\" />\n\
-	<input onchange=\"GlobalParms.ETH[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.ETH0[3]+"\" />\n\
+	<input onchange=\"GlobalParms().ETH[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().ETH0[0]+"\" />\n\
+	<input onchange=\"GlobalParms().ETH[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().ETH0[1]+"\" />\n\
+	<input onchange=\"GlobalParms().ETH[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().ETH0[2]+"\" />\n\
+	<input onchange=\"GlobalParms().ETH[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().ETH0[3]+"\" />\n\
 	</font>\n\
 	</td>\n\
 	</tr>\n\
@@ -636,10 +636,10 @@ function ShwEthernet()
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\">\n\
-	<input onchange=\"GlobalParms.NETMASK0[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.NETMASK0[0]+"\" />\n\
-	<input onchange=\"GlobalParms.NETMASK0[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.NETMASK0[1]+"\" />\n\
-	<input onchange=\"GlobalParms.NETMASK0[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.NETMASK0[2]+"\" />\n\
-	<input onchange=\"GlobalParms.NETMASK0[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms.NETMASK0[3]+"\" />\n\
+	<input onchange=\"GlobalParms().NETMASK0[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().NETMASK0[0]+"\" />\n\
+	<input onchange=\"GlobalParms().NETMASK0[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().NETMASK0[1]+"\" />\n\
+	<input onchange=\"GlobalParms().NETMASK0[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().NETMASK0[2]+"\" />\n\
+	<input onchange=\"GlobalParms().NETMASK0[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\"  value=\""+GlobalParms().NETMASK0[3]+"\" />\n\
 	</font>\n\
 	</td>\n\
 	</tr>\n\
@@ -650,10 +650,10 @@ function ShwEthernet()
 		</td>\n\
 		<td>\n\
 		<font size=\"1\" face=\"arial\">\n\
-		<input onchange=\"GlobalParms.DGW[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms.DGW[0]+"\" />\n\
-		<input onchange=\"GlobalParms.DGW[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms.DGW[1]+"\" />\n\
-		<input onchange=\"GlobalParms.DGW[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms.DGW[2]+"\" />\n\
-		<input onchange=\"GlobalParms.DGW[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms.DGW[3]+"\" />\n\
+		<input onchange=\"GlobalParms().DGW[0]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms().DGW[0]+"\" />\n\
+		<input onchange=\"GlobalParms().DGW[1]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms().DGW[1]+"\" />\n\
+		<input onchange=\"GlobalParms().DGW[2]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms().DGW[2]+"\" />\n\
+		<input onchange=\"GlobalParms().DGW[3]=this.value\" type=\"text\" class=\"CssInText\" size=\"2\" maxlength=\"3\" value=\""+GlobalParms().DGW[3]+"\" />\n\
 		</font>\n\
 		</td>\n";
 	}
@@ -676,35 +676,35 @@ function ShwATZ()
 		<font size=\"1\" face=\"arial\">"+Str_Time_Zone+"</font>\n\
 		</td>\n\
 		<td colspan=\"2\">\n\
-		<select class=\"CssSelect\" onchange=\"if(ChkParm('GlobalParms.Time_Zone_GMT',parseInt(this.value))==true){GlobalParms.Time_Zone_GMT=parseInt(this.value);ModParm('GlobalParms.Time_Zone_GMT');}\">\n";
-		out+=GenOptions(OptTimeZone,GlobalParms.Time_Zone_GMT);
+		<select class=\"CssSelect\" onchange=\"if(ChkParm('GlobalParms().Time_Zone_GMT',parseInt(this.value))==true){GlobalParms().Time_Zone_GMT=parseInt(this.value);ModParm('GlobalParms().Time_Zone_GMT');}\">\n";
+		out+=GenOptions(OptTimeZone,GlobalParms().Time_Zone_GMT);
 		out+="</select>\n\
 		</td>\n\
 		</tr>\n\
 		</table>\n";
 		out+="<hr />";
 	}
-	if(GlobalParms.ATZ)
+	if(GlobalParms().ATZ)
 	{
 	}
 	else
 	{
-		GlobalParms.ATZ=new Array(40);
+		GlobalParms().ATZ=new Array(40);
 	}
 	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n";
 	for(var i=0;i<40;i+=2)
 	{
-		if(!GlobalParms.ATZ[i])
-			GlobalParms.ATZ[i]="2017/01/01";
-		if(!GlobalParms.ATZ[i+1])
-			GlobalParms.ATZ[i+1]=-180;
+		if(!GlobalParms().ATZ[i])
+			GlobalParms().ATZ[i]="2017/01/01";
+		if(!GlobalParms().ATZ[i+1])
+			GlobalParms().ATZ[i+1]=-180;
 		out+="<tr align=\"left\">\n\
 		<td>\n\
-		<input onchange=\"GlobalParms.ATZ["+i+"]=this.value;ModParm('GlobalParms.ETH');\" type=\"text\" class=\"CssInText\" size=\"10\" maxlength=\"10\"  value=\""+GlobalParms.ATZ[i]+"\" />\n\
+		<input onchange=\"GlobalParms().ATZ["+i+"]=this.value;ModParm('GlobalParms().ETH');\" type=\"text\" class=\"CssInText\" size=\"10\" maxlength=\"10\"  value=\""+GlobalParms().ATZ[i]+"\" />\n\
 		</td>\n\
 		<td colspan=\"2\">\n\
-		<select class=\"CssSelect\" onchange=\"GlobalParms.ATZ["+(i+1)+"]=this.value;ModParm('GlobalParms.ETH');\" >\n";
-		out+=GenOptions(OptTimeZone,GlobalParms.ATZ[i+1]);
+		<select class=\"CssSelect\" onchange=\"GlobalParms().ATZ["+(i+1)+"]=this.value;ModParm('GlobalParms().ETH');\" >\n";
+		out+=GenOptions(OptTimeZone,GlobalParms().ATZ[i+1]);
 		out+="</select>\n\
 		</td>\n\
 		</tr>\n";
@@ -717,58 +717,60 @@ function ShwATZ()
 function ShwGps()
 {
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Configuracion GPS</font><br />\n";
-	out+="\
-	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
-		<tr align=\"left\">\n\
+	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n";
+	out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_Enable+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"GPS[0][1]^=9;ReDraw(-1);\" "+((GPS[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"GPS().Link^=9;ReDraw(-1);\" "+((GPS().Link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
-		</tr>\n\
-		<tr align=\"left\">\n\
+		</tr>\n";
+		if(Links()[GPS().Link][2].indexOf(",")!=-1)
+		{
+			out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_Config+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+GPS[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[GPS[0][1]][2]+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+GPS().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[GPS().Link][2]+"\" "+((GPS().Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
-		</tr>\n\
-		<tr align=\"left\">\n\
+		</tr>\n";
+		}
+		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priop+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS[2][1]=this.value;ReDraw(-1);\" value=\""+(GPS[2][1])+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().PriorityPlus=this.value;ReDraw(-1);\" value=\""+(GPS().PriorityPlus)+"\" "+((GPS().PriorityPlus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
-		</tr>\n\
-		<tr align=\"left\">\n\
+		</tr>\n";
+		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priol+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS[3][1]=this.value;ReDraw(-1);\" value=\""+(GPS[3][1])+"\" "+((GPS[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS().PriorityMinus=this.value;ReDraw(-1);\" value=\""+(GPS().PriorityMinus)+"\" "+((GPS().PriorityMinus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
-		</tr>\n\
-		<tr align=\"left\">\n\
+		</tr>\n";
+		out+="<tr align=\"left\">\n\
 		<td>\n\
 		<font size=\"1\" face=\"arial\">"+Str_Time_Zone+" GPS</font>\n\
 		</td>\n\
 		<td colspan=\"2\">\n\
-		<select class=\"CssSelect\" onchange=\"if(ChkParm('GlobalParms.Time_Zone_GMT',parseInt(this.value))==true){GlobalParms.Time_Zone_GMT=parseInt(this.value);ModParm('GlobalParms.Time_Zone_GMT');}\">\n";
-		out+=GenOptions(OptTimeZone,GlobalParms.Time_Zone_GMT);
+		<select class=\"CssSelect\" onchange=\"if(ChkParm('GlobalParms().Time_Zone_GMT',parseInt(this.value))==true){GlobalParms().Time_Zone_GMT=parseInt(this.value);ModParm('GlobalParms().Time_Zone_GMT');}\">\n";
+		out+=GenOptions(OptTimeZone,GlobalParms().Time_Zone_GMT);
 		out+="</select>\n\
 		</td>\n\
 		</tr>\n";
 	if(UsrLvl>2)
 	{
-	out+="<tr align=\"left\">\n\
+		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS[4][1]=this.value;ReDraw(-1);\" value=\""+GPS[4][1]+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().debug=this.value;ReDraw(-1);\" value=\""+GPS().debug+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -779,11 +781,18 @@ function ShwGps()
 
 function ShwNtp()
 {
-	NTP[0][1]=parseInt(NTP[0][1]);
-	NTP[1][1]=parseInt(NTP[1][1]);
-	NTP[2][1]=parseInt(NTP[2][1]);
-	NTP[3][1]=parseInt(NTP[3][1]);
-	NTP[4][1]=parseInt(NTP[4][1]);
+	try
+	{
+		NTP().Link=parseInt(NTP().Link);
+		NTP().Interval=parseInt(NTP().Interval);
+		NTP().TimeZone=NTP().TimeZone;
+		NTP().Debug=parseInt(NTP().Debug);
+		NTP().Priority=parseInt(NTP().Priority);
+	}
+	catch(e)
+	{
+		alert("Error en los parametros de NTP"+e.message);
+	}
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Actualizacion de hora mediante NTP</font><br />\n";
 	out+="\
 	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
@@ -792,7 +801,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"NTP[0][1]^=14;ReDraw(-1);\" "+((NTP[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"NTP().Link^=14;ReDraw(-1);\" "+((NTP().Link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -800,7 +809,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Server+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+NTP[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[NTP[0][1]][2]+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+NTP().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[NTP().Link][2]+"\" "+((NTP().Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -808,7 +817,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_ntp_Sync_tim+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP[1][1]=(this.value*1000);ReDraw(-1);\" value=\""+(NTP[1][1]/1000)+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP().Interval=(this.value*1000);ReDraw(-1);\" value=\""+(NTP().Interval/1000)+"\" "+((NTP().Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -816,7 +825,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_ntp_prio+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP[3][1]=this.value;ReDraw(-1);\" value=\""+NTP[3][1]+"\" "+((NTP[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"NTP().Priority=this.value;ReDraw(-1);\" value=\""+NTP().Priority+"\" "+((NTP().Link==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -824,8 +833,8 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Time_Zone+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<select class=\"CssSelect\" onchange=\"NTP[2][1]=parseInt(this.value);ReDraw(-1);\" "+((NTP[2][1]==0)?'disabled="true"':"")+">\n";
-			out+=GenOptions(OptTimeZone,NTP[2][1]);
+			<select class=\"CssSelect\" onchange=\"NTP().TimeZone=parseInt(this.value);ReDraw(-1);\" "+((NTP().Link==0)?'disabled="true"':"")+">\n";
+			out+=GenOptions(OptTimeZone,NTP.TimeZone);
 			out+="</select>\n\
 			</td>\n\
 		</tr>\n";
@@ -836,7 +845,7 @@ function ShwNtp()
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+" NTP</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"NTP[4][1]=this.value;ReDraw(-1);\" value=\""+NTP[4][1]+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"NTP().Debug=this.value;ReDraw(-1);\" value=\""+NTP().Debug+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -845,7 +854,7 @@ function ShwNtp()
 	return out;
 }
 
-function ShowDgvpConf(ObjID)
+function ShowDgvpConf()
 {
 	var idx=0;
 	var i=0;
@@ -861,7 +870,10 @@ function ShowDgvpConf(ObjID)
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"SdgvP.Link^=12;ReDraw(-1);\" "+((SdgvP.Link!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"SdgvP().Link^=12;ReDraw(-1);\" ";
+			if(SdgvP().Link!=0)
+				out+="checked=\"checked\"";
+			out+=" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -873,12 +885,12 @@ function ShowDgvpConf(ObjID)
 		out+="	</td>\n";
 		out+="	<td valign=\"middle\">\n";
 		//out+="		<input  value=\""+SdgvP.Link+"\" onkeyup=\"SdgvP.Link=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" />\n";
-		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+SdgvP.Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[SdgvP.Link][2]+"\" "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n";
+		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+SdgvP().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[SdgvP().Link][2]+"\" "+((SdgvP().Link==0)?'disabled="true"':"")+" />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 	}
 	//---------------------------------------------------------------------
-	for(var idx=0;idx<SdgvP.Tsk.length;idx++)
+	for(var idx=0;idx<SdgvP().Tsk.length;idx++)
 	{
 		out+="<tr align=\"left\" >\n";
 		out+="	<td align=\"left\">\n";
@@ -886,8 +898,8 @@ function ShowDgvpConf(ObjID)
 		out+="		<font size=\"1\" face=\"arial\">"+Str_period+"</font><br />\n";
 		out+="	</td>\n";
 		out+="	<td align=\"left\" valign=\"middle\">\n";
-		out+="		<input value=\""+SdgvP.Tsk[idx].IDsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP.SrvId=this.value;":"")+"SdgvP.Tsk["+idx+"].IDsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n<br/>";
-		out+="		<input value=\""+SdgvP.Tsk[idx].Period+"\" onkeyup=\"SdgvP.Tsk["+idx+"].Period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n";
+		out+="		<input value=\""+SdgvP().Tsk[idx].IDsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP.SrvId=this.value;":"")+"SdgvP().Tsk["+idx+"].IDsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n<br/>";
+		out+="		<input value=\""+SdgvP().Tsk[idx].Period+"\" onkeyup=\"SdgvP().Tsk["+idx+"].Period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 		/*//---------------------------------------------------------------------
@@ -939,18 +951,16 @@ function ShowDgvpConf(ObjID)
 	//---------------------------------------------------------------------*/
 	out+="</table>\n";
 	out+="<hr />\n";
-	if(ObjID!=null)
-		document.getElementById(ObjID).innerHTML=out;
 	return out;
 }
 
 function ShwSutec()
 {
-	OPCT[0][1]=parseInt(OPCT[0][1]);
-	OPCT[1][1]=parseInt(OPCT[1][1]);
-	OPCT[2][1]=parseInt(OPCT[2][1]);
-	OPCT[3][1]=parseInt(OPCT[3][1]);
-	OPCT[4][1]=parseInt(OPCT[4][1]);
+	OPCT()[0][1]=parseInt(OPCT()[0][1]);
+	OPCT()[1][1]=parseInt(OPCT()[1][1]);
+	OPCT()[2][1]=parseInt(OPCT()[2][1]);
+	OPCT()[3][1]=parseInt(OPCT()[3][1]);
+	OPCT()[4][1]=parseInt(OPCT()[4][1]);
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Protocolo compatible con equipos de Otro Fabricante</font><br />\n";
 	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
 		<tr align=\"left\">\n\
@@ -958,7 +968,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"OPCT[0][1]^=14;ReDraw(-1);\" "+((OPCT[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"OPCT()[0][1]^=14;ReDraw(-1);\" "+((OPCT()[0][1]!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -966,7 +976,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links["+OPCT[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links[OPCT[0][1]][2]+"\" "+((OPCT[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+OPCT()[0][1]+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[OPCT()[0][1]][2]+"\" "+((OPCT()[0][1]==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -974,7 +984,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_slave+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"OPCT[1][1]=this.value;ReDraw(-1);\"  value=\""+OPCT[1][1]+"\" "+((OPCT[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"OPCT()[1][1]=this.value;ReDraw(-1);\"  value=\""+OPCT()[1][1]+"\" "+((OPCT()[0][1]==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -982,7 +992,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Group+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT[2][1]=(this.value);ReDraw(-1);\" value=\""+OPCT[2][1]+"\" "+((OPCT[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT()[2][1]=(this.value);ReDraw(-1);\" value=\""+OPCT()[2][1]+"\" "+((OPCT()[0][1]==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -990,7 +1000,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Time_to_Normal_Mode+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT[3][1]=this.value;ReDraw(-1);\" value=\""+OPCT[3][1]+"\" "+((OPCT[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT()[3][1]=this.value;ReDraw(-1);\" value=\""+OPCT()[3][1]+"\" "+((OPCT()[0][1]==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -998,7 +1008,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_offset_inputs+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT[4][1]=this.value;ReDraw(-1);\" value=\""+OPCT[4][1]+"\" "+((OPCT[0][1]==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT()[4][1]=this.value;ReDraw(-1);\" value=\""+OPCT()[4][1]+"\" "+((OPCT()[0][1]==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
 	if(UsrLvl>2)
@@ -1008,20 +1018,20 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"OPCT[5][1]=this.value;ReDraw(-1);\" value=\""+OPCT[5][1]+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"OPCT()[5][1]=this.value;ReDraw(-1);\" value=\""+OPCT()[5][1]+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}
 	out+="</table>\n";
 	out+="<hr />";
 	return out;
-}
+}// */
 
 function ShwScoot()
 {
 	var count2=0;
-	var QtAnel = 1*(GlobalParms.Controllers);
-	var QtDem = 1*((9+parseInt(GlobalParms.Inputs)+parseInt(GlobalParms.Loops)));
+	var QtAnel = 1*(GlobalParms().Controllers);
+	var QtDem = 1*((9+parseInt(GlobalParms().Inputs)+parseInt(GlobalParms().Loops)));
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">"+Str_Config_OTU+"</font><br />\n";
 	out += "<table border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	out += "<tr>\n";
@@ -1032,7 +1042,7 @@ function ShwScoot()
 		out += "<tr >\n";
 		out += "<td align=\"center\" colspan=\"6\" bgcolor=\"#C0C0C0\">"+Str_Ctrl_OTU+"</td>\n"; /*bgcolor: cor de fundo #C0C0C0 rgb(192, 192, 192) */
 		out += "</tr>\n";
-		for(count2=0;count2<OTU.BitCofigRx.length;count2++)
+		for(count2=0;count2<OTU().BitCofigRx.length;count2++)
 		{
 			var Color="";
 			if ((count2%2)==1)
@@ -1046,16 +1056,16 @@ function ShwScoot()
 				out += " checked=\"checked\""
 			out += " />";
 			out += "</td>\n";
-			out += "<td align=\"center\"><font size=\"1\">"+(OTU.BitCofigRx[count2].NBit+1)+"</font></td>\n";
-			out += "<td align=\"left\"><font size=\"1\">("+OTU.BitCofigRx[count2].Fnc+")"+GetPrmFnc(OTU.BitCofigRx[count2].Fnc,0)+"</font></td>\n";
+			out += "<td align=\"center\"><font size=\"1\">"+(OTU().BitCofigRx[count2].NBit+1)+"</font></td>\n";
+			out += "<td align=\"left\"><font size=\"1\">("+OTU().BitCofigRx[count2].Fnc+")"+GetPrmFnc(OTU().BitCofigRx[count2].Fnc,0)+"</font></td>\n";
 			for(idx=0;idx<3;idx++)
 			{
-				if (GetPrmFnc(OTU.BitCofigRx[count2].Fnc,idx+2) == "0")
-					OTU.BitCofigRx[count2].Parms[idx]="0";
-				if (GetPrmFnc(OTU.BitCofigRx[count2].Fnc,idx+2) == "1")
-					OTU.BitCofigRx[count2].Parms[idx]="1";
-				if(OTU.BitCofigRx[count2].Parms[idx])
-					out += "<td align=\"center\"><font size=\"1\">"+OTU.BitCofigRx[count2].Parms[idx]+"</font></td>\n";
+				if (GetPrmFnc(OTU().BitCofigRx[count2].Fnc,idx+2) == "0")
+					OTU().BitCofigRx[count2].Parms[idx]="0";
+				if (GetPrmFnc(OTU().BitCofigRx[count2].Fnc,idx+2) == "1")
+					OTU().BitCofigRx[count2].Parms[idx]="1";
+				if(OTU().BitCofigRx[count2].Parms[idx])
+					out += "<td align=\"center\"><font size=\"1\">"+OTU().BitCofigRx[count2].Parms[idx]+"</font></td>\n";
 			}
 			out += "</tr>\n";
 		}
@@ -1069,7 +1079,7 @@ function ShwScoot()
 		out += "<tr>\n";
 		out += "<td align=\"center\" colspan=\"6\" bgcolor=\"#C0C0C0\">"+Str_Reply_OTU+"</td>\n";
 		out += "</tr>\n";
-		for(count2=0;count2<OTU.BitCofigTx.length;count2++)
+		for(count2=0;count2<OTU().BitCofigTx.length;count2++)
 		{
 			var Color="";
 			if ((count2%2)==1)
@@ -1083,16 +1093,16 @@ function ShwScoot()
 				out += " checked=\"checked\""
 			out += " />";
 			out += "</td>\n";
-			out += "<td align=\"center\"><font size=\"1\">"+(OTU.BitCofigTx[count2].NBit+1)+"</font></td>\n";
-			out += "<td align=\"left\"><font size=\"1\">("+OTU.BitCofigTx[count2].Fnc+")"+GetPrmFnc(OTU.BitCofigTx[count2].Fnc,0)+"</font></td>\n";
+			out += "<td align=\"center\"><font size=\"1\">"+(OTU().BitCofigTx[count2].NBit+1)+"</font></td>\n";
+			out += "<td align=\"left\"><font size=\"1\">("+OTU().BitCofigTx[count2].Fnc+")"+GetPrmFnc(OTU().BitCofigTx[count2].Fnc,0)+"</font></td>\n";
 			for(idx=0;idx<3;idx++)
 			{
-				if (GetPrmFnc(OTU.BitCofigTx[count2].Fnc,idx+2) == "0")
-					OTU.BitCofigTx[count2].Parms[idx]="0";
-				if (GetPrmFnc(OTU.BitCofigTx[count2].Fnc,idx+2) == "1")
-					OTU.BitCofigTx[count2].Parms[idx]="1";
-				if(OTU.BitCofigTx[count2].Parms[idx])
-					out += "<td align=\"center\"><font size=\"1\">"+OTU.BitCofigTx[count2].Parms[idx]+"</font></td>\n";
+				if (GetPrmFnc(OTU().BitCofigTx[count2].Fnc,idx+2) == "0")
+					OTU().BitCofigTx[count2].Parms[idx]="0";
+				if (GetPrmFnc(OTU().BitCofigTx[count2].Fnc,idx+2) == "1")
+					OTU().BitCofigTx[count2].Parms[idx]="1";
+				if(OTU().BitCofigTx[count2].Parms[idx])
+					out += "<td align=\"center\"><font size=\"1\">"+OTU().BitCofigTx[count2].Parms[idx]+"</font></td>\n";
 			}
 			out += "</tr>\n";
 		}
@@ -1109,13 +1119,13 @@ function ShwScoot()
 		out += "<font size=\"2\">Config G1 G2 bit</font>";
 		out += "</td>\n";
 		out += "<td align=\"center\" colspan=\"5\" >\n";
-		out += "<select class=\"INTEXT\" onchange=\"OTU.G1G2=this.value;ReDraw(-1);\" >\n";
-		OTU.G1G2&=3;
-		switch(OTU.G1G2)
+		out += "<select class=\"INTEXT\" onchange=\"OTU().G1G2=this.value;ReDraw(-1);\" >\n";
+		OTU().G1G2&=3;
+		switch(OTU().G1G2)
 		{
 			case 0:
 			case 3:
-				OTU.G1G2=0;
+				OTU().G1G2=0;
 				out += "<option value=\"0\" selected=\"selected\">"+Str_Lack+"</option>\n";
 				out += "<option value=\"1\">"+Str_FO+"</option>\n";
 				out += "<option value=\"2\">"+Str_Manual_CTRL+"</option>\n";
@@ -1140,15 +1150,15 @@ function ShwScoot()
 		out += "<font size=\"2\">Config FO bit</font>";
 		out += "</td>\n";
 		out += "<td align=\"center\" colspan=\"5\" >\n";
-		out += "<select class=\"INTEXT\" onchange=\"OTU.FO=this.value;ReDraw(-1);\" >\n";
-		if(OTU.FO == 0)
+		out += "<select class=\"INTEXT\" onchange=\"OTU().FO=this.value;ReDraw(-1);\" >\n";
+		if(OTU().FO == 0)
 			out += "<option value=\"0\" selected=\"selected\"> - </option>\n";
 		else
 			out += "<option value=\"0\"> - </option>\n";
 		for(var idx=0;idx<MaxNrBit;idx++)
 		{
 			out += "<option value=\""+(idx+1)+"\" ";
-			if((idx+1) == OTU.FO)
+			if((idx+1) == OTU().FO)
 				out +="selected=\"selected\"";
 			out += ">"+(idx+1)+"</option>\n";
 		}
@@ -1180,7 +1190,7 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_AOVT+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.Alert_Over_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms.Alert_Over_Voltage/100)+"\" />\n\
+	<input onchange=\"GlobalParms().Alert_Over_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms().Alert_Over_Voltage/100)+"\" />\n\
 	</td>\n\
 	</tr>\n";
 	out+="<tr align=\"left\">\n\
@@ -1188,7 +1198,7 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_EMVT+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.Error_Minimal_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms.Error_Minimal_Voltage/100)+"\" />\n\
+	<input onchange=\"GlobalParms().Error_Minimal_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms().Error_Minimal_Voltage/100)+"\" />\n\
 	</td>\n\
 	</tr>\n";
 	out+="<tr align=\"left\">\n\
@@ -1196,7 +1206,7 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_ECVT+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<input onchange=\"GlobalParms.Error_Critical_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms.Error_Critical_Voltage/100)+"\" />\n\
+	<input onchange=\"GlobalParms().Error_Critical_Voltage=(this.value*100)\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms().Error_Critical_Voltage/100)+"\" />\n\
 	</td>\n\
 	</tr>\n";
 	/*out+="<tr align=\"left\">\n\
@@ -1205,8 +1215,8 @@ function ShwAdvance()
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\">\n\
-	<select id=\"GlobalParms.LOG\" class=\"CssSelect\" onchange=\"\">\n";
-	out+=GenOptions(OptLogLinks,GlobalParms.LOG);
+	<select id=\"GlobalParms().LOG\" class=\"CssSelect\" onchange=\"\">\n";
+	out+=GenOptions(OptLogLinks,GlobalParms().LOG);
 	out+="</select>\n\
 	</font>\n\
 	</td>\n\
@@ -1219,8 +1229,8 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_FUT+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<select id=\"GlobalParms.Flashing\" class=\"CssSelect\" onchange=\"\">\n";
-	out+=GenOptions(OptFlashingHz,GlobalParms.Flashing);
+	<select id=\"GlobalParms().Flashing\" class=\"CssSelect\" onchange=\"\">\n";
+	out+=GenOptions(OptFlashingHz,GlobalParms().Flashing);
 	out+="</select>\n\
 	</td>\n\
 	<td>\n\
@@ -1233,7 +1243,7 @@ function ShwAdvance()
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\" >\n\
-	<input id=\"GlobalParms.FlasCA\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+GlobalParms.FlasCA+"\" />\n\
+	<input id=\"GlobalParms().FlasCA\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+GlobalParms().FlasCA+"\" />\n\
 	</font>\n\
 	</td>\n\
 	<td>\n\
@@ -1245,7 +1255,7 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_Time_Capture_Inputs+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<font size=\"1\" face=\"arial\" ><input id=\"GlobalParms.Time_Cap\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+GlobalParms.Time_Cap_In+"\" /></font>\n\
+	<font size=\"1\" face=\"arial\" ><input id=\"GlobalParms().Time_Cap\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+GlobalParms().Time_Cap_In+"\" /></font>\n\
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\">"+Str_GP_TCIT+"</font>\n\
@@ -1256,7 +1266,7 @@ function ShwAdvance()
 	<font size=\"1\" face=\"arial\">"+Str_GP_NVT+"</font>\n\
 	</td>\n\
 	<td>\n\
-	<font size=\"1\" face=\"arial\" ><input id=\"GlobalParms.Normal_Voltage\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms.Normal_Voltage/100)+"\" /></font>\n\
+	<font size=\"1\" face=\"arial\" ><input id=\"GlobalParms().Normal_Voltage\" type=\"text\" class=\"CssInText\" size=\"3\" value=\""+(GlobalParms().Normal_Voltage/100)+"\" /></font>\n\
 	</td>\n\
 	<td>\n\
 	<font size=\"1\" face=\"arial\">"+Str_GP_NVTC+"</font>\n\

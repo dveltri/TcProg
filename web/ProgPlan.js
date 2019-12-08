@@ -36,7 +36,7 @@ function UpdateTimes(PLC,Pln)
 		var Tev=0;
 		var sTPi=GetTpi(Pln.TP,0);
 		var Sts=PLC.Sts;
-		//-------------------------------------------
+		//------------------------------------------- ajusta tamaños de vectores
 		while(Pln.TP.length<Sts.length)
 			Pln.TP.push(0);
 		Pln.TP.length=Sts.length;
@@ -46,10 +46,11 @@ function UpdateTimes(PLC,Pln)
 		while(Pln.Logic.length<Sts.length)
 			Pln.Logic.push("");
 		Pln.Logic.length=Sts.length;
-		//-------------------------------------------
+		//------------------------------------------- convierte a enteros
 		for(var i=0;i<Sts.length;i++)
 		{
 			Pln.TP[i]=parseInt("0"+Pln.TP[i]);
+			TC+=Pln.TP[i];
 			Pln.Dem[i].Typ=parseInt("0"+Pln.Dem[i].Typ);
 			Pln.Dem[i].Num=parseInt("0"+Pln.Dem[i].Num);
 			Pln.Dem[i].Clr=parseInt("0"+Pln.Dem[i].Clr);
@@ -62,7 +63,10 @@ function UpdateTimes(PLC,Pln)
 		Pln.EV=parseInt("0"+Pln.EV);
 		Pln.T2S=new Array();
 		Pln.SEQ=new Array();
+		if(TC==0)
+			Pln.TP[0]=Pln.TC;
 		idx=0;
+		TC=0;
 		TPi=sTPi;
 		do
 		{
@@ -82,7 +86,7 @@ function UpdateTimes(PLC,Pln)
 			TPi=TPn;
 			idx++;
 		}
-		while(TPi!=sTPi);
+		while(TPi!=sTPi && idx<Pln.TP.length);
 		if(Pln.Typ==0)
 			Pln.TC=TC;
 		if(Pln.Typ==1)
@@ -179,7 +183,7 @@ function PlanModT(PLC,Plan,TC,TP,TPi)
 		if(Plan.Typ==0)			// para un plan tipo fijo
 		{
 			Plan.TP[TPi]=TP;
-			Plan.TC=UpdateTimes(PLCs[PlcIdx],Plan);
+			Plan.TC=UpdateTimes(PLCs()[PlcIdx],Plan);
 			return 1;
 		}
 		else					//para un plan syncronizado
@@ -262,17 +266,17 @@ function PlanModT(PLC,Plan,TC,TP,TPi)
 function ShowPlan()
 {
 	var out="";
-	var Pln=PLCs[PlcIdx].Plans[PlnIdx];
-	UpdateTimes(PLCs[PlcIdx],Pln);
-	var color=(16777215/PLCs[PlcIdx].Sts.length);
-	PLCs[PlcIdx].Sts.sort(sortN);
-	if(PLCs[PlcIdx].Plans)
+	var Pln=PLCs()[PlcIdx].Plans[PlnIdx];
+	UpdateTimes(PLCs()[PlcIdx],Pln);
+	var color=(16777215/PLCs()[PlcIdx].Sts.length);
+	PLCs()[PlcIdx].Sts.sort(sortN);
+	if(PLCs()[PlcIdx].Plans)
 	{
-		Pln.TP.length=PLCs[PlcIdx].Sts.length;
-		Pln.Logic.length=PLCs[PlcIdx].Sts.length;
+		Pln.TP.length=PLCs()[PlcIdx].Sts.length;
+		Pln.Logic.length=PLCs()[PlcIdx].Sts.length;
 		if(Pln.Typ==0)
 		{
-			PlanModT(PLCs[PlcIdx],Pln,null,Pln.TP[0],0);
+			PlanModT(PLCs()[PlcIdx],Pln,null,Pln.TP[0],0);
 		}
 	}
 	//--------------
@@ -284,16 +288,16 @@ function ShowPlan()
 	out+="</td>\n";
 	out+="<td align=\"center\" >\n";
 	out+="<select onchange=\"if(this.value==-1){PlnNew(0);}else{PlnIdx=parseInt(this.value);}ReDraw(-1);\" class=\"CssSelect\" >\n";
-	for (j=0;j<PLCs[PlcIdx].Plans.length;j++)
+	for (j=0;j<PLCs()[PlcIdx].Plans.length;j++)
 	{
 		out+="<option value=\""+j+"\" "+((PlnIdx==j)?"selected=\"selected\"":"")+">["+(j+1)+"](";
-		if(PLCs[PlcIdx].Plans[j].Typ==1)
+		if(PLCs()[PlcIdx].Plans[j].Typ==1)
 			out+="Sincronico";
 		else
 			out+="Asincronico";
-		out+=" Ciclo:"+PLCs[PlcIdx].Plans[j].TC;
-		if(PLCs[PlcIdx].Plans[j].Typ==1)
-			out+=" Offset:"+PLCs[PlcIdx].Plans[j].OF;
+		out+=" Ciclo:"+PLCs()[PlcIdx].Plans[j].TC;
+		if(PLCs()[PlcIdx].Plans[j].Typ==1)
+			out+=" Offset:"+PLCs()[PlcIdx].Plans[j].OF;
 		out+=")</option>\n";
 	}
 	out+="<option style=\"background-color:rgb(238,238,238)\" value=\"-1\">"+Str_New+"</option>\n";
@@ -307,7 +311,7 @@ function ShowPlan()
 	out+="</table>";
 	out+="<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	//--------------
-	if(PLCs[PlcIdx].Plans)
+	if(PLCs()[PlcIdx].Plans)
 	{
 		if(Pln.Typ==0)
 		{
@@ -340,7 +344,7 @@ function ShowPlan()
 }
 function PlnDel(pln)
 {
-	PLCs[PlcIdx].Plans.splice(pln,1);
+	PLCs()[PlcIdx].Plans.splice(pln,1);
 	for(var j=0;j<TimeScheduler.length;j++)
 	{
 		for(var h=0;h<TimeScheduler[TimeIdx].Hs.length;h++)
@@ -356,34 +360,34 @@ function PlnNew(typ)
 	var ev=0;
 	var STi=0;
 	var STe=0;
-	if(PLCs[PlcIdx].Plans && PLCs[PlcIdx].Plans.length)
-		PlnIdx=PLCs[PlcIdx].Plans.length;
+	if(PLCs()[PlcIdx].Plans && PLCs()[PlcIdx].Plans.length)
+		PlnIdx=PLCs()[PlcIdx].Plans.length;
 	else
-		PLCs[PlcIdx].Plans=new Array();
-	PLCs[PlcIdx].Plans[PlnIdx]=new Object();
-	PLCs[PlcIdx].Plans[PlnIdx].Typ=typ;
-	PLCs[PlcIdx].Plans[PlnIdx].OF=0;
-	PLCs[PlcIdx].Plans[PlnIdx].TC=0;
-	PLCs[PlcIdx].Plans[PlnIdx].EV=0;
-	PLCs[PlcIdx].Plans[PlnIdx].TP=new Array();
-	PLCs[PlcIdx].Plans[PlnIdx].Dem=new Array();
-	PLCs[PlcIdx].Plans[PlnIdx].Logic=new Array();
+		PLCs()[PlcIdx].Plans=new Array();
+	PLCs()[PlcIdx].Plans[PlnIdx]=new Object();
+	PLCs()[PlcIdx].Plans[PlnIdx].Typ=typ;
+	PLCs()[PlcIdx].Plans[PlnIdx].OF=0;
+	PLCs()[PlcIdx].Plans[PlnIdx].TC=0;
+	PLCs()[PlcIdx].Plans[PlnIdx].EV=0;
+	PLCs()[PlcIdx].Plans[PlnIdx].TP=new Array();
+	PLCs()[PlcIdx].Plans[PlnIdx].Dem=new Array();
+	PLCs()[PlcIdx].Plans[PlnIdx].Logic=new Array();
 	//---------------------------------------
-	PLCs[PlcIdx].Plans[PlnIdx].TP.length=PLCs[PlcIdx].Sts.length;
-	PLCs[PlcIdx].Plans[PlnIdx].TC=0;
+	PLCs()[PlcIdx].Plans[PlnIdx].TP.length=PLCs()[PlcIdx].Sts.length;
+	PLCs()[PlcIdx].Plans[PlnIdx].TC=0;
 	//---------------------------------------
-	for(j=0;j<PLCs[PlcIdx].Sts.length;j++)
+	for(j=0;j<PLCs()[PlcIdx].Sts.length;j++)
 	{
-		STe=(PLCs[PlcIdx].Sts.length+j+1);
-		STe=(STe%PLCs[PlcIdx].Sts.length);
+		STe=(PLCs()[PlcIdx].Sts.length+j+1);
+		STe=(STe%PLCs()[PlcIdx].Sts.length);
 		STi=j;
-		PLCs[PlcIdx].Plans[PlnIdx].TP[j]=10;
-		PLCs[PlcIdx].Plans[PlnIdx].TP[j]+=GetEvT(PLCs[PlcIdx].Sts,STi,STe);
-		PLCs[PlcIdx].Plans[PlnIdx].TP[j]+=GetTmin(PLCs[PlcIdx],j);
-		PLCs[PlcIdx].Plans[PlnIdx].TC+=PLCs[PlcIdx].Plans[PlnIdx].TP[j];
-		PLCs[PlcIdx].Plans[PlnIdx].Logic[j]="";
+		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]=10;
+		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]+=GetEvT(PLCs()[PlcIdx].Sts,STi,STe);
+		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]+=GetTmin(PLCs()[PlcIdx],j);
+		PLCs()[PlcIdx].Plans[PlnIdx].TC+=PLCs()[PlcIdx].Plans[PlnIdx].TP[j];
+		PLCs()[PlcIdx].Plans[PlnIdx].Logic[j]="";
 	}
-	UpdateTimes(PLCs[PlcIdx],PLCs[PlcIdx].Plans[PlnIdx]);
+	UpdateTimes(PLCs()[PlcIdx],PLCs()[PlcIdx].Plans[PlnIdx]);
 }
 
 //------------------------------------------
@@ -400,8 +404,8 @@ function ShwPlanConf()
 	var Tev=0;
 	var Tmin=0;
 	var j=0;
-	var pln=PLCs[PlcIdx].Plans[PlnIdx];
-	pln.TC=UpdateTimes(PLCs[PlcIdx],pln);
+	var pln=PLCs()[PlcIdx].Plans[PlnIdx];
+	pln.TC=UpdateTimes(PLCs()[PlcIdx],pln);
 	out+="	<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	//--------------
 	out+="	<tr bgcolor=\"#ccc\">\n";
@@ -418,7 +422,7 @@ function ShwPlanConf()
 	out+="			<font size=\"2\" face=\"arial\">"+Str_Type+"</font>"
 	out+="		</td>\n";
 	out+="		<td align=\"center\" >\n";
-	out+="			<select onchange=\"PLCs[PlcIdx].Plans[PlnIdx].Typ=parseInt(this.value);ReDraw(-1);\" class=\"CssSelect\" >\n";
+	out+="			<select onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].Typ=parseInt(this.value);ReDraw(-1);\" class=\"CssSelect\" >\n";
 	out+=GenOptions(OptTypPln,pln.Typ);
 	out+="			</select>\n";
 	out+="		</td>\n";
@@ -431,10 +435,10 @@ function ShwPlanConf()
 		out+="		<font size=\"2\" face=\"arial\">"+Str_Sync_Ref+"</font>"
 		out+="		</td>\n";
 		out+="		<td align=\"center\" >\n";
-		out+="			<select onchange=\"PLCs["+PlcIdx+"].SyncRef=this.value;ReDraw(-1);\" class=\"CssSelect\" >\n";
-		out+=GenOptions(OptSycPot,PLCs[PlcIdx].SyncRef);
+		out+="			<select onchange=\"PLCs()["+PlcIdx+"].SyncRef=this.value;ReDraw(-1);\" class=\"CssSelect\" >\n";
+		out+=GenOptions(OptSycPot,PLCs()[PlcIdx].SyncRef);
 		out+="			</select>\n";
-		//out+="		<input value=\""+PLCs[PlcIdx].SyncRef+"\" onchange=\"PLCs["+PlcIdx+"].SyncRef=this.value;\" size=\"15\"  class=\"CssInText\" />";
+		//out+="		<input value=\""+PLCs()[PlcIdx].SyncRef+"\" onchange=\"PLCs()["+PlcIdx+"].SyncRef=this.value;\" size=\"15\"  class=\"CssInText\" />";
 		out+="		</td>\n";
 		out+="	 </tr>\n";
 	//		--------------
@@ -443,7 +447,7 @@ function ShwPlanConf()
 		out+="		<font size=\"2\" face=\"arial\">"+Str_GB_Temp_All_Cicle+"</font>"
 		out+="		</td>\n";
 		out+="		<td align=\"center\" >\n";
-		out+="		<input value=\""+pln.TC+"\" onchange=\"PlanModT(PLCs[PlcIdx],PLCs[PlcIdx].Plans[PlnIdx],this.value,null,null);ReDraw(-1);\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" /><font size=\"1\" face=\"arial\">segs</font><br/>\n";
+		out+="		<input value=\""+pln.TC+"\" onchange=\"PlanModT(PLCs()[PlcIdx],PLCs()[PlcIdx].Plans[PlnIdx],this.value,null,null);ReDraw(-1);\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" /><font size=\"1\" face=\"arial\">segs</font><br/>\n";
 		out+="		</td>\n";
 		out+="	 </tr>\n";
 	//		--------------
@@ -452,7 +456,7 @@ function ShwPlanConf()
 		out+="		<font size=\"2\" face=\"arial\">"+Str_GB_Discrepancy+"</font>"
 		out+="		</td>\n";
 		out+="		<td align=\"center\" >\n";
-		out+="		<input value=\""+pln.OF+"\" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].OF=this.value;\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" /><font size=\"1\" face=\"arial\">segs</font><br/>\n";
+		out+="		<input value=\""+pln.OF+"\" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].OF=this.value;\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" /><font size=\"1\" face=\"arial\">segs</font><br/>\n";
 		out+="		</td>\n";
 		out+="	 </tr>\n";
 	}
@@ -462,7 +466,7 @@ function ShwPlanConf()
 	out+="		<font size=\"2\" face=\"arial\">"+Str_Stage_EV+"</font>"
 	out+="		</td>\n";
 	out+="		<td align=\"center\" >\n";
-	out+="		<select onchange=\"PLCs[PlcIdx].Plans[PlnIdx].EV=parseInt(this.value);ReDraw(-1);\" class=\"CssSelect\" >\n";
+	out+="		<select onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].EV=parseInt(this.value);ReDraw(-1);\" class=\"CssSelect\" >\n";
 	out+="		 <option value=\"0\" "+((pln.EV==0)?"selected=\"selected\"":"")+">"+Str_End+"</option>\n";
 	out+="		 <option value=\"1\" "+((pln.EV==1)?"selected=\"selected\"":"")+">"+Str_Start+"</option>\n";
 	out+="		</select>\n";
@@ -489,12 +493,12 @@ function ShwPlanConf()
 		outD+="	<td "+col+" align=\"center\"><input type=\"button\" onclick=\""
 		if(pln.TP[j]!=0)
 			outD+="var rtr=ShwAddDem("+j+");showFlyMnu(event,{idx:10000,HTML:rtr,TimeOut:0});";
-		outD+="\" value=\""+Str_Status+":"+PLCs[PlcIdx].Sts[j].Name+"\"	class=\"CssBtn\" "+col+" /></td>\n";
-		outT+="	<td "+col+" align=\"center\"><input value=\""+pln.TP[j]+"\" onchange=\"PlanModT(PLCs[PlcIdx],PLCs[PlcIdx].Plans[PlnIdx],null,this.value,"+j+");ReDraw(-1);\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" "+col+" /><font size=\"1\" face=\"arial\">segs</font></td>\n";
+		outD+="\" value=\""+Str_Status+":"+PLCs()[PlcIdx].Sts[j].Name+"\"	class=\"CssBtn\" "+col+" /></td>\n";
+		outT+="	<td "+col+" align=\"center\"><input value=\""+pln.TP[j]+"\" onchange=\"PlanModT(PLCs()[PlcIdx],PLCs()[PlcIdx].Plans[PlnIdx],null,this.value,"+j+");ReDraw(-1);\" size=\"3\" maxlength=\"3\" type=\"text\" class=\"CssInText\" "+col+" /><font size=\"1\" face=\"arial\">segs</font></td>\n";
 		outN+="	<td "+col+" align=\"center\"><font size=\"1\" face=\"arial\">";
 		if(pln.Dem[j].Typ!=0 && pln.Dem[j].Num!=0)
 		{
-			//outN+="<input type=\"checkbox\" onclick=\"PLCs[PlcIdx].Plans[PlnIdx].Dem["+j+"].Sim^=1;ReDraw(-1);\" "+((pln.Dem["+j+"].Sim&1)?"checked=\"checked\"":"")+" /><br/>\n";
+			//outN+="<input type=\"checkbox\" onclick=\"PLCs()[PlcIdx].Plans[PlnIdx].Dem["+j+"].Sim^=1;ReDraw(-1);\" "+((pln.Dem["+j+"].Sim&1)?"checked=\"checked\"":"")+" /><br/>\n";
 			outN+="<font size=\"2\" face=\"arial\">";
 			if(pln.Typ==0)
 				outN+=OptAsyDem[(pln.Dem[j].Typ*2)+1]+"<br/>\n";
@@ -553,7 +557,7 @@ function ShwPlanConf()
 		out+="<tr bgcolor=\"#ddd\">\n";
 		out+="<td colspan=\"2\" >\n";
 		out+="<font size=\"1\" face=\"arial\">"+Str_Diming+"</font>\n";
-		out+="<input type=\"checkbox\" onclick=\"PLCs[PlcIdx].Plans[PlnIdx].DimTyp=(this.checked?1:0);ReDraw(-1);\" "+(pln.DimTyp!=0?"checked=\"checked\"":"")+" />\n";
+		out+="<input type=\"checkbox\" onclick=\"PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=(this.checked?1:0);ReDraw(-1);\" "+(pln.DimTyp!=0?"checked=\"checked\"":"")+" />\n";
 		out+="</td>\n";
 		out+="</tr>\n";
 		if(pln.DimTyp>0)
@@ -561,11 +565,11 @@ function ShwPlanConf()
 			out+="<tr bgcolor=\"#ddd\">\n";
 			out+="<td >\n";
 			out+="<font size=\"1\" face=\"arial\">"+Str_All_Phases+"</font>\n";
-			out+="<input type=\"radio\" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].DimTyp=1;ReDraw(-1);\" "+(pln.DimTyp==1?"checked=\"checked\"":"")+" />\n";
+			out+="<input type=\"radio\" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=1;ReDraw(-1);\" "+(pln.DimTyp==1?"checked=\"checked\"":"")+" />\n";
 			out+="</td>\n";
 			out+="<td >\n";
 			out+="<font size=\"1\" face=\"arial\">"+Str_Individual_Phase+"</font>\n";
-			out+="<input type=\"radio\" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].DimTyp=2;ReDraw(-1);\" "+(pln.DimTyp==2?"checked=\"checked\"":"")+" />\n";
+			out+="<input type=\"radio\" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=2;ReDraw(-1);\" "+(pln.DimTyp==2?"checked=\"checked\"":"")+" />\n";
 			out+="</td>\n";
 			out+="</tr>\n";
 			if(pln.DimTyp==1)
@@ -578,23 +582,23 @@ function ShwPlanConf()
 					out+="<td >\n";
 					out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\"";
 					out+=pln.Dim[0];
-					out+="\" size=\"4\" maxlength=\"3\" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].Dim[0]=this.value;\" />\n";
+					out+="\" size=\"4\" maxlength=\"3\" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].Dim[0]=this.value;\" />\n";
 					out+="</td>\n";
 					out+="</tr>\n";
 			}
 			if(pln.DimTyp==2)
 			{
-				for(j=0;j<PHASEs.length;j++)	
+				for(j=0;j<PHASEs().length;j++)	
 				{
 					if(!pln.Dim[j])pln.Dim[j]=100;
 					out+="<tr bgcolor=\"#ddd\">\n";
 					out+="<td >\n";
-					out+="<font size=\"1\" face=\"arial\">"+PHASEs[j].Name+"(%)</font>\n";
+					out+="<font size=\"1\" face=\"arial\">"+PHASEs()[j].Name+"(%)</font>\n";
 					out+="</td>\n";
 					out+="<td >\n";
 					out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\"";
 					out+=pln.Dim[j];
-					out+="\" size=\"4\" maxlength=\"3\" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].Dim["+j+"]=this.value;\" />\n";
+					out+="\" size=\"4\" maxlength=\"3\" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].Dim["+j+"]=this.value;\" />\n";
 					out+="</td>\n";
 					out+="</tr>\n";
 				}
@@ -608,32 +612,32 @@ function SetInUsed(val,stp)
 {
 	stp=parseInt(stp);
 	val=parseInt(val);
-	if(PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].Num!=0)
+	if(PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].Num!=0)
 	{
-		IOs[PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].Num-1].Used="";
-		PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].IO=null;
+		IOs[PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].Num-1].Used="";
+		PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].IO=null;
 	}
 	if(val!=0)
 	{
 		IOs[val-1].Used=(PlnIdx+1)+","+Str_Step+":"+(stp+1);
-		PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].IO=IOs[val-1];
+		PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].IO=IOs[val-1];
 	}
-	PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].Num=val;
+	PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].Num=val;
 }
 function ShwAddDem(stp)
 {
 	var out="";
 	var i=0;
-	var pln=PLCs[PlcIdx].Plans[PlnIdx];
+	var pln=PLCs()[PlcIdx].Plans[PlnIdx];
 	var col="style=\"background-color:rgba("+(255*(stp&4))+","+(255*(stp&2))+","+(255*(stp&1))+",0.2);\"";
 	out+="<table border=\"0\" class=\"table1\" align=\"center\" >\n";
 	//-------------------------------------------------------------------
 	out+="<tr>\n";
 	out+="<td "+col+" >\n";
-	out+="<font size=\"1\" face=\"Verdana\">"+PLCs[PlcIdx].Sts[stp].Name+":Typo de Estado</font>\n";
+	out+="<font size=\"1\" face=\"Verdana\">"+PLCs()[PlcIdx].Sts[stp].Name+":Typo de Estado</font>\n";
 	out+="</td>\n";
 	out+="<td "+col+" >\n";
-	out+="<select class=\"CssSelect\" "+col+" onchange=\"PLCs[PlcIdx].Plans[PlnIdx].Dem["+stp+"].Typ=parseInt(this.value);FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
+	out+="<select class=\"CssSelect\" "+col+" onchange=\"PLCs()[PlcIdx].Plans[PlnIdx].Dem["+stp+"].Typ=parseInt(this.value);FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
 	if(pln.Typ==0)
 		out+=GenOptions(OptAsyDem,pln.Dem[stp].Typ);
 	if(pln.Typ==1)
@@ -674,8 +678,8 @@ function ShwAddDem(stp)
 			out+="<font size=\"1\" face=\"Verdana\">Limpiar demanda al:</font>\n";
 			out+="	</td>\n";
 			out+="	<td>\n";
-			out+="<select class=\"CssSelect\" onchange=\"PLCs["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Clr=this.value;FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
-			out+=GenOptions(OptDemClr,PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].Clr);
+			out+="<select class=\"CssSelect\" onchange=\"PLCs()["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Clr=this.value;FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
+			out+=GenOptions(OptDemClr,PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].Clr);
 			out+="</select>\n";
 			out+="	</td>\n";
 			out+=" </tr>\n";
@@ -688,8 +692,8 @@ function ShwAddDem(stp)
 			out+="<font size=\"1\" face=\"Verdana\">Atender la demanda:</font>\n";
 			out+="	</td>\n";
 			out+="	<td>\n";
-			out+="<select class=\"CssSelect\" onchange=\"PLCs["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
-			out+=GenOptions(OptDemT2Dt,PLCs[PlcIdx].Plans[PlnIdx].Dem[stp].Dat[0]);
+			out+="<select class=\"CssSelect\" onchange=\"PLCs()["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;FlyMnu.innerHTML=ShwAddDem("+stp+");\">\n";
+			out+=GenOptions(OptDemT2Dt,PLCs()[PlcIdx].Plans[PlnIdx].Dem[stp].Dat[0]);
 			out+="</select>\n";
 			out+="	</td>\n";
 			out+=" </tr>\n";
@@ -706,7 +710,7 @@ function ShwAddDem(stp)
 				out+="	<td>\n";
 				if(!pln.Dem[stp].Dat[0])
 					pln.Dem[stp].Dat[0]=5;
-				out+="	<input value=\""+pln.Dem[stp].Dat[0]+"\" onchange=\"PLCs["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;\" size=\"2\"  class=\"CssInText\" />";
+				out+="	<input value=\""+pln.Dem[stp].Dat[0]+"\" onchange=\"PLCs()["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;\" size=\"2\"  class=\"CssInText\" />";
 				out+="	</td>\n";
 				out+=" </tr>\n";
 				out+=" <tr>\n";
@@ -716,7 +720,7 @@ function ShwAddDem(stp)
 				out+="	<td>\n";
 				if(!pln.Dem[stp].Dat[1])
 					pln.Dem[stp].Dat[1]=pln.TP[stp];
-				out+="	<input value=\""+pln.Dem[stp].Dat[1]+"\" onchange=\"PLCs["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[1]=this.value;\" size=\"2\"  class=\"CssInText\" />";
+				out+="	<input value=\""+pln.Dem[stp].Dat[1]+"\" onchange=\"PLCs()["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[1]=this.value;\" size=\"2\"  class=\"CssInText\" />";
 				out+="	</td>\n";
 				out+=" </tr>\n";
 			}
@@ -728,8 +732,8 @@ function ShwAddDem(stp)
 				out+="	</td>\n";
 				out+="	<td>\n";
 				if(!pln.Dem[stp].Dat[0])
-					pln.Dem[stp].Dat[0]=pln.TP[stp]-GetTmin(PLCs[PlcIdx],stp);
-				out+="	<input value=\""+pln.Dem[stp].Dat[0]+"\" onchange=\"PLCs["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;\" size=\"2\"  class=\"CssInText\" />";
+					pln.Dem[stp].Dat[0]=pln.TP[stp]-GetTmin(PLCs()[PlcIdx],stp);
+				out+="	<input value=\""+pln.Dem[stp].Dat[0]+"\" onchange=\"PLCs()["+PlcIdx+"].Plans["+PlnIdx+"].Dem["+stp+"].Dat[0]=this.value;\" size=\"2\"  class=\"CssInText\" />";
 				out+="	</td>\n";
 				out+=" </tr>\n";
 			}
@@ -769,37 +773,58 @@ function ShwAddDem(stp)
 }
 
 //------------------------------------------
+ /*
+	 Devuelve el el anterior numero de paso de el
+	 que pide si tiene un tiempo diferente de 0
+	 asignado de lo contrario busca hasta encontrar uno
+ */
 function GetTpp(TP,S)
 {
 		S+=TP.length;
 		S--;
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S+=TP.length;
 			S--;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }
+ /*
+	 Devuelve el numero de paso que se le pide
+	 si tiene un tiempo diferente de 0 asignado
+	 de lo contrario busca hasta encontrar uno
+ */
 function GetTpi(TP,S)
 {
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S++;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }
+ /*
+	 Devuelve el el proximo numero de paso de el
+	 que pide si tiene un tiempo diferente de 0
+	 asignado de lo contrario busca hasta encontrar uno
+ */
 function GetTpn(TP,S)
 {
 		S++;
 		S=(S%TP.length);
-		while(TP[S]==0)
+		var i=0;
+		while(TP[S]==0 && i<TP.length)
 		{
 			S++;
 			S=(S%TP.length);
+			i++;
 		}
 		return S;
 }
@@ -829,7 +854,7 @@ function GraphPlanSync(Plan)
 	var x,y;
 	var width=600;
 	var height=600 ;
-	var PLC=PLCs[PlcIdx];
+	var PLC=PLCs()[PlcIdx];
 	//------------------
 	UpdateTimes(PLC,Plan);
 	out+="<svg width=\""+width+"\" height=\""+height+"\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
@@ -847,9 +872,9 @@ function GraphPlanSync(Plan)
 			if(Plan.Dem[TPi].Sim==0)
 				TPc=TPp;// */
 		if(Plan.EV==1)
-			Tev=GetEvT(PLCs[PlcIdx].Sts,TPp,TPc);
+			Tev=GetEvT(PLCs()[PlcIdx].Sts,TPp,TPc);
 		else
-			Tev=GetEvT(PLCs[PlcIdx].Sts,TPc,TPn);
+			Tev=GetEvT(PLCs()[PlcIdx].Sts,TPc,TPn);
 		//------------------------------- Entre verde ini
 		if(TPc==TPi)
 		{
@@ -873,7 +898,7 @@ function GraphPlanSync(Plan)
 		//------------------------------- t min */
 		if(TPc==TPi)
 		{
-			tm=GetTmin2(PLCs[PlcIdx],TPp,TPi);
+			tm=GetTmin2(PLCs()[PlcIdx],TPp,TPi);
 			r=(tm/(Plan.TC/2));
 			x=Math.round(Math.round(width/2)+(Math.round(width/3)*Math.sin((dg+(r/2))*Math.PI)));
 			y=Math.round(Math.round(height/2)-(Math.round(height/3)*Math.cos((dg+(r/2))*Math.PI)));
@@ -926,7 +951,7 @@ function GraphPlanSync(Plan)
 				of+=Tev;
 		for (c=0;c<PLC.Sts[TPc].Colors.length;c++) 
 		{
-			if(PHASEs[PLC.Sts[TPc].Colors.length-(c+1)].PLC&(1<<PlcIdx))
+			if(PHASEs()[PLC.Sts[TPc].Colors.length-(c+1)].PLC&(1<<PlcIdx))
 			{
 				r=Math.round((((width+height)/2)/2)/4)+Math.round((100/PLC.Sts[TPc].Colors.length)*(c+1)*100)/100
 				g=Math.round(Math.PI*r*2*100)/100;
@@ -1014,7 +1039,7 @@ function EdStsTp(ths,evnt,TPi,xstp,X,X1,X2)
 		X=Math.round(X);
 		tmp.x.baseVal.value=(TP2Ed.X-25)+(X*TP2Ed.xstp);
 		X=Math.round((tmp.x.baseVal.value+25-TP2Ed.X1)/TP2Ed.xstp);
-		PlanModT(PLCs[PlcIdx],PLCs[PlcIdx].Plans[PlnIdx],null,X,TP2Ed.TPi);
+		PlanModT(PLCs()[PlcIdx],PLCs()[PlcIdx].Plans[PlnIdx],null,X,TP2Ed.TPi);
 		TP2Ed.id="";
 		ReDraw(-1);
 	}
@@ -1040,7 +1065,7 @@ function GraphPlanAislado(width,Plan)
 	var X=0;
 	var X2=0;
 	var Y=0;
-	UpdateTimes(PLCs[PlcIdx],Plan);
+	UpdateTimes(PLCs()[PlcIdx],Plan);
 	fullscaleX = Math.round(width*0.9);
 	var	xstp = Math.round(fullscaleX/Plan.TC);
 	fullscaleX = xstp*Plan.TC;
@@ -1050,9 +1075,9 @@ function GraphPlanAislado(width,Plan)
 	var Yofdw = 10;
 	var ystp = 30;
 	//------------------------------------------------------
-	for (c=0;c<PHASEs.length;c++) 
+	for (c=0;c<PHASEs().length;c++) 
 	{
-		if(PHASEs[c].PLC&(1<<PlcIdx))
+		if(PHASEs()[c].PLC&(1<<PlcIdx))
 		{
 			height++;
 		}
@@ -1068,19 +1093,19 @@ function GraphPlanAislado(width,Plan)
 		TPn=GetTpn(Plan.TP,TPi);
 		if(Plan.EV==0)
 		{
-			tm=GetTmin2(PLCs[PlcIdx],TPi,TPn);
-			Tev=GetEvT(PLCs[PlcIdx].Sts,TPi,TPn);
+			tm=GetTmin2(PLCs()[PlcIdx],TPi,TPn);
+			Tev=GetEvT(PLCs()[PlcIdx].Sts,TPi,TPn);
 		}
 		else
 		{
-			tm=GetTmin2(PLCs[PlcIdx],TPp,TPi);
-			Tev=GetEvT(PLCs[PlcIdx].Sts,TPp,TPi);
+			tm=GetTmin2(PLCs()[PlcIdx],TPp,TPi);
+			Tev=GetEvT(PLCs()[PlcIdx].Sts,TPp,TPi);
 		}
 		//---------------------------------	entre verde inicio
 		if(Plan.EV==1)
 		{
 			svg+="<text x=\""+X+"\" y=\""+(Yof-14)+"\" fill=\"#000000\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" >";
-			svg+="["+PLCs[PlcIdx].Sts[TPi].Name+"->"+PLCs[PlcIdx].Sts[TPn].Name+":"+Tev+"s]";
+			svg+="["+PLCs()[PlcIdx].Sts[TPi].Name+"->"+PLCs()[PlcIdx].Sts[TPn].Name+":"+Tev+"s]";
 			svg+="</text>";
 			svg+="<rect id=\"rEv"+TPi+"\" x=\""+X+"\" y=\""+(Yof-10)+"\" width=\""+(Tev*xstp)+"\" height=\""+((height*ystp)+0)+"\" ";
 			svg+="onmouseup=\"EdStsTp(this,event,0,0,0,0,0)\" onmousemove=\"EdStsTp(this,event,0,0,0,0,0)\" fill=\"rgba(192,192,128,0.7)\" stroke=\"#808000\" stroke-width=\"1\" />";
@@ -1099,17 +1124,17 @@ function GraphPlanAislado(width,Plan)
 					<path d=\"M24 40 L24 20 L0 10 L25 0 L50 10 L26 20 L26 40 L25 40 L25 0 Z\" stroke=\"rgba(32,32,32,1)\" fill=\"rgba(128,255,128,0.5)\" style=\"cursor: move;\" />\
 					</svg>";
 		//---------------------------------	estado
-		svg+="<text x=\""+(X+(X2/2))+"\" y=\""+(Yof+((height*ystp)+4))+"\" fill=\"#000000\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" >["+PLCs[PlcIdx].Sts[TPi].Name+":"+(Plan.TP[TPi])+"s]</text>";
+		svg+="<text x=\""+(X+(X2/2))+"\" y=\""+(Yof+((height*ystp)+4))+"\" fill=\"#000000\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" >["+PLCs()[PlcIdx].Sts[TPi].Name+":"+(Plan.TP[TPi])+"s]</text>";
 		svg+="<rect x=\""+X+"\" y=\""+(Yof-10)+"\" width=\""+X2+"\" height=\""+((height*ystp)+0)+"\" fill=\"rgba("+(255*(TPi&4))+","+(255*(TPi&2))+","+(255*(TPi&1))+",0.2)\" id=\"rcEdStsTp"+TPi+"\" onmouseup=\"EdStsTp(this,event,0,0,0,0,0)\" onmousemove=\"EdStsTp(this,event,0,0,0,0,0)\" stroke=\"#808000\" stroke-width=\"1\" />";
 		svg+="<text x=\""+X+"\" y=\""+(Yof-14)+"\" fill=\"#000000\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" >";
 		svg+="[Tmin:"+tm+"s]";
 		svg+="</text>";																								// "+(255*(TPi&4))+","+(255*(TPi&2))+","+(255*(TPi&1))+"
 		svg+="<rect x=\""+X+"\" y=\""+(Yof-10)+"\" width=\""+(tm*xstp)+"\" height=\""+((height*ystp)+0)+"\" fill=\"rgba(64,64,64,0.2)\" id=\"rTm"+TPi+"\" onmouseup=\"EdStsTp(this,event,0,0,0,0,0)\" onmousemove=\"EdStsTp(this,event,0,0,0,0,0)\" stroke=\"#808080\" stroke-width=\"1\" />";
-		for (c=0;c<PLCs[PlcIdx].Sts[TPi].Colors.length;c++) 
+		for (c=0;c<PLCs()[PlcIdx].Sts[TPi].Colors.length;c++) 
 		{
-			if(PHASEs[c].PLC&(1<<PlcIdx))
+			if(PHASEs()[c].PLC&(1<<PlcIdx))
 			{
-				ccode=PLCs[PlcIdx].Sts[TPi].Colors[c];
+				ccode=PLCs()[PlcIdx].Sts[TPi].Colors[c];
 				Y=(Yof+(ystp*c));
 				svg+=MkLine(ccode,Y,X,(X+X2),0,width);
 			}
@@ -1119,7 +1144,7 @@ function GraphPlanAislado(width,Plan)
 		if(Plan.EV==0)
 		{
 			svg+="<text x=\""+X+"\" y=\""+(Yof-14)+"\" fill=\"#000000\" stroke-width=\"0\" font-size=\"10\" font-family=\"Monospace\" text-anchor=\"start\" >";
-			svg+="["+PLCs[PlcIdx].Sts[TPi].Name+"->"+PLCs[PlcIdx].Sts[TPn].Name+":"+Tev+"s]";
+			svg+="["+PLCs()[PlcIdx].Sts[TPi].Name+"->"+PLCs()[PlcIdx].Sts[TPn].Name+":"+Tev+"s]";
 			svg+="</text>";
 			svg+="<rect id=\"rEv"+TPi+"\" x=\""+X+"\" y=\""+(Yof-10)+"\" width=\""+(Tev*xstp)+"\" height=\""+((height*ystp)+0)+"\" ";
 			svg+="onmouseup=\"EdStsTp(this,event,0,0,0,0,0)\" onmousemove=\"EdStsTp(this,event,0,0,0,0,0)\" fill=\"rgba(192,192,128,0.7)\" stroke=\"#808000\" stroke-width=\"1\" />";
@@ -1183,7 +1208,7 @@ function SavePlan(PLC,Parms,Plan)
 		}
 		if(Plan.DimTyp!=0)
 		{
-			for(var j=0;j<PHASEs.length;j++)
+			for(var j=0;j<PHASEs().length;j++)
 			{
 				if(!Plan.Dim[j])Plan.Dim[j]=100;
 				if(Plan.DimTyp==2)

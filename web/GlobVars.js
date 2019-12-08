@@ -1,7 +1,20 @@
 var PrgBk= new Array();
 var PrgEd= new Array();
-//var SrcFiles=	['/startup.ini','/phconf.ini','/plcs.ini',PLCs[PlcIdx].Sec,PLCs[PlcIdx].Scheduler,'/ip.ini','/ntp.ini','/opct.ini','/gps.ini','/dgvp.ini','/sdgvp.ini','/error.ini','/plans.ini','/def_in.ini'];
-//var SrcFunc=	[RcvStartup			,RcvPhConf		,RcvPlc		 ,RcvSec					,RcvAgenda						 ,RcvIP		 ,RcvNTP		,RcvOPCT		,RcvGPS		 ,RcvDgvP		 ,RcvSdgvp		,RcvError		 ,RcvES3			,RcvDefIn			];
+/*var SrcFiles=[
+	'/startup.ini',RcvStartup,
+	'/phconf.ini',RcvPhConf,
+	'/plcs.ini',RcvPlc,
+	GetSec(SrcIdx,PlcIdx),RcvSec,
+	GetSch(SrcIdx,PlcIdx),RcvAgenda, 
+	'/ip.ini',RcvIP, 
+	'/ntp.ini' ,RcvNTP,
+	'/opct.ini',RcvOPCT,
+	'/gps.ini',RcvGPS,
+	'/dgvp.ini',RcvDgvP,
+	'/sdgvp.ini',RcvSdgvp,
+	'/error.ini',RcvError,
+	'/plans.ini',RcvES3,
+	'/def_in.ini',RcvDefIn]; //*/ 
 //--------------------------------------------------
 var SrcIdx=0;
 var TrgIdx=0;
@@ -45,42 +58,8 @@ var touchduration = 500; //length of time we want the user to touch before we do
 //--------------------
 var url="";
 var FlyMnu;
-var GlobalVars=new Object();
 //-------------------------------------------------- Objetos de systema
-var AllConf = new Object();
-AllConf.GlobalParms = new Object();
-AllConf.PLCs = new Array();
-AllConf.PHASEs = new Array();
-AllConf.IOs = new Array();
-AllConf.Srv = new Array();
-AllConf.Links = new Array();
-AllConf.NTP = new Array();
-AllConf.GPS = new Array();
-AllConf.ErrorsCfg = new Array();
-AllConf.OTU = new Object();
-AllConf.DefIn = new Array();
-AllConf.OPCT = new Array();
-AllConf.Mstr = new Object();
-AllConf.Iteris = new Object();
-AllConf.DgvSoft = new Array();
-//----------------------------------------------------
-var GlobalParms = AllConf.GlobalParms;
-var PLCs = AllConf.PLCs;
-var PHASEs = AllConf.PHASEs;
-var IOs = AllConf.IOs;
-var Srv = AllConf.Srv;
-var Links = AllConf.Links;
-var NTP = AllConf.NTP;
-var GPS =AllConf.GPS;
-var ErrorsCfg = AllConf.ErrorsCfg;
 var Errors = new Array();
-//--------------------------------------------------- Modulos
-var OTU = AllConf.OTU;
-var DefIn = AllConf.DefIn;
-var OPCT = AllConf.OPCT;
-var Mstr = AllConf.Mstr;
-var Iteris = AllConf.Iteris;
-var DgvSoft = AllConf.DgvSoft;
 //--------------------------------------------------- const
 var PhasesStructSize=56;
 var StructSizePLC=268;

@@ -20,9 +20,9 @@ var dim=[31,29,31,30,31,30,31,31,30,31,30,31];
 
 function GoSch()
 {
-	HolyDays=owl.deepCopy(PLCs[PlcIdx].HolyDays);
-	WeekDays=owl.deepCopy(PLCs[PlcIdx].WeekDays);
-	TimeScheduler=owl.deepCopy(PLCs[PlcIdx].TimeScheduler);
+	HolyDays=PLCs()[PlcIdx].HolyDays.clone();
+	WeekDays=PLCs()[PlcIdx].WeekDays.clone();
+	TimeScheduler=PLCs()[PlcIdx].TimeScheduler.clone();
 	ReDraw(conf_sch);
 }
 
@@ -873,9 +873,9 @@ function CleanTs()
 
 function MakeSch()
 {
-	PLCs[PlcIdx].HolyDays=owl.deepCopy(HolyDays);
-	PLCs[PlcIdx].WeekDays=owl.deepCopy(WeekDays);
-	PLCs[PlcIdx].TimeScheduler=owl.deepCopy(TimeScheduler);
+	PLCs[PlcIdx].HolyDays=HolyDays.clone();
+	PLCs[PlcIdx].WeekDays=WeekDays.clone();
+	PLCs[PlcIdx].TimeScheduler=TimeScheduler.clone();
 	ModSch();
 }
 
@@ -895,7 +895,11 @@ function MakeSchToFile(Prg)
 	for(var i=0;i<Prg.PLCs[PlcIdx].HolyDays.length;i++)
 	{
 		out+=Prg.PLCs[PlcIdx].HolyDays[i].Date+" = "
-		out+=Prg.PLCs[PlcIdx].TimeScheduler[Prg.PLCs[PlcIdx].HolyDays[i].TimeScheduler].Nombre+"\n";
+		if(parseFloat("0"+Prg.PLCs[PlcIdx].HolyDays[i].TimeScheduler)<Prg.PLCs[PlcIdx].TimeScheduler.length)
+		{
+			if(Prg.PLCs[PlcIdx].TimeScheduler[parseFloat(Prg.PLCs[PlcIdx].HolyDays[i].TimeScheduler)].Nombre)
+				out+=Prg.PLCs[PlcIdx].TimeScheduler[parseFloat(Prg.PLCs[PlcIdx].HolyDays[i].TimeScheduler)].Nombre+"\n";
+		}
 	}
 	out+="\n[weeks]\n"
 	for(var i=0;i<Prg.PLCs[PlcIdx].WeekDays.length;i++)
@@ -903,16 +907,25 @@ function MakeSchToFile(Prg)
 		temp="";
 		for(var j=0;j<7;j++)
 		{
-			temp+=Prg.PLCs[PlcIdx].TimeScheduler[Prg.PLCs[PlcIdx].WeekDays[i].TimeScheduler[j]].Nombre+" ";
+			if(parseFloat("0"+Prg.PLCs[PlcIdx].WeekDays[i].TimeScheduler)<Prg.PLCs[PlcIdx].TimeScheduler.length)
+			{
+				if(Prg.PLCs[PlcIdx].TimeScheduler[parseFloat(Prg.PLCs[PlcIdx].WeekDays[i].TimeScheduler)])
+					if(Prg.PLCs[PlcIdx].TimeScheduler[parseFloat(Prg.PLCs[PlcIdx].WeekDays[i].TimeScheduler)].Nombre)
+						temp+=Prg.PLCs[PlcIdx].TimeScheduler[Prg.PLCs[PlcIdx].WeekDays[i].TimeScheduler[j]].Nombre+" ";
+			}
 		}
 		out+=Prg.PLCs[PlcIdx].WeekDays[i].Date+" "+temp+"\n";
 	}
 	for(var idx=0;idx<Prg.PLCs[PlcIdx].TimeScheduler.length;idx++)
 	{
-		out+="\n["+Prg.PLCs[PlcIdx].TimeScheduler[idx].Nombre+"]\n";
-		for(var idx2=0;idx2<Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs.length;idx2++)										//continua inserindo restante da agenda
-			out+=Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs[idx2].Time+" "+Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs[idx2].Plan+"\n";
-		
+		if(Prg.PLCs[PlcIdx].TimeScheduler[idx].Nombre)
+		{
+			out+="\n["+Prg.PLCs[PlcIdx].TimeScheduler[idx].Nombre+"]\n";
+			for(var idx2=0;idx2<Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs.length;idx2++)										//continua inserindo restante da agenda
+			{
+				out+=Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs[idx2].Time+" "+Prg.PLCs[PlcIdx].TimeScheduler[idx].Hs[idx2].Plan+"\n";
+			}
+		}		
 	}
 	UpData=out;
 	return UpData;
