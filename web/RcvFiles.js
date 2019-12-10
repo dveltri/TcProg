@@ -943,11 +943,14 @@ function RcvIP(Datos)
 		PrgEd[SrcIdx].Links[j][0]="Serial Port"
 		PrgEd[SrcIdx].Links[j][1]=""+j+"";
 		PrgEd[SrcIdx].Links[j][2]="115200,8N1";
-	}	
-	PrgEd[SrcIdx].Links[j]=new Array();
-	PrgEd[SrcIdx].Links[j][0]="USB Port"
-	PrgEd[SrcIdx].Links[j][1]=""+j+"";
-	PrgEd[SrcIdx].Links[j][2]="No Config"; // */
+	}
+	if(GlobalParms().MODEL.indexOf("DGV")!=-1)
+	{
+		PrgEd[SrcIdx].Links[j]=new Array();
+		PrgEd[SrcIdx].Links[j][0]="USB Port"
+		PrgEd[SrcIdx].Links[j][1]=""+j+"";
+		PrgEd[SrcIdx].Links[j][2]="No Config"; // */
+	}
 	//---------------------------------------------------
 	PrgEd[SrcIdx].Links=PrgEd[SrcIdx].Links.concat(Datos);
 }
