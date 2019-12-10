@@ -72,7 +72,7 @@ function ReDraw(Fnc)
 			//document.getElementById("HOME2").innerHTML="<br/><select id=\"ClockOffSet\" class=\"INTEXT\">\n"+GenOptions(OptSyncClock,0)+"</select><input type=\"button\" class=\"INTEXT2\" value=\""+Str_Sync+"\" onclick=\"UpDateRtc();return false\" />\n";
 			document.getElementById("HOME1").innerHTML=ShwStsTbl();
 			RsrcIdx=0;
-			if(GlobalParms().MODEL.indexOf(GW)==-1)
+			if(GlobalParms().MODEL.indexOf("GW")==-1)
 			{
 				addautoget(document.getElementById("InfoIO"),HOST()+"/ios.bin",rcvIOs);
 			}
