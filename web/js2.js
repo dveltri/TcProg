@@ -74,26 +74,12 @@ function ReDraw(Fnc)
 			RsrcIdx=0;
 			if(GlobalParms().MODEL.indexOf(GW)==-1)
 			{
-				Resource[0]=new Object();
-				Resource[0].Element=document.getElementById("InfoIO");
-				Resource[0].url=HOST()+"/ios.bin"
-				Resource[0].Fnc=rcvIOs;
+				addautoget(document.getElementById("InfoIO"),HOST()+"/ios.bin",rcvIOs);
 			}
-			Resource[1]=new Object();
-			Resource[1].Element=document.getElementById("InfoGV");
-			Resource[1].url=HOST()+"/GbVars.bin"
-			Resource[1].Fnc=rcvGbVars;
-			Resource[2]=new Object();
-			Resource[2].Element=document.getElementById("InfoTC");
-			Resource[2].url=HOST()+"/plcs.bin"
-			Resource[2].Fnc=rcvTcSts;
-			Resource[3]=new Object();
-			Resource[3].Element=document.getElementById("InfoPH");
-			Resource[3].url=HOST()+"/phases.bin"
-			Resource[3].Fnc=rcvphases1;
-			//Resource[4].Element=document.getElementById("HOME5");
-			//Resource[4].url=HOST()+"/"+PlcIdx+"iplc.bin";
-			//Resource[4].Fnc=rcvInterprete;
+			addautoget(document.getElementById("InfoGV"),HOST()+"/GbVars.bin",rcvGbVars);
+			addautoget(document.getElementById("InfoTC"),HOST()+"/plcs.bin",rcvTcSts);
+			addautoget(document.getElementById("InfoPH"),HOST()+"/phases.bin",rcvphases1);
+			//addautoget(document.getElementById("HOME5"),HOST()+"/"+PlcIdx+"iplc.bin",rcvInterprete);
 		}
 		break;
 		//-----------------------------------------------------

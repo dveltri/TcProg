@@ -16,6 +16,14 @@ var PhHist= new Array(fullscaleX/Pxs);
 var PhHistCant=0;
 var outX="";
 //=================================================
+function addautoget(ele,url,fnc)
+{
+	var i=Resource.length;
+	Resource[i]=new Object();
+	Resource[i].Element=ele;
+	Resource[i].url=url;
+	Resource[i].Fnc=fnc;
+}
 function fnc0()
 {
 	var digital = new Date();
