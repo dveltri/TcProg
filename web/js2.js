@@ -122,8 +122,8 @@ function ReDraw(Fnc)
 		case conf_sts:
 		{
 			document.getElementById("HOME1").innerHTML=ShowStss();
-			if(GlobalParms().MODEL.indexOf("RT")!=-1)
-				ShwArne2();
+			/*if(GlobalParms().MODEL.indexOf("RT")!=-1)
+			document.getElementById('HOME2').innerHTML=ShwStsCft();// */
 		}
 		break;
 		//-----------------------------------------------------
