@@ -770,6 +770,8 @@ function ShwGps()
 
 function ShwNtp()
 {
+	if(!NTP())
+		return "";
 	try
 	{
 		NTP().Link=parseInt(NTP().Link);
@@ -845,6 +847,8 @@ function ShwNtp()
 
 function ShowDgvpConf()
 {
+	if(!SdgvP())
+		return "";
 	var idx=0;
 	var i=0;
 	var tmp=0;
@@ -945,6 +949,8 @@ function ShowDgvpConf()
 
 function ShwSutec()
 {
+	if(!OPCT())
+		return "";
 	OPCT()[0][1]=parseInt(OPCT()[0][1]);
 	OPCT()[1][1]=parseInt(OPCT()[1][1]);
 	OPCT()[2][1]=parseInt(OPCT()[2][1]);
@@ -1018,6 +1024,8 @@ function ShwSutec()
 
 function ShwScoot()
 {
+	if(!OTU())
+		return "";
 	var count2=0;
 	var QtAnel = 1*(GlobalParms().Controllers);
 	var QtDem = 1*((9+parseInt(GlobalParms().Inputs)+parseInt(GlobalParms().Loops)));
