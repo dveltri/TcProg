@@ -428,7 +428,7 @@ function rcvphases1(Datos)
 	out+="<td rowspan=\"5\" class=\"hrvert\" width=\"4\"></td>\n";
 	out+="<td align=\"right\"><font size=\"2\" face=\"arial\">"+Str_Errors+"</font></td>\n";
 	out+="<td rowspan=\"5\" class=\"hrvert\" width=\"4\"></td>\n";
-	out+="<td align=\"right\" ><font size=\"2\" face=\"arial\">Atenuacion<br />Consumo</font></td>\n";
+	out+="<td align=\"right\" ><font size=\"2\" face=\"arial\">"+Str_OPB_PWR+"</font></td>\n";
 	out+="<td rowspan=\"5\" class=\"hrvert\" width=\"4\"></td>\n";
 	out+="<td align=\"right\"><font size=\"2\" face=\"arial\">"+Str_Opb_Links+"</font></td>\n";
 	out+="</tr>";// */
@@ -494,7 +494,8 @@ function rcvphases1(Datos)
 			else
 				outX+="Current Det:-<br />\n";
 			out4+="<tr><td>";
-			out4+=ShwLevel(tempV,0,255);
+			if(GlobalParms().MODEL.indexOf("DGV-uTC1-M4")!=-1)
+				out4+=ShwLevel(tempV,0,255);
 			out4+="</td></tr></table>";
 			tempV=Datos.charCodeAt(phase+15);
 			color=tempV;
