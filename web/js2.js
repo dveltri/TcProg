@@ -94,7 +94,8 @@ function ReDraw(Fnc)
 		{
 			document.getElementById('HOME1').innerHTML=ShwEthernet();
 			document.getElementById('HOME2').innerHTML=ShwGps();
-			document.getElementById('HOME3').innerHTML=ShwNtp();
+			if(GlobalParms().MODEL.indexOf("GW")==-1)
+				document.getElementById('HOME3').innerHTML=ShwNtp();
 			LOG(SendStartup(PrgEd[SrcIdx]));
 			UpMode=0;
 		}
@@ -141,7 +142,9 @@ function ReDraw(Fnc)
 		//----------------------------------------------------- */
 		case conf_Comm:
 		{
-			document.getElementById('HOME1').innerHTML="<hr />\n"+ShowDgvpConf();
+			document.getElementById('HOME1').innerHTML="<hr />\n";
+			if(GlobalParms().MODEL.indexOf("GW")==-1)
+				document.getElementById('HOME1').innerHTML+=ShowDgvpConf();
 			document.getElementById('HOME2').innerHTML=ShwSutec();
 		}
 		break;
