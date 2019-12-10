@@ -770,7 +770,7 @@ function ShwGps()
 
 function ShwNtp()
 {
-	if(!NTP())
+	if(!NTP().Link)
 		return "";
 	try
 	{
@@ -847,7 +847,7 @@ function ShwNtp()
 
 function ShowDgvpConf()
 {
-	if(!SdgvP())
+	if(!SdgvP().Link)
 		return "";
 	var idx=0;
 	var i=0;
@@ -949,7 +949,7 @@ function ShowDgvpConf()
 
 function ShwSutec()
 {
-	if(!OPCT())
+	if(!OPCT()[0][1])
 		return "";
 	OPCT()[0][1]=parseInt(OPCT()[0][1]);
 	OPCT()[1][1]=parseInt(OPCT()[1][1]);
