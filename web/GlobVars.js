@@ -1,9 +1,11 @@
 var PrgBk= new Array();
 var PrgEd= new Array();
 /*var SrcFiles=[
-	'/startup.ini',RcvStartup,
-	'/phconf.ini',RcvPhConf,
-	'/plcs.ini',RcvPlc,
+	1,'Loading General...','/startup.ini',RcvStartup,
+	3,'Loading Global vars...',null,null,
+	4,'Loading de Phases 2...','/phconf.ini',RcvPhConf,
+	6,'Loading de Controladores...','/plcs.ini',RcvPlc,
+	'Loading Lista de Planes...',null,RcvConfSrc
 	GetSec(SrcIdx,PlcIdx),RcvSec,
 	GetSch(SrcIdx,PlcIdx),RcvAgenda, 
 	'/ip.ini',RcvIP, 
