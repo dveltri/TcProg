@@ -90,48 +90,48 @@ function RstSch()
 	TimeScheduler[0].Hs[0].Plan="99";
 	for(var j=0;j<GlobalParms.Controllers;j++)
 	{
-		PLCs[j].HolyDays=HolyDays.clone();
-		PLCs[j].WeekDays=WeekDays.clone();
-		PLCs[j].TimeScheduler=TimeScheduler.clone();
+		PLCs()[j].HolyDays=HolyDays.clone();
+		PLCs()[j].WeekDays=WeekDays.clone();
+		PLCs()[j].TimeScheduler=TimeScheduler.clone();
 	}
 	ModParm("PLCs.Sch");
 }
 function RstEvs()
 {
 	SetPhConf(GlobalParms.phconf);
-	for(var i=0;i<PLCs[PlcIdx].EV.length;i++)
+	for(var i=0;i<PLCs()[PlcIdx].EV.length;i++)
 	{
-		PLCs[PlcIdx].EV[i]=genEv();
+		PLCs()[PlcIdx].EV[i]=genEv();
 	}
 }
 function RstCfts()
 {
-	for(var y=0;y<PLCs[PlcIdx].Phases.length;y++)
+	for(var y=0;y<PLCs()[PlcIdx].Phases.length;y++)
 	{
-		PHASEs[PLCs[PlcIdx].Phases[y]].Sec.length=0;
+		PHASEs()[PLCs()[PlcIdx].Phases[y]].Sec.length=0;
 	}
 }
 function RstPlnLs()
 {
-	PLCs[PlcIdx].PlanList.length=0;
+	PLCs()[PlcIdx].PlanList.length=0;
 }
 function RstPlnPlc()
 {
-	PLCs[PlcIdx].Plans= new Array();
-	PLCs[PlcIdx].PlanList.length=0;
+	PLCs()[PlcIdx].Plans= new Array();
+	PLCs()[PlcIdx].PlanList.length=0;
 }
 function RstOTUPlc()
 {
-	PLCs[PlcIdx].OTUPlan.OTUSEQSTS.length=0;
-	PLCs[PlcIdx].OTUPlan.OTUDEMSTS.length=0;
-	PLCs[PlcIdx].OTUPlan.OTUSTSDEM.length=0;
-	PLCs[PlcIdx].OTUPlan.OTUDEMCLR.length=0;
+	PLCs()[PlcIdx].OTUPlan.OTUSEQSTS.length=0;
+	PLCs()[PlcIdx].OTUPlan.OTUDEMSTS.length=0;
+	PLCs()[PlcIdx].OTUPlan.OTUSTSDEM.length=0;
+	PLCs()[PlcIdx].OTUPlan.OTUDEMCLR.length=0;
 }
 function RstPMCPlc()
 {
-	PLCs[PlcIdx].McPlan.SYCPLCTOU.length=0;
-	PLCs[PlcIdx].McPlan.MACSEQSTP.length=0;
-	PLCs[PlcIdx].McPlan.MACSTSSTP.length=0;
+	PLCs()[PlcIdx].McPlan.SYCPLCTOU.length=0;
+	PLCs()[PlcIdx].McPlan.MACSEQSTP.length=0;
+	PLCs()[PlcIdx].McPlan.MACSTSSTP.length=0;
 }
 //=======================================================================================
 function blockSpecialChar(e) 
@@ -374,22 +374,22 @@ function Setdphc()
 	var temp=0;
 	if(confirm(Str_ConfirmPHC)==false)
 	return;
-	for(var j=0;j<PLCs[PlcIdx].Phases.length;j++)
+	for(var j=0;j<PLCs()[PlcIdx].Phases.length;j++)
 	{
-		var i=PLCs[PlcIdx].Phases[j];
+		var i=PLCs()[PlcIdx].Phases[j];
 		if(i<PHASEs.length)
 		{
 			temp=parseInt(document.getElementById("TOEE"+i+"").innerHTML);
 			if(ChkParm("PHASEs.TOEE",temp)==true)
 			{
-				PHASEs[i].TOEE=temp;
+				PHASEs()[i].TOEE=temp;
 				ModParm("PHASEs.TOEE");
 			}
 			var temp=0;
 			temp=parseInt(document.getElementById("TOEC"+i+"").innerHTML);
 			if(ChkParm("PHASEs.TOEC",temp)==true)
 			{
-				PHASEs[i].TOEC=temp;
+				PHASEs()[i].TOEC=temp;
 				ModParm("PHASEs.TOEC");
 			}// */
 			var temp=0;
@@ -414,9 +414,9 @@ function Setdphc()
 					if(document.getElementById("PhEr"+i+"3").checked==1)temp|=0x00000008;
 					//if(document.getElementById("PhEr"+i+"8").checked==1)temp|=0x100;
 				}
-				if(temp!=PHASEs[i].MskError)
+				if(temp!=PHASEs()[i].MskError)
 				{
-					PHASEs[i].MskError=temp;
+					PHASEs()[i].MskError=temp;
 					ModParm("PHASEs.MskError");
 				}
 			}
@@ -424,48 +424,48 @@ function Setdphc()
 			/*if(OTU.Link==0)
 			{
 				temp=document.getElementById("Ph"+i+"_AMiGT").checked;
-				if(temp!=PHASEs[i].AMiGT)
+				if(temp!=PHASEs()[i].AMiGT)
 				{
-					PHASEs[i].AMiGT=temp;
+					PHASEs()[i].AMiGT=temp;
 					ModParm("PHASEs.AMiGT");
 				}
 			}// */
 			temp=parseInt(document.getElementById("Ph"+i+"_MiGT").innerHTML);
-			if(temp!=PHASEs[i].MiGT)
+			if(temp!=PHASEs()[i].MiGT)
 			{
-				if(PHASEs[i].MiGT<temp)
+				if(PHASEs()[i].MiGT<temp)
 				{
-					for(var nsts=0;nsts<PLCs[PlcIdx].Sts.length;nsts++)
+					for(var nsts=0;nsts<PLCs()[PlcIdx].Sts.length;nsts++)
 					{
-						PLCs[PlcIdx].Sts[nsts].TMAX=0;
+						PLCs()[PlcIdx].Sts[nsts].TMAX=0;
 					}
 				}
-				PHASEs[i].MiGT=temp;
-				PLCs[PlcIdx].Plans.length=0;// borra los planos
+				PHASEs()[i].MiGT=temp;
+				PLCs()[PlcIdx].Plans.length=0;// borra los planos
 				ModParm("PHASEs.MiGT");
 			}
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 			/*if(OTU.Link==0)
 			{
 				temp=document.getElementById("Ph"+i+"_AMiRT").checked;
-				if(temp!=PHASEs[i].AMiRT)
+				if(temp!=PHASEs()[i].AMiRT)
 				{
-					PHASEs[i].AMiRT=temp;
+					PHASEs()[i].AMiRT=temp;
 					ModParm("PHASEs.AMiRT");
 				}
 			}*/
 			temp=parseInt(document.getElementById("Ph"+i+"_MiRT").innerHTML);
-			if(temp!=PHASEs[i].MiRT)
+			if(temp!=PHASEs()[i].MiRT)
 			{
-				if(PHASEs[i].MiRT<temp)
+				if(PHASEs()[i].MiRT<temp)
 				{
-					for(var nsts=0;nsts<PLCs[PlcIdx].Sts.length;nsts++)
+					for(var nsts=0;nsts<PLCs()[PlcIdx].Sts.length;nsts++)
 					{
-						PLCs[PlcIdx].Sts[nsts].TMAX=0;
+						PLCs()[PlcIdx].Sts[nsts].TMAX=0;
 					}
 				}
-				PHASEs[i].MiRT=temp;
-				PLCs[PlcIdx].Plans.length=0;// borra los planos
+				PHASEs()[i].MiRT=temp;
+				PLCs()[PlcIdx].Plans.length=0;// borra los planos
 				ModParm("PHASEs.MiRT");
 			}
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -499,15 +499,15 @@ function ModSec()
 {
 	var timeg=0;
 	var CElmt;
-	for(var j=0;j<PLCs[PlcIdx].Phases.length;j++)
+	for(var j=0;j<PLCs()[PlcIdx].Phases.length;j++)
 	{
-		ph=PLCs[PlcIdx].Phases[j];
-		//PHASEs[ph].Sec.length=0;
-		for(var i=0;i<PLCs[PlcIdx].Phases.length;i++)
+		ph=PLCs()[PlcIdx].Phases[j];
+		//PLCs()[ph].Sec.length=0;
+		for(var i=0;i<PLCs()[PlcIdx].Phases.length;i++)
 		{
-			if(PLCs[PlcIdx].Phases[i]!=ph)
+			if(PLCs()[PlcIdx].Phases[i]!=ph)
 			{
-				CElmt=document.getElementById("CFT"+ph+""+PLCs[PlcIdx].Phases[i]+"");
+				CElmt=document.getElementById("CFT"+ph+""+PLCs()[PlcIdx].Phases[i]+"");
 				if(CElmt)
 				{
 					timeg=CElmt.value;
@@ -519,14 +519,14 @@ function ModSec()
 						CElmt.value=timeg;
 						if(ph<PHASEs.length)
 						{
-							for(var X=0;X<PHASEs[ph].Sec.length;X++)
+							for(var X=0;X<PLCs()[ph].Sec.length;X++)
 							{
-								if(PHASEs[ph].Sec[X].phase==PLCs[PlcIdx].Phases[i])
+								if(PLCs()[ph].Sec[X].phase==PLCs()[PlcIdx].Phases[i])
 								{
-									if(PHASEs[ph].Sec[X].time!=timeg)
+									if(PLCs()[ph].Sec[X].time!=timeg)
 									{
-										PHASEs[ph].Sec[X].time=timeg;
-										LOG("Mod PH:"+ph+" Sec:"+PLCs[PlcIdx].Phases[i]+" V:"+timeg);
+										PLCs()[ph].Sec[X].time=timeg;
+										LOG("Mod PH:"+ph+" Sec:"+PLCs()[PlcIdx].Phases[i]+" V:"+timeg);
 										break;
 									}
 									else
@@ -535,27 +535,27 @@ function ModSec()
 									}
 								}
 							}
-							if(X>=PHASEs[ph].Sec.length)
+							if(X>=PLCs()[ph].Sec.length)
 							{
-								PHASEs[ph].Sec[X]= new Object();
-								PHASEs[ph].Sec[X].time=timeg;
-								PHASEs[ph].Sec[X].phase=PLCs[PlcIdx].Phases[i];
-								for(var w=0;w<PLCs[PlcIdx].Sts.length;w++)
-									PLCs[PlcIdx].Sts[w].Colors[i]=17;
+								PLCs()[ph].Sec[X]= new Object();
+								PLCs()[ph].Sec[X].time=timeg;
+								PLCs()[ph].Sec[X].phase=PLCs()[PlcIdx].Phases[i];
+								for(var w=0;w<PLCs()[PlcIdx].Sts.length;w++)
+									PLCs()[PlcIdx].Sts[w].Colors[i]=17;
 								ModParm("pPLCs.Sec");
-								LOG("New PH:"+ph+" Sec:"+PLCs[PlcIdx].Phases[i]+" V:"+timeg);
+								LOG("New PH:"+ph+" Sec:"+PLCs()[PlcIdx].Phases[i]+" V:"+timeg);
 							}
 						}
 					}
 					else
 					{
 						X=0;
-						while(X<PHASEs[ph].Sec.length)
+						while(X<PLCs()[ph].Sec.length)
 						{
-							if(PHASEs[ph].Sec[X].phase==PLCs[PlcIdx].Phases[i])
+							if(PLCs()[ph].Sec[X].phase==PLCs()[PlcIdx].Phases[i])
 							{
-								LOG("Del PH:"+ph+" Sec:"+PLCs[PlcIdx].Phases[i]+" Non CFT");
-								PHASEs[ph].Sec.splice(X,1);
+								LOG("Del PH:"+ph+" Sec:"+PLCs()[PlcIdx].Phases[i]+" Non CFT");
+								PLCs()[ph].Sec.splice(X,1);
 							}
 							else
 								X++;
