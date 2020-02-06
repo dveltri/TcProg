@@ -153,7 +153,7 @@ function RcvStartup(Datos)
 					GlobalParms().MODEL="DGV-uTC1-M4";
 				if(GlobalParms().MODEL.indexOf("MAC_TC1")!=-1)
 					GlobalParms().MODEL="MAC-TC1M4";
-					if(GlobalParms().MODEL.indexOf("Flex3")!=-1)
+				if(GlobalParms().MODEL.indexOf("Flex3")!=-1)
 					GlobalParms().MODEL="GW1M3FT";
 				if(GlobalParms().MODEL.indexOf("Flex4")!=-1)
 					GlobalParms().MODEL="GW2M3FT";

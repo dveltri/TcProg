@@ -8,9 +8,12 @@
     "start": "electron ."
   },
   "devDependencies": {
-    "electron": "^4.2.9",
+    "electron": "^4.2.12",
     "electron-packager": "^14.0.4",
     "electron-rebuild": "^1.8.2",
     "serialport": "^7.1.4"
+  },
+  "dependencies": {
+    "electron-prebuilt": "^1.4.13"
   }
 }

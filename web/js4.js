@@ -390,22 +390,28 @@ function rcvTcSts(Datos)
 function rcvphases1(Datos)
 {
 	var RTC=Datos.getResponseHeader("Content-Type");
-	var count=RTC.indexOf("RTC:");
-	count+=4;
-	RTC=RTC.substring(count);
-	RTC=parseInt(RTC);
-	if(RTC!=0)
+	var count=0;
+	if(RTC!=null)
 	{
-		RTC*=1000;
-		dat = new Date(RTC);
-		RTC+=(dat.getTimezoneOffset()*60000);
-		var dat = new Date(RTC);
+		count=RTC.indexOf("RTC:");
+		count+=4;
+		RTC=RTC.substring(count);
+		RTC=parseInt(RTC);
+		if(RTC!=0)
+		{
+			RTC*=1000;
+			dat = new Date(RTC);
+			RTC+=(dat.getTimezoneOffset()*60000);
+			var dat = new Date(RTC);
+		}
+		else
+			var dat="";// */
 	}
-	else
-	var dat="";// */
 	Datos=Datos.responseText;
 	var phase=0;
 	var phases=Datos.length;
+	if((phases/PhasesStructSize)>PHASEs().length)
+		return "";
 	var temp="";
 	var tempV=0;
 	var tempV2=0;
@@ -698,6 +704,7 @@ function rcvphases1(Datos)
 	out+="</table>";
 	return out;
 }
+
 function rcvphases2(Datos)
 {
 	Datos=Datos.responseText;
