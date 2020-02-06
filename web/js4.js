@@ -39,7 +39,7 @@ function fnc0()
 	{
 		GetUrl(Resource[RsrcIdx].url,RcvMoni);
 	}
-	//=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=-�-=
+	//=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=
 }
 function RcvMoni(Datos)
 {
@@ -79,10 +79,17 @@ function ShwStsTbl()
 //=================================================
 function rcvGbVars(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	var RTC=Datos.getResponseHeader("Content-Type");
 	var count=-1;
 	if(RTC)
-	count=RTC.indexOf("RTC:");
+		count=RTC.indexOf("RTC:");
 	var dat;
 	if(count!=-1)
 	{
@@ -103,7 +110,6 @@ function rcvGbVars(Datos)
 	var temp="";
 	var count;
 	var tempV;
-	var out="";
 	var out1="";
 	var out2="";
 	var out3="";
@@ -261,6 +267,13 @@ function rcvGbVars(Datos)
 //=================================================
 function rcvTcSts(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	Datos=Datos.responseText;
 	var plcidx=0;
 	var count=0;
@@ -268,7 +281,6 @@ function rcvTcSts(Datos)
 	var temp="";
 	var pPLC=0;
 	var tempV=0;
-	var out="";
 	if((Datos.length%StructSizePLC)!=0)
 	{
 		pPLCs-=(Datos.length%StructSizePLC);
@@ -389,6 +401,13 @@ function rcvTcSts(Datos)
 //=================================================
 function rcvphases1(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	var RTC=Datos.getResponseHeader("Content-Type");
 	var count=0;
 	if(RTC!=null)
@@ -415,7 +434,6 @@ function rcvphases1(Datos)
 	var temp="";
 	var tempV=0;
 	var tempV2=0;
-	var out=0;
 	var out1="";
 	var out2="";
 	var out3="";
@@ -704,9 +722,15 @@ function rcvphases1(Datos)
 	out+="</table>";
 	return out;
 }
-
 function rcvphases2(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	Datos=Datos.responseText;
 	var phaseC=0;
 	var phase=0;
@@ -714,7 +738,6 @@ function rcvphases2(Datos)
 	var phases=Datos.length;
 	var temp=0;
 	var flags=0;
-	var out=0;
 	//---------------------------------Title
 	out=document.getElementById("sample8Title");
 	out.innerHTML=Str_Intersection;
@@ -811,6 +834,13 @@ function rcvphases2(Datos)
 }
 function rcvphases3(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	var sts3=0;
 	var lstX=-1;
 	var sts2=0;
@@ -856,7 +886,6 @@ function rcvphases3(Datos)
 	phases/=PhasesStructSize;
 	var temp=0;
 	var flags=0;
-	var out=0;
 	var yspt=14;
 	var currents=0;
 	var sts=0;
@@ -959,11 +988,17 @@ function rcvphases3(Datos)
 //=================================================
 function rcvIOs(Datos)
 {
+	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
 	hindexO=hindex;
 	hindex++;
 	if(hindex>=Hsize)
 	hindex=0;
-	var out="";
 	var temp="";
 	var inidx=0;
 	var itemp=0;
@@ -1038,10 +1073,10 @@ function rcvIOs(Datos)
 }
 function rcvIOs2()
 {
+	var out="";
 	var temp=0;
 	var Tcount=0;
 	var Pcount=0;
-	var out="";
 	var out1="";
 	var out2="";
 	var out3="";
@@ -1147,6 +1182,12 @@ function rcvIOs2()
 //=================================================
 function rcvLogs(Datos)
 {
+	if(Datos==null)
+		return;
+	if(Datos.status!=200)
+		return;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return;
 	var temp="";
 	var tempV=0;
 	var count=0;
@@ -1190,8 +1231,14 @@ function loadArq(Datos)
 //=================================================
 function rcvInterprete(Datos)
 {
-	var StepName=["Run","Pause"];
 	var out="";
+	if(Datos==null)
+		return out;
+	if(Datos.status!=200)
+		return out;
+	if(http.responseText.indexOf('invalid')!=-1)
+		return out;
+	var StepName=["Run","Pause"];
 	var temp="";
 	var tempi=0;
 	var pInterp=new Object();

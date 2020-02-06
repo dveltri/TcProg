@@ -1347,6 +1347,7 @@ function addobj(obj,vname,val)
 {
 	for(i=0;i<vname.length;i++)
 	{
+		vname[i]=vname[i].toLowerCase();
 		if(!obj[vname[i]])
 		{
 			if(i<(vname.length-1))

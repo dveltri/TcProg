@@ -4,13 +4,13 @@ function PLCs(i){		if(i==undefined)return PrgEd[SrcIdx].PLCs;				else return Prg
 function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return PrgEd[i].PHASEs;}
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
-function SDgvP(i){		if(i==undefined)return PrgEd[SrcIdx].SDgvP;				else return PrgEd[i].SDgvP;}
-function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].GPS;				else return PrgEd[i].GPS;}
+function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].sdgvp;				else return PrgEd[i].sdgvp;}
+function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].gps;				else return PrgEd[i].gps;}
 function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;				else return PrgEd[i].IOs;}
 function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;				else return PrgEd[i].OPCT;}
 function OTU(i){		if(i==undefined)return PrgEd[SrcIdx].OTU;				else return PrgEd[i].OTU;}
 function DefIn(i){		if(i==undefined)return PrgEd[SrcIdx].DefIn;				else return PrgEd[i].DefIn;}
-function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].NTP;				else return PrgEd[i].NTP;}
+function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].ntp;				else return PrgEd[i].ntp;}
 function DGVFTP(i){		if(i==undefined)return PrgEd[SrcIdx].DGVFTP;			else return PrgEd[i].DGVFTP;}
 function HOST(i){		if(i==undefined)return PrgEd[SrcIdx].host;				else return PrgEd[i].host;}
 function Links(i){		if(i==undefined)return PrgEd[SrcIdx].Links;				else return PrgEd[i].Links;}
@@ -547,6 +547,7 @@ function chgtrg(idx)
 }
 
 //---------------------------------------
+var RcvConfFnc=0;
 function LoadConfSrc()
 {
 	var request=0;
@@ -558,7 +559,7 @@ function LoadConfSrc()
 			PrgEd[SrcIdx].Log="";
 			percent=1;
 			ShwPBar('Loading General...');
-			request=GetUrl(HOST()+'/startup.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/startup.ini',RcvConfSrc);
 		}
 		break;
 		case 2:
@@ -572,13 +573,13 @@ function LoadConfSrc()
 		case 3:
 		{
 			ShwPBar('Loading de Phases 2...');
-			request=GetUrl(HOST()+'/phconf.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/phconf.ini',RcvConfSrc);
 		}
 		break;
 		case 4:
 		{
 			ShwPBar('Loading de Controladores...');
-			request=GetUrl(HOST()+'/plcs.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/plcs.ini',RcvConfSrc);
 		}
 		break;
 		case 6:
@@ -591,7 +592,7 @@ function LoadConfSrc()
 			if(PrgEd[SrcIdx].Typ==0)
 				GetFls(HOST()+'/'+PlcIdx,RcvConfSrc);
 			else
-				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
+				request=GetUrlB(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
 		}
 		break;
 		case 13:
@@ -1153,7 +1154,7 @@ function RcvConfSrc(Datos)
 			case 51: // sdgvp.ini
 			{
 				if(Datos.status==200)
-					RcvSDgvP(Datos); //RcvFile
+					RcvFile(Datos); //
 					percent=52;
 				}
 			break;

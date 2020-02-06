@@ -53,15 +53,25 @@ function GetUrl(url,fnc)
 			url=url.replace("file:/","/");
 		}
 		http.urlx=url;
+		http.timeout=500;
 		http.open("GET", url, true);//"POST"
 		http.onreadystatechange = handleHttpResponse;
-		//http.onload = handleHttpResponse;
+		//http.onload = handleHttpOnLoad;
+		http.ontimeout = handleHttpTimeOut
 		http.send(null);
 		return 0;
 	}
 	return 1;
 }
 
+function handleHttpOnLoad()
+{
+	/* XMLHttpRequest timed out. Do something here. */
+}
+function handleHttpTimeOut(e)
+{
+	/* XMLHttpRequest timed out. Do something here. */
+}
 function handleHttpResponse()  
 { 
 	switch(http.readyState)

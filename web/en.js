@@ -89,6 +89,7 @@ var Str_InputAD="Input Analog";
 var Str_ntp_Sync_tim="Sync frecuency (segs)";
 var Str_ntp_prio="Prioridad si no recive respuesta del servidor se decrementa";
 
+var Str_gps_prio="Prioridad";
 var Str_gps_priop="Prioridad con validacionde posicion positiva";
 var Str_gps_priol="Prioridad con validacionde posicion negativa";
 

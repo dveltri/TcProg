@@ -715,10 +715,10 @@ function ShwGps()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"GPS().Link^=9;ReDraw(-1);\" "+((GPS().Link!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"GPS().link^=9;ReDraw(-1);\" "+((GPS().link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n";
-		if(Links()[GPS().Link][2].indexOf(",")!=-1)
+		if(Links()[GPS().link][2].indexOf(",")!=-1)
 		{
 			out+="<tr align=\"left\">\n\
 			<td>\n\
@@ -729,20 +729,31 @@ function ShwGps()
 			</td>\n\
 		</tr>\n";
 		}
+		if(GPS().priority)
+		out+="<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_gps_prio+"</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priority=this.value;ReDraw(-1);\" value=\""+(GPS().priority)+"\" "+((GPS().priority==0)?'disabled="true"':"")+" />\n\
+			</td>\n\
+		</tr>\n";
+		if(GPS().priorityplus)
 		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priop+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().PriorityPlus=this.value;ReDraw(-1);\" value=\""+(GPS().PriorityPlus)+"\" "+((GPS().PriorityPlus==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priorityplus=this.value;ReDraw(-1);\" value=\""+(GPS().priorityplus)+"\" "+((GPS().priorityplus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
+		if(GPS().priorityminus)
 		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priol+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS().PriorityMinus=this.value;ReDraw(-1);\" value=\""+(GPS().PriorityMinus)+"\" "+((GPS().PriorityMinus==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priorityminus=this.value;ReDraw(-1);\" value=\""+(GPS().priorityminus)+"\" "+((GPS().PriorityMinus==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
 		out+="<tr align=\"left\">\n\
@@ -850,7 +861,7 @@ function ShwNtp()
 
 function ShowDgvpConf()
 {
-	if(!SdgvP().Link)
+	if(!SdgvP().link)
 		return "";
 	var idx=0;
 	var i=0;
@@ -866,8 +877,8 @@ function ShowDgvpConf()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"SdgvP().Link^=12;ReDraw(-1);\" ";
-			if(SdgvP().Link!=0)
+			<input type=\"checkbox\" onclick=\"SdgvP().link^=12;ReDraw(-1);\" ";
+			if(SdgvP().link!=0)
 				out+="checked=\"checked\"";
 			out+=" />\n\
 			</td>\n\
@@ -880,13 +891,13 @@ function ShowDgvpConf()
 		out+="		<font size=\"1\" face=\"arial\">"+Str_Dgvp_Link+"</font>\n";
 		out+="	</td>\n";
 		out+="	<td valign=\"middle\">\n";
-		//out+="		<input  value=\""+SdgvP.Link+"\" onkeyup=\"SdgvP.Link=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" />\n";
-		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+SdgvP().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[SdgvP().Link][2]+"\" "+((SdgvP().Link==0)?'disabled="true"':"")+" />\n";
+		//out+="		<input  value=\""+SdgvP.link+"\" onkeyup=\"SdgvP.link=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" />\n";
+		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+SdgvP().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[SdgvP().link][2]+"\" "+((SdgvP().link==0)?'disabled="true"':"")+" />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 	}
 	//---------------------------------------------------------------------
-	for(var idx=0;idx<SdgvP().Tsk.length;idx++)
+	for(var idx=0;idx<SdgvP().tsk.length;idx++)
 	{
 		out+="<tr align=\"left\" >\n";
 		out+="	<td align=\"left\">\n";
@@ -894,18 +905,18 @@ function ShowDgvpConf()
 		out+="		<font size=\"1\" face=\"arial\">"+Str_period+"</font><br />\n";
 		out+="	</td>\n";
 		out+="	<td align=\"left\" valign=\"middle\">\n";
-		out+="		<input value=\""+SdgvP().Tsk[idx].IDsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP.SrvId=this.value;":"")+"SdgvP().Tsk["+idx+"].IDsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n<br/>";
-		out+="		<input value=\""+SdgvP().Tsk[idx].Period+"\" onkeyup=\"SdgvP().Tsk["+idx+"].Period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" "+((SdgvP.Link==0)?'disabled="true"':"")+" />\n";
+		out+="		<input value=\""+SdgvP().tsk[idx].idsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP().srvid=this.value;":"")+"SdgvP().tsk["+idx+"].idsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  "+((SdgvP.link==0)?'disabled="true"':"")+" />\n<br/>";
+		out+="		<input value=\""+SdgvP().tsk[idx].period+"\" onkeyup=\"SdgvP().tsk["+idx+"].period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" "+((SdgvP.link==0)?'disabled="true"':"")+" />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 		/*//---------------------------------------------------------------------
 		out+="<tr align=\"left\" >\n";
 		out+="	<td align=\"left\">\n";
-		out+="<select onchange=\"SdgvP.Tsk["+idx+"].Sck=this.value;\" class=\"CssSelect\" >\n";
-		out+=GenOptions(OptDgvPCmd,SdgvP.Tsk[idx].Sck);
+		out+="<select onchange=\"SdgvP.tsk["+idx+"].Sck=this.value;\" class=\"CssSelect\" >\n";
+		out+=GenOptions(OptDgvPCmd,SdgvP.tsk[idx].Sck);
 		out+="</select>\n"
 		out+="	</td>\n";
-		switch(SdgvP.Tsk[idx].Sck)
+		switch(SdgvP.tsk[idx].Sck)
 		{
 			case 2:
 			{
@@ -918,23 +929,23 @@ function ShowDgvpConf()
 			{
 				out+="	<td align=\"left\" valign=\"middle\">\n";
 				i=0;
-				while(i<SdgvP.Tsk[idx].cmps.length)
+				while(i<SdgvP.tsk[idx].cmps.length)
 				{
-					tmp=LsCmps.indexOf(SdgvP.Tsk[idx].cmps[i]);
+					tmp=LsCmps.indexOf(SdgvP.tsk[idx].cmps[i]);
 					if(tmp!=-1)
 					{
 						out+="<input type=\"button\" class=\"CssBtn\" value=\"[X]";
 						out+=LsCmpsTxt[tmp];
-						out+="\" onclick=\"SdgvP.Tsk["+idx+"].cmps.splice("+i+",1);ShowDgvpConf('"+ObjID+"');return false;\" /><br />\n";
+						out+="\" onclick=\"SdgvP.tsk["+idx+"].cmps.splice("+i+",1);ShowDgvpConf('"+ObjID+"');return false;\" /><br />\n";
 						i++;
 					}
 					else
 					{
-						out+=SdgvP.Tsk[idx].cmps.splice(i,1);
+						out+=SdgvP.tsk[idx].cmps.splice(i,1);
 						i=0;
 					}
 				}
-				out+="<br />["+Str_Add+":<select class=\"CssSelect\" onchange=\"if(this.selectedIndex>0){SdgvP.Tsk["+idx+"].cmps[SdgvP.Tsk["+idx+"].cmps.length]=LsCmps[this.selectedIndex-1];}ShowDgvpConf('"+ObjID+"');\" >\n";
+				out+="<br />["+Str_Add+":<select class=\"CssSelect\" onchange=\"if(this.selectedIndex>0){SdgvP.tsk["+idx+"].cmps[SdgvP.tsk["+idx+"].cmps.length]=LsCmps[this.selectedIndex-1];}ShowDgvpConf('"+ObjID+"');\" >\n";
 				out+="<option></option>\n";
 				out+=GenOptionsVi(LsCmpsTxt,null);
 				out+="</select>]\n"
