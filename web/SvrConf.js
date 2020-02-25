@@ -368,14 +368,14 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].IOs = new Array();
 	PrgEd[SrcIdx].Srv = new Array();
 	PrgEd[SrcIdx].Links = new Array();
-	PrgEd[SrcIdx].NTP = new Object();
-	PrgEd[SrcIdx].SDgvP=new Object();
-	PrgEd[SrcIdx].GPS = new Object();
+	//PrgEd[SrcIdx].NTP = new Object();
+	//PrgEd[SrcIdx].SDgvP=new Object();
+	//PrgEd[SrcIdx].GPS = new Object();
 	PrgEd[SrcIdx].ErrorsCfg = new Object();
 	PrgEd[SrcIdx].OTU = new Object();
 	PrgEd[SrcIdx].DefIn = new Object();
 	PrgEd[SrcIdx].OPCT = new Object();
-	PrgEd[SrcIdx].Mstr = new Object();
+	//PrgEd[SrcIdx].Mstr = new Object();
 	PrgEd[SrcIdx].Iteris = new Object();
 	PrgEd[SrcIdx].DgvSoft = new Object();
 	PrgEd[SrcIdx].GlobalParms.ID=ID;
@@ -1155,6 +1155,7 @@ function RcvConfSrc(Datos)
 			{
 				if(Datos.status==200)
 					RcvFile(Datos); //
+					SdgvP_Tsk();
 					percent=52;
 				}
 			break;

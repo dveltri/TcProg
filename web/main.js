@@ -11,33 +11,33 @@ const { dialog } = require('electron').remote;
 
 const MnuTemplate = [
 	{
-		label:"Archivos",
+		label:Str_mnu_files,
 		submenu:[
 		{
-			label:"Nuevo",
+			label:Str_mnu_new,
 			click:function(){console.log("New")}
 		},{
-			label:"Cargar Conf.",
+			label:Str_mnu_load_conf,
 			submenu:[
 			{
-				label:"Desde Carpeta",
+				label:Str_mnu_from_folder,
 				click:ShwLoadHd		
 			},{
-				label:"Desde IP",
+				label:Str_mnu_from_ip,
 				click:ShwLoadIP
 			}/*,{
 				label:"Desde Serial",
 				click:ShwLoadSer
 			}*/]
 		},{
-			label:"Guardar Conf",
+			label:Str_mnu_save_conf,
 			enabled:false,
 			submenu:[
 			{
-				label:"En Carpeta",
+				label:Str_mnu_to_folder,
 				click:ShwSaveHd
 			},{
-				label:"En IP",
+				label:Str_mnu_to_ip,
 				click:ShwSaveIP
 			}/*,{
 				label:"Por Serial",
@@ -46,34 +46,34 @@ const MnuTemplate = [
 		},{
 			type:"separator"
 		},{
-			label:"Salir",
+			label:Str_mnu_exit,
 			click:function(){
 				console.log("Exit")
 				app.quit()
 			}
 		}]
 	},{
-		label:"Configuraciones",
+		label:Str_mnu_configs,
 		submenu:[]
 	}];
 
 var std_submenu=[
 			{
-				label:"Estado",
+				label:Str_mnu_status,
 				click:ShwStatus
 			},{
-				label:"General",
+				label:Str_mnu_general,
 				click:ShwGeneral
 			},{
-				label:"Funcionamiento",
+				label:Str_mnu_functionalty,
 				click:ShwUtility
 			},{
-				label:"Comunicacion",
+				label:Str_mnu_comms,
 				click:ShwDrvs
 			},{
 			type:"separator"
 			},{
-				label:"Recargar",
+				label:Str_mnu_reload,
 				click:ReloadSrc
 			}];
 function Start()
@@ -95,6 +95,8 @@ function Start()
 
 function ShwStatus(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiS)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -105,6 +107,8 @@ function ShwStatus(menuItem, browserWindow, event)
 
 function ShwGeneral(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiG)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -114,6 +118,8 @@ function ShwGeneral(menuItem, browserWindow, event)
 }
 function ShwUtility(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiF)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -123,6 +129,8 @@ function ShwUtility(menuItem, browserWindow, event)
 }
 function ShwDrvs(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiD)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;

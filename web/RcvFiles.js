@@ -1163,7 +1163,7 @@ function RcvOTU2(Datos)
 	//-----------------------------------
 }// */
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvSDgvP(Datos)
+/*function RcvSDgvP(Datos)
 {
 	var ptr;
 	var tmpt="";
@@ -1173,130 +1173,232 @@ function RcvSDgvP(Datos)
 	Datos=RemComment(Datos)
 	Datos=Datos.split("\n");
 	RemoveUnusedItem(Datos);
-	//SDgvP()=null;
-	//SDgvP()=new Object();
-	SDgvP().Tsk=null;
-	SDgvP().Link=0;
-	SDgvP().Debug=255;
+	//SdgvP()=null;
+	//SdgvP()=new Object();
+	SdgvP().Tsk=null;
+	SdgvP().Link=0;
+	SdgvP().Debug=255;
 	//-----------------------------------
 	for(var j=0;j<Datos.length;j++)
 	{
 		ptr=Datos[j].indexOf("SDgvP.Link=");
 		if(ptr!=-1)
 		{
-			SDgvP().Link=parseInt("0"+Datos[j].substring(ptr+11));
+			SdgvP().Link=parseInt("0"+Datos[j].substring(ptr+11));
 		}
 		ptr=Datos[j].indexOf("SDgvP.SrvId=");
 		if(ptr!=-1)
 		{
-			SDgvP().SrvId=parseInt("0"+Datos[j].substring(ptr+12));
+			SdgvP().SrvId=parseInt("0"+Datos[j].substring(ptr+12));
 		}
 		ptr=Datos[j].indexOf("SDgvP.debug=");
 		if(ptr!=-1)
 		{
-			SDgvP().Debug=parseInt("0"+Datos[j].substring(ptr+12));
+			SdgvP().Debug=parseInt("0"+Datos[j].substring(ptr+12));
 		}
 		ptr=Datos[j].indexOf("SDgvP.Tsk");
 		if(ptr!=-1)
 		{
-			if(!SDgvP().Tsk)
+			if(!SdgvP().Tsk)
 			{
-				SDgvP().Tsk=new Array();
+				SdgvP().Tsk=new Array();
 			}
 			tmpt=Datos[j].substring(ptr+9);
 			idx=parseInt("0"+tmpt);
-			if(!SDgvP().Tsk[idx])
-				SDgvP().Tsk[idx]=new Object();
-			SDgvP().Tsk[idx].IDsrv=254;
-			SDgvP().Tsk[idx].Sck=2;
-			SDgvP().Tsk[idx].Period=10;
+			if(!SdgvP().Tsk[idx])
+				SdgvP().Tsk[idx]=new Object();
+			SdgvP().Tsk[idx].IDsrv=254;
+			SdgvP().Tsk[idx].Sck=2;
+			SdgvP().Tsk[idx].Period=10;
 			ptr=Datos[j].indexOf(",");	//Tsk
 			if(ptr!=-1)
 			{
-				SDgvP().Tsk[idx].cmps=Datos[j].substring(ptr+1);	//Byte Period
-				SDgvP().Tsk[idx].Period=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=Datos[j].substring(ptr+1);	//Byte Period
+				SdgvP().Tsk[idx].Period=parseInt("0"+SdgvP().Tsk[idx].cmps);
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
-				SDgvP().Tsk[idx].IDsrv=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
+				SdgvP().Tsk[idx].IDsrv=parseInt("0"+SdgvP().Tsk[idx].cmps);
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
-				SDgvP().Tsk[idx].Sck=parseInt("0"+SDgvP().Tsk[idx].cmps);
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
+				SdgvP().Tsk[idx].Sck=parseInt("0"+SdgvP().Tsk[idx].cmps);
 				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
 				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
-				SDgvP().Tsk[idx].Size=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
+				SdgvP().Tsk[idx].Size=parseInt("0"+SdgvP().Tsk[idx].cmps);
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<8;
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
+				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<8;
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<16;
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
+				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<16;
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<24;
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
+				SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<24;
 				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
+				ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
 				if(ptr==-1)
 					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr);// Data String
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr);// Data String
 				if(GlobalParms().MODEL.indexOf("M3")!=-1)
 				{
 					for(var i=0;i<DgvPM3.length;i+=2)
 					{
-						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
+						SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
 					}
 				}
 				if(GlobalParms().MODEL.indexOf("M4")!=-1)
 				{
 					for(var i=0;i<DgvPM4.length;i+=2)
 					{
-						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
+						SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
 					}
 				}
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.split(',');
-				RemoveUnusedItem(SDgvP().Tsk[idx].cmps);				
+				SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.split(',');
+				RemoveUnusedItem(SdgvP().Tsk[idx].cmps);				
 			}
 			//------------------------------------------
 		}
 	}
 }// */
+function SdgvP_Tsk()
+{
+	var idx=0;
+	var tsk="";
+	var ptr;
+	while(SdgvP()["tsk"+idx])
+	{
+		tsk=SdgvP()["tsk"+idx];
+		if(!SdgvP().Tsk)
+			SdgvP().Tsk=new Array();
+		if(!SdgvP().Tsk[idx])
+			SdgvP().Tsk[idx]=new Object();
+		SdgvP().Tsk[idx].IDsrv=254;
+		SdgvP().Tsk[idx].Sck=2;
+		SdgvP().Tsk[idx].Period=10;
+		ptr=tsk.indexOf(",");	//Tsk
+		if(ptr!=-1)
+		{
+			SdgvP().Tsk[idx].cmps=tsk.substring(ptr+1);	//Byte Period
+			SdgvP().Tsk[idx].Period=parseInt("0"+SdgvP().Tsk[idx].cmps);
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
+			SdgvP().Tsk[idx].IDsrv=parseInt("0"+SdgvP().Tsk[idx].cmps);
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
+			SdgvP().Tsk[idx].Sck=parseInt("0"+SdgvP().Tsk[idx].cmps);
+			//------------------------------------------
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			//------------------------------------------
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
+			SdgvP().Tsk[idx].Size=parseInt("0"+SdgvP().Tsk[idx].cmps);
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
+			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<8;
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
+			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<16;
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
+			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<24;
+			//------------------------------------------
+			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr);// Data String
+			if(GlobalParms().MODEL.indexOf("M3")!=-1)
+			{
+				for(var i=0;i<DgvPM3.length;i+=2)
+				{
+					SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
+				}
+			}
+			if(GlobalParms().MODEL.indexOf("M4")!=-1)
+			{
+				for(var i=0;i<DgvPM4.length;i+=2)
+				{
+					SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
+				}
+			}
+			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.split(',');
+			RemoveUnusedItem(SdgvP().Tsk[idx].cmps);				
+		}
+		//------------------------------------------
+		idx++;
+	}	
+}
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 /*function RcvIteris(Datos)
 {

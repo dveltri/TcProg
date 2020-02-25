@@ -50,12 +50,17 @@ function RcvMoni(Datos)
 		{
 			if(Resource.length && Resource.length>RsrcIdx)
 			{
-				Resource[RsrcIdx].Element.innerHTML=Resource[RsrcIdx].Fnc(Datos);
+				Datos=Resource[RsrcIdx].Fnc(Datos);
+				if(out=validateXML(Datos)=="")
+					Resource[RsrcIdx].Element.innerHTML=Datos;
+				else
+					LOG(out);
 			}
 		}
 		else
 		{
 			out=Datos.status+" "+Datos.statusText;
+			LOG(out);
 		}
 	}
 	RsrcIdx++;
