@@ -5,6 +5,7 @@ function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return 
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
 function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].sdgvp;				else return PrgEd[i].sdgvp;}
+function Mstr(i){		if(i==undefined)return PrgEd[SrcIdx].mstr;				else return PrgEd[i].mstr;}
 function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].gps;				else return PrgEd[i].gps;}
 function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;				else return PrgEd[i].IOs;}
 function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;				else return PrgEd[i].OPCT;}
@@ -368,14 +369,10 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].IOs = new Array();
 	PrgEd[SrcIdx].Srv = new Array();
 	PrgEd[SrcIdx].Links = new Array();
-	//PrgEd[SrcIdx].NTP = new Object();
-	//PrgEd[SrcIdx].SDgvP=new Object();
-	//PrgEd[SrcIdx].GPS = new Object();
 	PrgEd[SrcIdx].ErrorsCfg = new Object();
 	PrgEd[SrcIdx].OTU = new Object();
 	PrgEd[SrcIdx].DefIn = new Object();
 	PrgEd[SrcIdx].OPCT = new Object();
-	//PrgEd[SrcIdx].Mstr = new Object();
 	PrgEd[SrcIdx].Iteris = new Object();
 	PrgEd[SrcIdx].DgvSoft = new Object();
 	PrgEd[SrcIdx].GlobalParms.ID=ID;

@@ -146,6 +146,7 @@ function ReDraw(Fnc)
 			if(GlobalParms().MODEL.indexOf("GW")==-1)
 				document.getElementById('HOME1').innerHTML+=ShowDgvpConf();
 			document.getElementById('HOME2').innerHTML=ShwSutec();
+			document.getElementById('HOME3').innerHTML=ShwMaster();
 		}
 		break;
 		//-----------------------------------------------------
@@ -714,11 +715,11 @@ function ShwATZ()
 
 function ShwGps()
 {
-	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Configuracion GPS</font><br />\n";
+	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">"+Str_GPS_title+"</font><br />\n";
 	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n";
 	out+="<tr align=\"left\">\n\
 			<td>\n\
-			<font size=\"1\" face=\"arial\">"+Str_Enable+" GPS</font>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Enable+" GPS("+GPS().link+")</font>\n\
 			</td>\n\
 			<td>\n\
 			<input type=\"checkbox\" onclick=\"GPS().link^=9;ReDraw(-1);\" "+((GPS().link!=0)?"checked=\"checked\"":"")+" />\n\
@@ -728,7 +729,7 @@ function ShwGps()
 		{
 			out+="<tr align=\"left\">\n\
 			<td>\n\
-			<font size=\"1\" face=\"arial\">"+Str_Config+" GPS("+GPS().link+")</font>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Config+" GPS</font>\n\
 			</td>\n\
 			<td>\n\
 			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+GPS().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[GPS().Link][2]+"\" "+((GPS().Link==0)?'disabled="true"':"")+" />\n\
@@ -744,22 +745,22 @@ function ShwGps()
 			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priority=this.value;ReDraw(-1);\" value=\""+(GPS().priority)+"\" "+((GPS().priority==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
-		if(GPS().priorityplus)
+		if(GPS()["priority+"])
 		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priop+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priorityplus=this.value;ReDraw(-1);\" value=\""+(GPS().priorityplus)+"\" "+((GPS().priorityplus==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"GPS()['priority+']=this.value;ReDraw(-1);\" value=\""+(GPS()['priority+'])+"\" "+((GPS()['priority+']==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
-		if(GPS().priorityminus)
+		if(GPS()["priority-"])
 		out+="<tr align=\"left\">\n\
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_gps_priol+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS().priorityminus=this.value;ReDraw(-1);\" value=\""+(GPS().priorityminus)+"\" "+((GPS().PriorityMinus==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" title=\"holaaa\" class=\"CssInText\" size=\"4\" onchange=\"GPS()['priority-']=this.value;ReDraw(-1);\" value=\""+(GPS()['priority-'])+"\" "+((GPS()['priority-']==0)?'disabled="true"':"")+" />\n\
 			</td>\n\
 		</tr>\n";
 		out+="<tr align=\"left\">\n\
@@ -804,7 +805,7 @@ function ShwNtp()
 	{
 		alert("Error en los parametros de NTP"+e.message);
 	}
-	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Actualizacion de hora mediante NTP</font><br />\n";
+	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">"+Str_NTP_title+"</font><br />\n";
 	out+="\
 	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
 		<tr align=\"left\">\n\
@@ -1041,6 +1042,62 @@ function ShwSutec()
 	out+="<hr />";
 	return out;
 }// */
+
+function ShwMaster()
+{
+	if(Mstr().link==null)
+		return "";
+	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">"+Str_Mstr_title+"</font><br />\n";
+	out+="\
+	<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
+		<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"checkbox\" onclick=\"Mstr().link^=14;ReDraw(-1);\" "+((Mstr().link!=0)?"checked=\"checked\"":"")+" />\n\
+			</td>\n\
+		</tr>\n\
+		<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Type+"</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().type=this.value;ReDraw(-1);\" value=\""+Mstr().type+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n";
+		//out+="<font size=\"1\" face=\"arial\">0=Slave<br />1=Master<br />2=S/M<br />3=S/M+Plan<br />4=S+Plan<br />5=S+State<br />6=S+Plan+State<br />10=M+Plan<br />11=M+State<br />12=M+Plan+State</font> \n";
+		out+="</td>\n\
+		</tr>\n\
+		<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"("+Mstr().link+")</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+Mstr().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[Mstr().link][2]+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n\
+			</td>\n\
+		</tr>\n\
+		<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_ntp_Sync_tim+"</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().time=(this.value);ReDraw(-1);\" value=\""+(Mstr().time)+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n\
+			</td>\n\
+		</tr>\n";
+	if(UsrLvl>2)
+	{
+	out+="<tr align=\"left\">\n\
+			<td>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Debugger+" Mstr</font>\n\
+			</td>\n\
+			<td>\n\
+			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"Mstr().debug=this.value;ReDraw(-1);\" value=\""+Mstr().debug+"\" />\n\
+			</td>\n\
+		</tr>\n";
+	}
+	out+="</table>\n";
+	out+="<hr />";
+	return out;
+}
 
 function ShwScoot()
 {

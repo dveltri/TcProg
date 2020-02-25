@@ -13,6 +13,9 @@ var Str_mnu_general="General";
 var Str_mnu_functionalty="Funcionamiento";
 var Str_mnu_comms="Comunicacion";
 var Str_mnu_reload="Recargar";
+var Str_Mstr_title="Configuracion Maestro / Esclavo";
+var Str_NTP_title="Actualizacion de hora mediante NTP";
+var Str_GPS_title="Configuracion GPS";
 
 var SpeedTypePhase=	[[277,"Vehiculo lento 10k/h","Vold.png",416,"Vehiculo normal 15k/h","Vnormal.png",555,"Vehiculo r&#225;pido 20k/h","Vsport.png"]
 					,[114,"Peaton lento 1.14 m/s","Pold.png",148,"Peaton normal 1.48 m/s","Pnormal.png",202,"Peaton r&#225;pido 2.02 m/s","Psport.png"]
