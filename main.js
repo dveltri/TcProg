@@ -13,7 +13,7 @@ let win
 
 function createWindow () {
 	// Crea la ventana del navegador.
-	win = new BrowserWindow({ width: 1358, height: 760 });
+	win = new BrowserWindow({ width: 1358, height: 760, webPreferences: {nodeIntegration: true }});
 	
 	// y carga el archivo index.html de la aplicaci�n.
 	win.loadFile('index.html');

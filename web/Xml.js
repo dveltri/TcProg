@@ -104,7 +104,14 @@ function handleHttpResponse()
 				{
 					if(Log_En>1)LOG("http.status:"+http.readyState+","+http.status+"\n");
 					enProceso = 0;
-					response(http);
+					try
+					{
+						response(http);
+					}
+					catch(e)
+					{
+						LOG("Error HttpResponse:"+e.message);
+					}
 				}
 				else
 				{

@@ -52,9 +52,20 @@ function RcvMoni(Datos)
 			{
 				Datos=Resource[RsrcIdx].Fnc(Datos);
 				if(out=validateXML(Datos)=="")
-					Resource[RsrcIdx].Element.innerHTML=Datos;
+				{
+					try
+					{
+						Resource[RsrcIdx].Element.innerHTML=Datos;
+					}
+					catch(e)
+					{
+						LOG("Error RcvMoni:"+e.message);
+					}
+				}
 				else
-					LOG(out);
+				{
+					LOG("Validating RcvMoni:"+out);
+				}
 			}
 		}
 		else
@@ -186,7 +197,12 @@ function rcvGbVars(Datos)
 	out3+="</td></tr>";
 	out3+="</table>\n";
 	//--------------
-	outX+=HexEncode(Datos.substring(24,56));
+	outX+="<font size=\"1\" face=\"arial\">"
+	outX+=HexEncode(Datos.substring(24,32))+"<br/>";
+	outX+=HexEncode(Datos.substring(32,40))+"<br/>";
+	outX+=HexEncode(Datos.substring(40,48))+"<br/>";
+	outX+=HexEncode(Datos.substring(48,56));
+	outX+="</font>";
 	//---------------------------------
 	out4+="<table border=\"0\">\n";
 	out4+="<tr>\n";
@@ -195,15 +211,14 @@ function rcvGbVars(Datos)
 	out4+="<td>";
 	if(tempV)
 	{
-		if(tempV&4)out4+="<font size=\"2\" color=\"#b0b\" face=\"arial\">"+Str_Over_Voltage+"<br />";
-		if(tempV&2)out4+="<font size=\"2\" color=\"#bb0\" face=\"arial\">"+Str_Min_Voltage+"<br />";
-		if(tempV&1)out4+="<font size=\"3\" color=\"#f00\" face=\"arial\">"+Str_Crit_Voltage+"<br />";
+		if(tempV&4)out4+="<font size=\"2\" color=\"#b0b\" face=\"arial\">"+Str_Over_Voltage+"</font><br />";
+		if(tempV&2)out4+="<font size=\"2\" color=\"#bb0\" face=\"arial\">"+Str_Min_Voltage+"</font><br />";
+		if(tempV&1)out4+="<font size=\"3\" color=\"#f00\" face=\"arial\">"+Str_Crit_Voltage+"</font><br />";
 	}
 	else
 	{
-		out4+="<font size=\"1\" color=\"#00f\" face=\"arial\">"+Str_Normal_Voltage+"<br />";
+		out4+="<font size=\"1\" color=\"#00f\" face=\"arial\">"+Str_Normal_Voltage+"</font><br />";
 	}
-	out4+="</font>";
 	out4+="</td>";
 	out4+="</tr>\n";
 	temp=Datos.substring(12,16);
@@ -256,7 +271,7 @@ function rcvGbVars(Datos)
 	out+=out5;
 	out+="</td>\n";
 	out+="</tr>\n";
-	/*//-------------
+	//-------------
 	out+="<tr><td colspan=\"2\"><hr /></td></tr>\n";
 	out+="<tr>\n";
 	out+="<td valign=\"middle\" align=\"center\"><font size=\"3\" face=\"arial\"> "+Str_Others+" </font></td>\n";

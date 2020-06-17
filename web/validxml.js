@@ -54,14 +54,14 @@ function validateXML(txt)
         {
             var text=txt;
             var parser=new DOMParser();
-            var xmlDoc=parser.parseFromString(text,"text/html");
+            var xmlDoc=parser.parseFromString(text,"text/html"); //text/xml text/xhtml application/xhtml+xml
         }
         catch(err)
         {
             out=err.message;
         }
 
-        if (xmlDoc.getElementsByTagName("parsererror").length>0)
+        if (xmlDoc!=null && xmlDoc.getElementsByTagName("parsererror").length>0)
         {
             checkErrorXML(xmlDoc.getElementsByTagName("parsererror")[0]);
             out=xt;

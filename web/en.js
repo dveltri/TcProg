@@ -22,6 +22,7 @@ var SpeedTypePhase=	[[277,"Vehiculo lento 10k/h","Vold.png",416,"Vehiculo normal
 					,[166,"Vehiculo lento 6k/h","Vold.png",222,"Vehiculo normal 8k/h","Vnormal.png",333,"Vehiculo r&#225;pido 12k/h","Vsport.png"]
 					,[222,"Ciclista lento 8k/h","Cold.png",333,"Ciclista normal 12k/h","Cnormal.png",555,"Ciclista r&#225;pido 20k/h","Csport.png"]];
 
+var Str_dgvp_sck_inf ="Inf. Tiempo Real";
 var Str_Version="Version";
 var Str_Voltage="Tension";
 var Str_Over_Voltage="Over Voltage";
@@ -76,7 +77,7 @@ var Str_Output="Output";
 var Str_Service="Safe mode"
 
 var Str_Uploading="Uploading";
-var SchTyp=["Mostrar Agenda","Agenda de dia(D)","Agenda de rango de Fechas(R)","Agenda Semanal(S)","Agenda horaria"];
+var SchTyp=["Mostrar Agenda","Agenda de dia(D)","Agenda Semanal(S)","Agenda horaria"]; //,"Agenda de rango de Fechas(R)"
 var Str_Error_Model="Error, update Model in startup.ini";
 var Str_FromStep="From step";
 var Str_ToStep="to step";

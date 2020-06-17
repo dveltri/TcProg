@@ -55,11 +55,11 @@ function ReDraw(Fnc)
 	out+="<tr>\n";
 	out+="<td align=\"left\" >\n";
 	if(WizrdIdx>0)
-		out+="<input type=\"button\" class=\"CssBtn\" value=\"Prev\" onclick=\"goWizrdPrev();\" />\n";
+		out+="<input type=\"button\" class=\"CssMaxBtn\" value=\"Prev\" onclick=\"goWizrdPrev();\" />\n";
 	out+="</td>\n";
 	out+="<td align=\"right\" >\n";
 	if(WizrdIdx<wizard[Widx].length-1)
-		out+="<input type=\"button\" class=\"CssBtn\" value=\"Next\" onclick=\"goWizrdNext();\" />\n";
+		out+="<input type=\"button\" class=\"CssMaxBtn\" value=\"Next\" onclick=\"goWizrdNext();\" />\n";
 	out+="</td>\n";
 	out+="</tr>\n";
 	out+="</table>\n";
@@ -142,11 +142,21 @@ function ReDraw(Fnc)
 		//----------------------------------------------------- */
 		case conf_Comm:
 		{
-			document.getElementById('HOME1').innerHTML="<hr />\n";
-			if(GlobalParms().MODEL.indexOf("GW")==-1)
-				document.getElementById('HOME1').innerHTML+=ShowDgvpConf();
-			document.getElementById('HOME2').innerHTML=ShwSutec();
-			document.getElementById('HOME3').innerHTML=ShwMaster();
+			out="<hr />\n";
+			out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShowDgvpConf();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			out+=ShwSutec();
+			out+="</td></tr>\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShwMaster();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			out+="</td></tr>\n";
+			out+="</table>\n";
+			document.getElementById('HOME1').innerHTML=out;
+			//document.getElementById('HOME2').innerHTML=ShwSutec();
+			//document.getElementById('HOME3').innerHTML=ShwMaster();
 		}
 		break;
 		//-----------------------------------------------------
@@ -188,7 +198,7 @@ function ShwPHHW()
 	SetEv();
 	PLCs()[PlcIdx].Phases=PLCs()[PlcIdx].Phases.sort(sortI);
 	//------------------------------------------------------------------------------------ class=\"table1\" 
-	var out="<table width=\"100%\" height=\"80%\" border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"0\" bordercolor=\"#000000\" bgcolor=\"#ccc\" >\n";
+	var out="<table width=\"90%\" height=\"90%\" border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"0\" bordercolor=\"#000000\" bgcolor=\"#ccc\" >\n";
 	out+="<tr bgcolor=\"#bbb\" >\n<td></td>\n";	// rowspan=\"10\" class=\"hrvert\"
 	for(j=0;j<PHASEs().length;j++)
 	{
@@ -916,11 +926,13 @@ function ShowDgvpConf()
 		out+="	</td>\n";
 		out+="</tr>\n";
 		//---------------------------------------------------------------------
+		out+="<tr><td colspan=\"2\" ><hr /></td></tr>\n";
 		out+="<tr align=\"left\" >\n";
 		out+="	<td align=\"left\">\n";
-		out+="<select onchange=\"SdgvP().Tsk["+idx+"].Sck=this.value;\" class=\"CssSelect\" >\n";
+		out+="		<font size=\"1\" face=\"arial\">"+Str_dgvp_sck_inf+"</font><br />\n";
+		/*out+="<select onchange=\"SdgvP().Tsk["+idx+"].Sck=this.value;\" class=\"CssSelect\" >\n";
 		out+=GenOptions(OptDgvPCmd,SdgvP().Tsk[idx].Sck);
-		out+="</select>\n"
+		out+="</select>\n"// */
 		out+="	</td>\n";
 		switch(SdgvP().Tsk[idx].Sck)
 		{
@@ -942,7 +954,7 @@ function ShowDgvpConf()
 					{
 						out+="<input type=\"button\" class=\"CssMinBtn\" value=\"[X]";
 						out+=LsCmpsTxt[tmp];
-						out+="\" onclick=\"SdgvP().Tsk["+idx+"].cmps.splice("+i+",1);ShowDgvpConf();return false;\" /><br />\n";
+						out+="\" onclick=\"SdgvP().Tsk["+idx+"].cmps.splice("+i+",1);ReDraw(-1);return false;\" /><br />\n";
 						i++;
 					}
 					else
@@ -951,7 +963,10 @@ function ShowDgvpConf()
 						i=0;
 					}
 				}
-				out+="<br />["+Str_Add+":<select class=\"CssSelect\" onchange=\"if(this.selectedIndex>0){SdgvP().Tsk["+idx+"].cmps[SdgvP().Tsk["+idx+"].cmps.length]=LsCmps[this.selectedIndex-1];}ShowDgvpConf();\" >\n";
+				out+="	</td></tr>\n";
+				out+="<tr>";
+				out+="	<td colspan=\"2\" align=\"left\" valign=\"middle\">\n";
+				out+="<br />["+Str_Add+":<select class=\"CssSelect\" onchange=\"if(this.selectedIndex>0){SdgvP().Tsk["+idx+"].cmps[SdgvP().Tsk["+idx+"].cmps.length]=LsCmps[this.selectedIndex-1];}ReDraw(-1);\" >\n";
 				out+="<option></option>\n";
 				out+=GenOptionsVi(LsCmpsTxt,null);
 				out+="</select>]\n"
@@ -1062,9 +1077,12 @@ function ShwMaster()
 			<td>\n\
 			<font size=\"1\" face=\"arial\">"+Str_Type+"</font>\n\
 			</td>\n\
-			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().type=this.value;ReDraw(-1);\" value=\""+Mstr().type+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n";
-		//out+="<font size=\"1\" face=\"arial\">0=Slave<br />1=Master<br />2=S/M<br />3=S/M+Plan<br />4=S+Plan<br />5=S+State<br />6=S+Plan+State<br />10=M+Plan<br />11=M+State<br />12=M+Plan+State</font> \n";
+			<td>\n";
+			//out+="<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().type=this.value;ReDraw(-1);\" value=\""+Mstr().type+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n";
+			out+="<select class=\"CssSelect\" onchange=\"Mstr().type=parseInt(this.value);ReDraw(-1);\" "+((Mstr().link==0)?'disabled="true"':"")+">\n";
+			out+=GenOptions(OptMst,Mstr().type);
+			out+="</select>\n";
+			//out+="<font size=\"1\" face=\"arial\">0=Slave<br />1=Master<br />2=S/M<br />3=S/M+Plan<br />4=S+Plan<br />5=S+State<br />6=S+Plan+State<br />10=M+Plan<br />11=M+State<br />12=M+Plan+State</font> \n";
 		out+="</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\

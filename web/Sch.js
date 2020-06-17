@@ -62,13 +62,13 @@ function ShowAgenda()
 		case SchTyp[1]:
 			out+=ShwHD();
 		break;
-		case SchTyp[2]:
+/*		case SchTyp[2]:
 			out+=ShwRD();
-		break;
-		case SchTyp[3]:
+		break;// */
+		case SchTyp[2]:
 			out+=ShwDW();
 		break;
-		case SchTyp[4]:
+		case SchTyp[3]:
 			out+=ShwTS();
 		break;
 	}
