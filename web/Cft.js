@@ -219,36 +219,7 @@ function CalcCft()
 		}
 	}
 	Sts.sort(sortI);
-	/*stas=Sts[0];
-	do
-	{
-		rt=-1;
-		for(var x=0;x<Sts.length;x++)
-		{
-			if((stas&Sts[x])==0)
-			{
-				if(rt==-1)
-				{
-					rt=x;
-				}
-			}
-			else
-			{
-				if(rt!=-1 && x!=rt)
-				{
-					stas=Sts[rt];
-					Sts[rt]=Sts[x];
-					Sts[x]=stas;
-					x=0;
-					rt=-1;
-				}
-				else
-					stas=Sts[x];
-			}
-		}
-	}
-	while(rt!=-1);// */
-	PLCs()[PlcIdx].Sts.length=0;
+	PLCs()[PlcIdx].Sts = new Array();
 	for(var y=0;y<Sts.length;y++)
 	{
 		idx=PLCs()[PlcIdx].Sts.length;

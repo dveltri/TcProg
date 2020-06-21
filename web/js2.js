@@ -72,7 +72,7 @@ function ReDraw(Fnc)
 			//document.getElementById("HOME2").innerHTML="<br/><select id=\"ClockOffSet\" class=\"INTEXT\">\n"+GenOptions(OptSyncClock,0)+"</select><input type=\"button\" class=\"INTEXT2\" value=\""+Str_Sync+"\" onclick=\"UpDateRtc();return false\" />\n";
 			document.getElementById("HOME1").innerHTML=ShwStsTbl();
 			RsrcIdx=0;
-			if(GlobalParms().MODEL.indexOf("GW")==-1)
+			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
 				addautoget(document.getElementById("InfoIO"),HOST()+"/ios.bin",rcvIOs);
 			}
@@ -94,7 +94,7 @@ function ReDraw(Fnc)
 		{
 			document.getElementById('HOME1').innerHTML=ShwEthernet();
 			document.getElementById('HOME2').innerHTML=ShwGps();
-			//if(GlobalParms().MODEL.indexOf("GW")==-1)
+			//if(GlobalParms().Model.indexOf("GW")==-1)
 			document.getElementById('HOME3').innerHTML=ShwNtp();
 			LOG(SendStartup(PrgEd[SrcIdx]));
 			UpMode=0;
@@ -123,7 +123,7 @@ function ReDraw(Fnc)
 		case conf_sts:
 		{
 			document.getElementById("HOME1").innerHTML=ShowStss();
-			/*if(GlobalParms().MODEL.indexOf("RT")!=-1)
+			/*if(GlobalParms().Model.indexOf("RT")!=-1)
 			document.getElementById('HOME2').innerHTML=ShwStsCft();// */
 		}
 		break;

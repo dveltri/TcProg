@@ -2,12 +2,12 @@
 function SetRemote()
 {
 	Reload|=0x100;
-	if(GlobalParms().MODEL.indexOf("M3")!=-1)
+	if(GlobalParms().Model.indexOf("M3")!=-1)
 	{
 		HW_IOS=9;
 		PhasesStructSize=56;
 	}
-	if(GlobalParms().MODEL.indexOf("M4")!=-1 || GlobalParms().MODEL.indexOf("GW")==-1)
+	if(GlobalParms().Model.indexOf("M4")!=-1 || GlobalParms().Model.indexOf("GW")==-1)
 	{
 		HW_IOS=16;
 		PhasesStructSize=60;
@@ -52,11 +52,11 @@ function SendStartup(Prg)
 			UpData+="-"+temp
 	}
 	UpData+="\n";
-	UpData+="Model "+Prg.GlobalParms.MODEL+"\n";
+	UpData+="Model "+Prg.GlobalParms.Model+"\n";
 	if(Prg.GlobalParms.Version)
 		UpData+="Ver "+Prg.GlobalParms.Version+"\n";
 	UpData+=Remplace("ETH0 "+Prg.GlobalParms.ETH0+"\n",",",".");
-	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 	{
 		UpData+=Remplace("NETMASK0 "+Prg.GlobalParms.NETMASK0+"\n",",",".");
 	}
@@ -64,7 +64,7 @@ function SendStartup(Prg)
 	{
 		UpData+=Remplace("NETMASK "+Prg.GlobalParms.NETMASK0+"\n",",",".");
 	}
-	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 	{
 		UpData+=Remplace("MACDGW "+Prg.GlobalParms.MACDGW+"\n",",","-");
 	}
@@ -94,7 +94,7 @@ function SendStartup(Prg)
 	UpData+="Web Access Code Ro "+Prg.GlobalParms.Web_Access_Code_RO+"\n";
 	UpData+="Web Access Code R/W "+Prg.GlobalParms.Web_Access_Code_RW+"\n";
 	UpData+="Time Zone GMT "+Prg.GlobalParms.Time_Zone_GMT+"\n";
-	if((Prg.GlobalParms.MODEL.indexOf("GW4")!=-1 || Prg.GlobalParms.MODEL.indexOf("GW")==-1 || Prg.GlobalParms.MODEL.indexOf("M3")!=-1))
+	if((Prg.GlobalParms.Model.indexOf("GW4")!=-1 || Prg.GlobalParms.Model.indexOf("GW")==-1 || Prg.GlobalParms.Model.indexOf("M3")!=-1))
 	UpData+="Enable GPS "+Prg.GlobalParms.Enable_GPS+"\n";
 	UpData+="Time Cap 0\n";
 	UpData+="VoltDes "+Prg.GlobalParms.VoltDes+"\n";
@@ -107,7 +107,7 @@ function SendStartup(Prg)
 		UpData+="IniRed "+Prg.GlobalParms.IniRed+"\n";
 	else
 		UpData+="IniRed 3\n";
-	if(Prg.GlobalParms.ATZ && (Prg.GlobalParms.MODEL.indexOf("GW4")!=-1 || Prg.GlobalParms.MODEL.indexOf("GW")==-1))
+	if(Prg.GlobalParms.ATZ && (Prg.GlobalParms.Model.indexOf("GW4")!=-1 || Prg.GlobalParms.Model.indexOf("GW")==-1))
 	{
 		var ATZ=Prg.GlobalParms.ATZ.clone();
 		for(var i=0;i<ATZ.length;i+=2)
@@ -397,7 +397,7 @@ function SendSdgvP(Prg)
 				{
 					for(var i=0;i<Prg.SDgvP.Tsk[idx].cmps.length;i++)
 					{
-						if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+						if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 						{
 							seek=DgvPM3.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
@@ -405,7 +405,7 @@ function SendSdgvP(Prg)
 								temp+=DgvPM3[seek+1];
 							}
 						}
-						if(Prg.GlobalParms.MODEL.indexOf("M4")!=-1)
+						if(Prg.GlobalParms.Model.indexOf("M4")!=-1)
 						{
 							seek=DgvPM4.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
 							if(seek!=-1)
@@ -685,7 +685,7 @@ function SendPlanAI(Prg)
 	var DemNum;
 	var DemClr;
 	//if(!Prg.PLCs[PlcIdx])return "";
-	//SelIObyModel(Parms.MODEL);
+	//SelIObyModel(Parms.Model);
 	UpData+="tmp=XXXX\n";
 	UpData+="mov 0 tmp\n";
 	UpData+="mov 15 dbug\n";
@@ -796,8 +796,8 @@ function SendPlan98A(Prg)
 	UpFile="plan98.eil"
 	if(!PLCs[PlcIdx])
 		return "";
-	SelIObyModel(Prg.GlobalParms.MODEL);
-	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+	SelIObyModel(Prg.GlobalParms.Model);
+	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 		UpData="#CFT:sec.sec;\n";
 	else
 		UpData="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";
@@ -856,11 +856,11 @@ function SendPlan98A(Prg)
 	if(SwCmMc!=0)
 		UpData+="mov 0 io["+SwCmMc+"].fail	//SwCmMc\n";
 	UpData+="INICIO\n";
-	if(Prg.GlobalParms.MODEL.indexOf("RT")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("RT")!=-1)
 	{
 		UpData+="mov 0 otu.mc\n";
 	}
-	if(Prg.GlobalParms.MODEL.indexOf("RT")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("RT")!=-1)
 	{
 		UpData+="mov 1 otu.fr\n";
 	}
@@ -870,7 +870,7 @@ function SendPlan98A(Prg)
 		UpData+="delay "+(Prg.GlobalParms.IniFsh*1000)+"\n";
 	else
 		UpData+="delay 5000\n";
-	if(Prg.GlobalParms.MODEL.indexOf("RT")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("RT")!=-1)
 	{
 		UpData+="mov 0 otu.fr\n";
 	}
@@ -897,7 +897,7 @@ function SendPlan99(Prg)
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan99.eil"
-	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 		out+="#CFT:sec.sec;\n";
 	else
 		out+="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";
@@ -927,7 +927,7 @@ function SendPlan97(Prg)
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan97.eil"
-	if(Prg.GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 		out+="#CFT:sec.sec;\n";
 	else
 		out+="#CFT:"+Prg.PLCs[PlcIdx].Sec.replace("//","/")+";\n";

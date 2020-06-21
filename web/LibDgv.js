@@ -246,6 +246,19 @@ function RemoveUnusedItem(Datos)
 	}
 }
 
+function get_string_index(str)
+{
+	var ini = str.indexOf("[");
+	var end = str.indexOf("]");
+	if(ini != -1 & end != -1)
+	{
+		end = parseInt(str.substring(ini+1,end));
+		str = str.substring(0,ini)
+		return [end, str];
+	}
+	return [null, null];
+}
+
 Object.compare = function (obj1, obj2)
 {
 	//Loop through properties in object 1

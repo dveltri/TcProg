@@ -1,6 +1,12 @@
 function GlobalParms(i){if(i==undefined)return PrgEd[SrcIdx].GlobalParms;		else return PrgEd[i].GlobalParms;}
 function GlobalVars(i){	if(i==undefined)return PrgEd[SrcIdx].GlobalVars;		else return PrgEd[i].GlobalVars;}
-function PLCs(i){		if(i==undefined)return PrgEd[SrcIdx].PLCs;				else return PrgEd[i].PLCs;}
+function PLCs(i)
+{
+	if(i==undefined)
+		return PrgEd[SrcIdx].PLCs;
+	else
+		return PrgEd[i].PLCs;
+}
 function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return PrgEd[i].PHASEs;}
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
@@ -502,7 +508,7 @@ function ShwListSrc()
 		out+="		 <input type=\"radio\" id=\"SelSrc\" name=\"SelSrc\" value=\""+i+"\" onclick=\"chgsrc("+i+");\" "+(SrcIdx==i?"checked=\"checked\"":"")+" />\n";
 		out+="	</td>\n";
 		out+="	<td align=\"center\">\n";
-		out+="		<font size=\"1\" face=\"arial\">"+PrgEd[i].GlobalParms.ID+" "+GetOption(OptAddSrc,PrgEd[i].GlobalParms.MODEL);
+		out+="		<font size=\"1\" face=\"arial\">"+PrgEd[i].GlobalParms.ID+" "+GetOption(OptAddSrc,PrgEd[i].GlobalParms.Model);
 		if(PrgEd[i].Typ==0)
 			out+="			<a href=\"\" onclick=\"AddSrcNow('"+Remplace(""+PrgEd[i].GlobalParms.ETH0,",",".")+"','"+PrgEd[i].SrcWAC+"',1);return false;\" >["+Remplace(PrgEd[i].GlobalParms.ETH0,",",".")+"]</a>";
 		if(PrgEd[i].Typ==1)
@@ -594,7 +600,7 @@ function LoadConfSrc()
 		break;
 		case 13:
 		{
-			Errors.length=0;
+			Errors = new Array();
 			ShwPBar('Loading Lista de Errores generales');
 			FilterFileList='';
 			if(PrgEd[SrcIdx].Typ==0)
@@ -650,14 +656,14 @@ function LoadConfSrc()
 		break;
 		case 38:
 		{
-			if(GlobalParms().MODEL.indexOf("M4")!=-1)
+			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
 				ShwPBar('Loading Links...');
 				request=GetUrl(HOST()+'/ip.ini',RcvConfSrc);
 			}
 			else
 			{
-				if(GlobalParms().MODEL.indexOf("M3")!=-1)
+				if(GlobalParms().Model.indexOf("M3")!=-1)
 				{
 					ShwPBar('Loading Links...');
 					request=GetUrl(HOST()+'/comm.ini',RcvConfSrc);
@@ -672,7 +678,7 @@ function LoadConfSrc()
 		break;
 		case 39:
 		{
-			if(GlobalParms().MODEL.indexOf("DGV-uTC1-M4")!=-1)
+			if(GlobalParms().Model.indexOf("DGV-uTC1-M4")!=-1)
 			{
 				ShwPBar('Loading NTP conf...');
 				request=GetUrl(HOST()+'/ntp.ini',RcvConfSrc);
@@ -686,7 +692,7 @@ function LoadConfSrc()
 		break;
 		case 40:
 		{
-			if(GlobalParms().MODEL.indexOf("GW")==-1)
+			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
 				ShwPBar('Loading OPCT...');
 				request=GetUrl(HOST()+'/opct.ini',RcvConfSrc);
@@ -700,7 +706,7 @@ function LoadConfSrc()
 		break;
 		case 41:
 		{
-			if(GlobalParms().MODEL.indexOf("M4")!=-1)
+			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
 				ShwPBar('Loading GPS...');
 				request=GetUrl(HOST()+'/gps.ini',RcvConfSrc);
@@ -719,7 +725,10 @@ function LoadConfSrc()
 		{
 			ShwPBar('Loading Lista de entre verdes...');
 			FilterFileList='.ini';
-			PLCs()[PlcIdx].PhcList.length=0;
+			if(PLCs()[PlcIdx].PhcList)
+				PLCs()[PlcIdx].PhcList.length=0;
+			else
+				PLCs()[PlcIdx].PhcList= new Array()
 			if(PrgEd[SrcIdx].Typ==0)
 				GetFls(HOST()+'/'+PlcIdx,RcvConfSrc);
 			else
@@ -730,6 +739,10 @@ function LoadConfSrc()
 		{
 			if (PLCs()[PlcIdx].PhcList.length)
 			{
+				if(PLCs()[PlcIdx].EV)
+					PLCs()[PlcIdx].EV.length=0;
+				else
+					PLCs()[PlcIdx].EV = new Array()
 				ShwPBar('Loading entre verdes...'+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Path+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Name);
 				request=GetUrl(HOST()+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Path+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Name,RcvConfSrc);
 			}
@@ -742,7 +755,7 @@ function LoadConfSrc()
 		break;
 		case 50:
 		{
-			if(GlobalParms().MODEL.indexOf("GW")==-1)
+			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
 				ShwPBar('Loading DgvP Conf...');
 				request=GetUrl(HOST()+'/dgvp.ini',RcvConfSrc);
@@ -756,7 +769,7 @@ function LoadConfSrc()
 		break;
 		case 51:
 		{
-			if(GlobalParms().MODEL.indexOf("GW")==-1)
+			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
 				ShwPBar('Loading SrvDgvP Conf...');
 				request=GetUrl(HOST()+'/sdgvp.ini',RcvConfSrc);
@@ -938,6 +951,7 @@ function RcvConfSrc(Datos)
 				if(Datos.status==200)
 				{
 					RcvStartup(Datos);
+					//RcvFile(PrgEd[SrcIdx].GlobalParms, Datos);	
 					percent=2;
 				}
 				else
@@ -978,7 +992,7 @@ function RcvConfSrc(Datos)
 					FileListDat=FileList2Txt(Datos);
 					FileListDat=FileList2Array(FileListDat);
 					FileListDat=FileList2Obj(FileListDat);
-					PLCs()[PlcIdx].PlanList=FileListDat.slice();
+					PrgEd[SrcIdx].PLCs[PlcIdx].PlanList=FileListDat.slice();
 				}
 				PlcIdx++;
 				percent+=2;
@@ -1083,21 +1097,21 @@ function RcvConfSrc(Datos)
 			case 39:// NTP.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=40;
 			}
 			break;
 			case 40:// opct.ini
 			{
 				if(Datos.status==200)
-					RcvOPCT(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);	//RcvOPCT(Datos);
 				percent=41;
 			}
 			break;
 			case 41:// gps.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=42;
 			}
 			break;
@@ -1112,7 +1126,6 @@ function RcvConfSrc(Datos)
 					FileListDat=FileList2Array(FileListDat);
 					FileListDat=FileList2Obj(FileListDat);
 					PLCs()[PlcIdx].PhcList=FileListDat.slice();
-					PLCs()[PlcIdx].EV.length=0;
 				}
 				PlcIdx++;
 				percent+=2;
@@ -1144,14 +1157,14 @@ function RcvConfSrc(Datos)
 			case 50: // dgvp.ini
 			{
 				if(Datos.status==200)
-				RcvFile(Datos);
+				RcvFile(PrgEd[SrcIdx], Datos);
 				percent=51;
 			}
 			break;
 			case 51: // sdgvp.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos); //
+					RcvFile(PrgEd[SrcIdx], Datos);
 					SdgvP_Tsk();
 					percent=52;
 				}
@@ -1243,7 +1256,7 @@ function RcvConfSrc(Datos)
 			case 86:// master.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=87;
 			}
 			break;
@@ -1924,7 +1937,7 @@ function UpDateRtc()
 	rtc=parseInt(ourDate.getTime()/1000);
 	TimeZone=(ourDate.getTimezoneOffset()*60);
 	rtc+=parseInt(document.getElementById("ClockOffSet").value);
-	if(GlobalParms().MODEL.indexOf("M3")!=-1)
+	if(GlobalParms().Model.indexOf("M3")!=-1)
 	{
 	}
 	else

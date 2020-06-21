@@ -646,10 +646,10 @@ function ProcessAgenda(Datos)
 	var idxWD=0;
 	var idxTS=0;
 	var idx=0;
-	HolyDays.length=0;
-	RangeDays.length=0;
-	WeekDays.length=0;
-	TimeScheduler.length=0;
+	HolyDays = new Array();
+	RangeDays = new Array();
+	WeekDays = new Array();
+	TimeScheduler = new Array();
 	for(var i=0;i<Datos.length;i++)
 	{
 		Datos[i]=RemoveUnuseChar(Datos[i]);
@@ -683,17 +683,17 @@ function ProcessAgenda(Datos)
 		//-----------------------------------
 		if(Datos[i].indexOf("[Holidays & Dates]")!=-1)
 		{
-			HolyDays.length=0;
+			HolyDays = new Array();
 			idxHD=i+1;
 		}
 		if(Datos[i].indexOf("[Range]")!=-1)
 		{
-			RangeDays.length=0;
+			RangeDays = new Array();
 			idxHD=i+1;
 		}
 		if(Datos[i].indexOf("[weeks]")!=-1)
 		{
-			WeekDays.length=0;
+			WeekDays = new Array();
 			idxWD=i+1;
 		}
 	}

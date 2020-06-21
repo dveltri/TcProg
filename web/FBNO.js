@@ -88,7 +88,7 @@ function GetCtrl()
 	var sts=0;
 	var idx=0;
 	var plc=0;
-	var QtDem = 1*((9+parseInt(GlobalParms.Inputs)+parseInt(GlobalParms.Loops)));
+	var QtDem = 1*((9+parseInt(GlobalParms().Inputs)+parseInt(GlobalParms().Loops)));
 	var QtDem = IOs.length;
 	out += "<table border=\"0\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" width=\"30%\">\n";
 	//---------------------------------------------------------------------------------------------------

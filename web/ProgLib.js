@@ -109,7 +109,7 @@ function UpSts(s)
 
 function ChkJmp(sts1,sts2)
 {
-	if(GlobalParms.MODEL.indexOf("RT")!=-1)
+	if(GlobalParms().Model.indexOf("RT")!=-1)
 	{
 		for(var i=0;i<OTU.CftPLCs[PlcIdx].length;i++)
 		{
@@ -306,22 +306,46 @@ function chgColor(plc,nsts,ColIdx,posibles)
 
 function ChgColSts(nsts,j)
 {
+	var mask;
 	if(true==ChkCFTSts(nsts,j))
 	{
-		if(GlobalParms.MODEL.indexOf("RT")!=-1)
+		if(GlobalParms().Model.indexOf("RT")!=-1)
 		{
-			MSKtemp=MSKC_ORV.slice();
+			mask = MSK_ORV;
 		}
 		else
 		{
-			MSKtemp=MSKC_ORVvar.slice();
+			switch(PHASEs()[PLCs()[PlcIdx].Phases[j]].Type)
+			{
+				case 0:
+					mask = MSK_V_ALL;
+				break;
+				case 1:
+					mask = MSK_P_ALL;
+				break;
+			}
 		}
 	}
 	else
 	{
-		MSKtemp=MSKC_OR.slice();
+		if(GlobalParms().Model.indexOf("RT")!=-1)
+		{
+			mask = MSK_OR;
+		}
+		else
+		{
+			switch(PHASEs()[PLCs()[PlcIdx].Phases[j]].Type)
+			{
+				case 0:
+					mask = MSK_V_cft;
+				break;
+				case 1:
+					mask = MSK_P_cft;
+				break;
+			}
+		}
 	}
-	PLCs()[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs()[PlcIdx].Sts[nsts].Colors[j],MSKtemp);
+	PLCs()[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs()[PlcIdx].Sts[nsts].Colors[j],mask);
 	ReDraw(conf_sts);
 }
 
@@ -875,11 +899,13 @@ function SubSts(Nsts)
 
 function AddSts()
 {
-	var Nsts=PLCs()[PlcIdx].Sts.length
-	PLCs()[PlcIdx].Sts[Nsts]=new Object();
-	PLCs()[PlcIdx].Sts[Nsts].Colors= new Array();
-	for (var j = 0; j<PLCs()[PlcIdx].Phases.length; j++)
-		PLCs()[PlcIdx].Sts[Nsts].Colors[j]=1;
+	iplc = PLCs()[PlcIdx];
+	var Nsts=iplc.Sts.length
+	iplc.Sts[Nsts]=new Object();
+	iplc.Sts[Nsts].Name=""+String.fromCharCode(65+Nsts);
+	iplc.Sts[Nsts].Colors= new Array();
+	for (var j = 0; j<iplc.Phases.length; j++)
+		iplc.Sts[Nsts].Colors[j]=1;
 	ModParm("pPLCs.Sts");
 }
 
@@ -888,20 +914,25 @@ function RcvPlns(Dados)
 	var Code = Dados.responseText;
 	var j=0;
 	var i=0;
-	PLCs()[PlcIdx].Plans= new Array();
+	iplc=PLCs()[PlcIdx];
+	if(!iplc.Plans)
+		iplc.Plans = new Array();
+	Plans=iplc.Plans;
 	Code=Code.split('\n\n');
 	PlnIdx=0;
 	while(PlnIdx<Code.length)
 	{
 		Code[PlnIdx]=RemoveUnuseChar(Code[PlnIdx]);
 		Code[PlnIdx]=Code[PlnIdx].trim();
+		//Plans[PlnIdx]=new Object();
+		//RcvFile(Plans[PlnIdx], Code[PlnIdx]);
 		if(Code[PlnIdx]=="")
 		{
 			Code.splice(PlnIdx,1);
 		}
 		else
 		{
-			PLCs()[PlcIdx].Plans[PlnIdx]=new Object();
+			Plans[PlnIdx]=new Object();
 			Code[PlnIdx]=Code[PlnIdx].split('\n');
 			//----------------------------------------------------
 			j=0;
@@ -925,70 +956,70 @@ function RcvPlns(Dados)
 				switch(Code[PlnIdx][j][0])
 				{
 					case "PLNTYP":
-						PLCs()[PlcIdx].Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
+						Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
 					break;
 					case "PHC":
-						PLCs()[PlcIdx].Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
+						Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTCI":	// tiempo de ciclo
-						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs()[PlcIdx].Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
+						if(Plans[PlnIdx].Typ==1)
+							Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTOF":
-						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs()[PlcIdx].Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
+						if(Plans[PlnIdx].Typ==1)
+							Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLASYDEMTYP":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Typ=Dados[i];
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Typ=Dados[i];
 						}
 					break;
 					case "LCLSYCDEMNUM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Num=Dados[i];
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Num=Dados[i];
 						}
 					break;
 					case "LCLASYDEXSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
 						}
 					break;
 					case "LCLLGCSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
-						PLCs()[PlcIdx].Plans[PlnIdx].Logic=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].Logic=Dados.slice()
+						Plans[PlnIdx].Logic=new Array()
+						Plans[PlnIdx].Logic=Dados.slice()
 					break;
 					case "LGC":
-						i=PLCs()[PlcIdx].Plans[PlnIdx].LGCs.length;
-						PLCs()[PlcIdx].LGCs[i]=new Object();
-						PLCs()[PlcIdx].LGCs[i].Name=Code[PlnIdx][j][1];
-						PLCs()[PlcIdx].LGCs[i].Code=Code[PlnIdx][j][2];
+						i=Plans[PlnIdx].LGCs.length;
+						iplc.LGCs[i]=new Object();
+						iplc.LGCs[i].Name=Code[PlnIdx][j][1];
+						iplc.LGCs[i].Code=Code[PlnIdx][j][2];
 					break;
 					case "LCLASYTNOSTP":
 					case "LCLSYCTSTSTP":	//vector de tiempos de estados
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs()[PlcIdx].Plans[PlnIdx].TP=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].TP=Dados.slice()
+						Plans[PlnIdx].TP=new Array()
+						Plans[PlnIdx].TP=Dados.slice()
 					break;
 					case "PLNDIMTYP":
-						PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
+						Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "PLNDIM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs()[PlcIdx].Plans[PlnIdx].Dim=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].Dim=Dados.slice()
+						Plans[PlnIdx].Dim=new Array()
+						Plans[PlnIdx].Dim=Dados.slice()
 					break;
 				}
 			}

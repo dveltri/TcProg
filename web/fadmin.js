@@ -297,7 +297,7 @@ function rcvFileAdmin(Datos)
 
 function FileList2Txt(Datos)
 {
-	FileListDat.length=0;
+	FileListDat = new Array();
 	Datos=Datos.responseText;
 	FileListDat=Datos.trim();
 	return FileListDat;
@@ -316,7 +316,7 @@ function FileList2Obj(FileListDat)
 	Flt=FilterFileList.split(",");
     var Datos=FileListDat.slice();
 	var path=Datos[0].trim();
-	FileListDat.length=0;
+	FileListDat = new Array();
 	for(var i=1;i<Datos.length-4;i+=4)
 	{
 		Datos[0+i]=Datos[0+i].trim();

@@ -147,16 +147,21 @@ var V2RTyp=		[[20,20,2,2,2,1],[17,17,17,17,17,17,17,17,1,1],[20,20,20,20,20,1],[
 var R2VTyp=		[[3],[],[],[]];
 var FStateTyp=	[18,17,17,18];
 //---------------------------------------------------
-var MSKCOLORFF=	[0,17,18]; 				//off,r,y
-var MSKCOLORST=	[0,1,4];	  			//off,R,V
-var MSKC_OR=	[0,1,18,17];	  		//off,R,V
-var MSKC_ORV=	[0,1,2,3,4,17,18,19,20];//off,R,A,RA,V,r,ra,v
-var MSKC_ORVvar=[0,1,2,3,4,17,18,19,20];//off,R,A,RA,V,r,ra,v
-var MSKC_ORAV=	[0,1,2,4];	  			//off,R,V
-var MSKEV=		[1,2,3,17,18,20,22];	//R,A,RA,r,a,v,va
-var MSKEV1=		[2,17,18,20];	  	//A,r,a,v
+var MSK_V_ALL=	[0,1,2,3,4,17,18,19,20,22];	//off,R,A,RA,V,r,ra,v,va
+var MSK_P_ALL=	[0,1,4,17,20]				//off,R,V,r,v
+
+var MSK_ORV=	[0,1,4];					//off,R,V
+var MSK_OR=		[0,1];						//off,R
+
+var MSK_V_cft=	[0,1,17];					//off,R,r
+var MSK_P_cft=	[0,1,17]					//off,R,r
+
+var MSK_V_FF=	[0,17,18];					//off,r,a
+
+var MSKEV=		[1,2,3,17,18,20,22];		//R,A,RA,r,a,v,va
+var MSKEV1=		[2,17,18,20];				//A,r,a,v
 var MSKEVRV=	[1,2,3,4,17,18,20,22];		//R,A,RA,V,r,a,v,va
-var MSKALL=		[0,1,2,3,4,17,18,19,20,22];//off,R,A,RA,V,r,ra,v,va
+
 var MSKtemo=	[];
 var PhTimMin=	[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 //---------------------------------------------------

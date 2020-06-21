@@ -6,7 +6,7 @@ function GetEv()
 {	
 	if(CEV==(PLCs[PlcIdx].EV.length+1))
 	{
-		SetPhConf(GlobalParms.phconf);
+		SetPhConf(GlobalParms().phconf);
 		PLCs[PlcIdx].EV[CEV-1]=genEv();
 	}
 	if(CEV>PLCs[PlcIdx].EV.length)
@@ -14,7 +14,7 @@ function GetEv()
 	if(CEV)
 		SetPhConf(PLCs[PlcIdx].EV[CEV-1]);
 	else
-		SetPhConf(GlobalParms.phconf);
+		SetPhConf(GlobalParms().phconf);
 }
 
 function SetEv()
@@ -77,7 +77,7 @@ function UpdtEv(ph,typ,seq,evt)
 	}
 	if(typ==1)
 	{
-		PrgEd[SrcIdx].PHASEs[ph].R2V.length=0;
+		PrgEd[SrcIdx].PHASEs[ph].R2V = new Array();
 		for (var j=0;j<seq.length;j++)
 		{
 			switch(seq[j])
@@ -113,7 +113,7 @@ function UpdtEv(ph,typ,seq,evt)
 	}
 	else
 	{
-		PrgEd[SrcIdx].PHASEs[ph].V2R.length=0;
+		PrgEd[SrcIdx].PHASEs[ph].V2R = new Array();
 		for (var j=0;j<seq.length;j++)
 		{
 			switch(seq[j])

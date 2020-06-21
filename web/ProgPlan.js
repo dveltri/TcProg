@@ -266,17 +266,18 @@ function PlanModT(PLC,Plan,TC,TP,TPi)
 function ShowPlan()
 {
 	var out="";
-	var Pln=PLCs()[PlcIdx].Plans[PlnIdx];
-	UpdateTimes(PLCs()[PlcIdx],Pln);
-	var color=(16777215/PLCs()[PlcIdx].Sts.length);
-	PLCs()[PlcIdx].Sts.sort(sortN);
-	if(PLCs()[PlcIdx].Plans)
+	var iplc=PLCs()[PlcIdx]
+	var Pln=iplc.Plans[PlnIdx];
+	UpdateTimes(iplc,Pln);
+	var color=(16777215/iplc.Sts.length);
+	iplc.Sts.sort(sortN);
+	if(iplc.Plans)
 	{
-		Pln.TP.length=PLCs()[PlcIdx].Sts.length;
-		Pln.Logic.length=PLCs()[PlcIdx].Sts.length;
+		Pln.TP.length=iplc.Sts.length;
+		Pln.Logic.length=iplc.Sts.length;
 		if(Pln.Typ==0)
 		{
-			PlanModT(PLCs()[PlcIdx],Pln,null,Pln.TP[0],0);
+			PlanModT(iplc,Pln,null,Pln.TP[0],0);
 		}
 	}
 	//--------------
@@ -288,16 +289,16 @@ function ShowPlan()
 	out+="</td>\n";
 	out+="<td align=\"center\" >\n";
 	out+="<select onchange=\"if(this.value==-1){PlnNew(0);}else{PlnIdx=parseInt(this.value);}ReDraw(-1);\" class=\"CssSelect\" >\n";
-	for (j=0;j<PLCs()[PlcIdx].Plans.length;j++)
+	for (j=0;j<iplc.Plans.length;j++)
 	{
 		out+="<option value=\""+j+"\" "+((PlnIdx==j)?"selected=\"selected\"":"")+">["+(j+1)+"](";
-		if(PLCs()[PlcIdx].Plans[j].Typ==1)
+		if(iplc.Plans[j].Typ==1)
 			out+="Sincronico";
 		else
 			out+="Asincronico";
-		out+=" Ciclo:"+PLCs()[PlcIdx].Plans[j].TC;
-		if(PLCs()[PlcIdx].Plans[j].Typ==1)
-			out+=" Offset:"+PLCs()[PlcIdx].Plans[j].OF;
+		out+=" Ciclo:"+iplc.Plans[j].TC;
+		if(iplc.Plans[j].Typ==1)
+			out+=" Offset:"+iplc.Plans[j].OF;
 		out+=")</option>\n";
 	}
 	out+="<option style=\"background-color:rgb(238,238,238)\" value=\"-1\">"+Str_New+"</option>\n";
@@ -311,7 +312,7 @@ function ShowPlan()
 	out+="</table>";
 	out+="<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	//--------------
-	if(PLCs()[PlcIdx].Plans)
+	if(iplc.Plans)
 	{
 		if(Pln.Typ==0)
 		{
@@ -342,6 +343,7 @@ function ShowPlan()
 	out+="</table>";
 	return out;
 }
+
 function PlnDel(pln)
 {
 	PLCs()[PlcIdx].Plans.splice(pln,1);
@@ -355,39 +357,41 @@ function PlnDel(pln)
 	}
 	PlnIdx=0;
 }
+
 function PlnNew(typ)
 {
 	var ev=0;
 	var STi=0;
 	var STe=0;
-	if(PLCs()[PlcIdx].Plans && PLCs()[PlcIdx].Plans.length)
-		PlnIdx=PLCs()[PlcIdx].Plans.length;
+	var iplc=PLCs()[PlcIdx];
+	if(iplc.Plans && iplc.Plans.length)
+		PlnIdx=iplc.Plans.length;
 	else
-		PLCs()[PlcIdx].Plans=new Array();
-	PLCs()[PlcIdx].Plans[PlnIdx]=new Object();
-	PLCs()[PlcIdx].Plans[PlnIdx].Typ=typ;
-	PLCs()[PlcIdx].Plans[PlnIdx].OF=0;
-	PLCs()[PlcIdx].Plans[PlnIdx].TC=0;
-	PLCs()[PlcIdx].Plans[PlnIdx].EV=0;
-	PLCs()[PlcIdx].Plans[PlnIdx].TP=new Array();
-	PLCs()[PlcIdx].Plans[PlnIdx].Dem=new Array();
-	PLCs()[PlcIdx].Plans[PlnIdx].Logic=new Array();
+		iplc.Plans=new Array();
+	iplc.Plans[PlnIdx]=new Object();
+	iplc.Plans[PlnIdx].Typ=typ;
+	iplc.Plans[PlnIdx].OF=0;
+	iplc.Plans[PlnIdx].TC=0;
+	iplc.Plans[PlnIdx].EV=0;
+	iplc.Plans[PlnIdx].TP=new Array();
+	iplc.Plans[PlnIdx].Dem=new Array();
+	iplc.Plans[PlnIdx].Logic=new Array();
 	//---------------------------------------
-	PLCs()[PlcIdx].Plans[PlnIdx].TP.length=PLCs()[PlcIdx].Sts.length;
-	PLCs()[PlcIdx].Plans[PlnIdx].TC=0;
+	iplc.Plans[PlnIdx].TP.length=iplc.Sts.length;
+	iplc.Plans[PlnIdx].TC=0;
 	//---------------------------------------
-	for(j=0;j<PLCs()[PlcIdx].Sts.length;j++)
+	for(j=0;j<iplc.Sts.length;j++)
 	{
-		STe=(PLCs()[PlcIdx].Sts.length+j+1);
-		STe=(STe%PLCs()[PlcIdx].Sts.length);
+		STe=(iplc.Sts.length+j+1);
+		STe=(STe%iplc.Sts.length);
 		STi=j;
-		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]=10;
-		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]+=GetEvT(PLCs()[PlcIdx].Sts,STi,STe);
-		PLCs()[PlcIdx].Plans[PlnIdx].TP[j]+=GetTmin(PLCs()[PlcIdx],j);
-		PLCs()[PlcIdx].Plans[PlnIdx].TC+=PLCs()[PlcIdx].Plans[PlnIdx].TP[j];
-		PLCs()[PlcIdx].Plans[PlnIdx].Logic[j]="";
+		iplc.Plans[PlnIdx].TP[j]=10;
+		iplc.Plans[PlnIdx].TP[j]+=GetEvT(iplc.Sts,STi,STe);
+		iplc.Plans[PlnIdx].TP[j]+=GetTmin(iplc,j);
+		iplc.Plans[PlnIdx].TC+=iplc.Plans[PlnIdx].TP[j];
+		iplc.Plans[PlnIdx].Logic[j]="";
 	}
-	UpdateTimes(PLCs()[PlcIdx],PLCs()[PlcIdx].Plans[PlnIdx]);
+	UpdateTimes(iplc, iplc.Plans[PlnIdx]);
 }
 
 //------------------------------------------
@@ -1190,7 +1194,7 @@ function SavePlan(PLC,Parms,Plan)
 	//---------------------------------------------------------
 	{
 		out+="goto INICIO\n";
-		if(Parms.MODEL.indexOf("M3")!=-1)
+		if(Parms.Model.indexOf("M3")!=-1)
 			out+="#CFT:sec.sec;\n";
 		else
 			out+="#CFT:"+PLC.Sec.replace("//","/")+";\n";
@@ -1199,7 +1203,7 @@ function SavePlan(PLC,Parms,Plan)
 		out+="temp1=XXXX\n";
 		//-------------
 		out+="INICIO\n";
-		if(Parms.MODEL.indexOf("M4")!=-1)
+		if(Parms.Model.indexOf("M4")!=-1)
 		{
 			if(Plan.PHC)
 				out+="ldphc /"+PlcIdx+"/phc"+Plan.PHC+".ini\n";
