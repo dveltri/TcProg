@@ -267,12 +267,12 @@ function ShowPlan()
 {
 	var out="";
 	var iplc=PLCs()[PlcIdx]
-	var Pln=iplc.Plans[PlnIdx];
-	UpdateTimes(iplc,Pln);
 	var color=(16777215/iplc.Sts.length);
 	iplc.Sts.sort(sortN);
-	if(iplc.Plans)
+	if(iplc.Plans.length)
 	{
+		var Pln=iplc.Plans[PlnIdx];
+		UpdateTimes(iplc,Pln);
 		Pln.TP.length=iplc.Sts.length;
 		Pln.Logic.length=iplc.Sts.length;
 		if(Pln.Typ==0)
@@ -312,7 +312,7 @@ function ShowPlan()
 	out+="</table>";
 	out+="<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	//--------------
-	if(iplc.Plans)
+	if(iplc.Plans.length)
 	{
 		if(Pln.Typ==0)
 		{

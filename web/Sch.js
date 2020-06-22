@@ -1,7 +1,7 @@
-var HolyDays= new Array();
-var RangeDays= new Array();
-var WeekDays= new Array();
-var TimeScheduler= new Array();
+var HolyDays;
+var RangeDays;
+var WeekDays;
+var TimeScheduler;
 
 var DaysIdx=0;
 var RangeIdx=0;
@@ -20,10 +20,19 @@ var dim=[31,29,31,30,31,30,31,31,30,31,30,31];
 
 function GoSch()
 {
-	HolyDays=PLCs()[PlcIdx].HolyDays.clone();
-	WeekDays=PLCs()[PlcIdx].WeekDays.clone();
-	TimeScheduler=PLCs()[PlcIdx].TimeScheduler.clone();
-	ReDraw(conf_sch);
+	var iplc = PLCs()[PlcIdx];
+	if(!iplc.HolyDays)
+		iplc.HolyDays = new Array();
+	if(!iplc.RangeDays)
+		iplc.RangeDays = new Array();
+	if(!iplc.WeekDays)
+		iplc.WeekDays = new Array();
+	if(!iplc.TimeScheduler)
+		iplc.TimeScheduler = new Array();
+	HolyDays=iplc.HolyDays;
+	RangeDays=iplc.RangeDays;
+	WeekDays=iplc.WeekDays;
+	TimeScheduler=iplc.TimeScheduler;
 }
 
 function IniAgenda()
@@ -41,6 +50,7 @@ function ShowAgenda()
 	var temp="";
 	var H="";
 	var M="";
+	GoSch();
 	//----------------------------------------------------------------------------------------------------------------------------
 	out+="<table border=\"5\" align=\"center\" cellpadding=\"5\" cellspacing=\"5\"  width=\"100%\" bordercolor=\"LightGrey\" bgcolor=\"LightGrey\">\n";
 	out+="<tr>\n";
@@ -548,6 +558,7 @@ function SetWTs(wk,ts)
 function ShwSetPlan(Hora,Plan)
 {
 	var out="";
+	var iplc = PLCs()[PlcIdx];
 	out+="<b><font size=\"2\" face=\"arial\">["+Hora+"]</font></b>\n";
 	out+="<table border=\"2\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	out+="<tr>\n";
@@ -564,7 +575,7 @@ function ShwSetPlan(Hora,Plan)
 	out+="<b><font size=\"2\" face=\"arial\">Titilante</font></b>\n";
 	out+="</td>\n";
 	out+="</tr>\n";
-	for (var j=0;j<PLCs[PlcIdx].Plans.length;j++)
+	for (var j=0;j<iplc.Plans.length;j++)
 	{
 		out+="<tr>\n";
 		out+="<td align=\"center\" valign=\"middle\" ";
@@ -573,13 +584,13 @@ function ShwSetPlan(Hora,Plan)
 		out+="onclick=\"TSAddItm('"+Hora+":00',"+(j+1)+");hideFlyMnu(10000);ReDraw(-1);\" ";
 		out+="style=\"background-color:rgb("+getColor((j+1),100)+")\" >\n";
 		out+="<b><font size=\"2\" face=\"arial\">Plan["+(j+1)+"](";
-		if(PLCs[PlcIdx].Plans[j].Typ==1)
+		if(iplc.Plans[j].Typ==1)
 			out+="Sincronico";
 		else
 			out+="Asincronico";
-		out+=" Ciclo:"+PLCs[PlcIdx].Plans[j].TC;
-		if(PLCs[PlcIdx].Plans[j].Typ==1)
-			out+=" Offset:"+PLCs[PlcIdx].Plans[PlnIdx].OF;
+		out+=" Ciclo:"+iplc.Plans[j].TC;
+		if(iplc.Plans[j].Typ==1)
+			out+=" Offset:"+iplc.Plans[PlnIdx].OF;
 		out+=")</font></b>\n";
 		out+="</td>\n";
 		out+="</tr>\n";
@@ -616,12 +627,12 @@ function GetDaysTS(D,M)
 		if(fecha==HolyDays[h].Date)
 			return "D";
 	}	
-	RangeDays=RangeDays.sort(sortfuncDate2);
+	/*RangeDays=RangeDays.sort(sortfuncDate2);
 	for(var r=0;r<RangeDays.length;r++)
 	{
 		if(CompDate(fecha,RangeDays[r].Date1) && CompDate(RangeDays[r].Date2,fecha)) //if(fecha>=RangeDays[r].Date1 && fecha<=RangeDays[r].Date2)
 			return "R";
-	}	
+	}// */
 	return "";
 }
 
@@ -646,10 +657,11 @@ function ProcessAgenda(Datos)
 	var idxWD=0;
 	var idxTS=0;
 	var idx=0;
-	HolyDays = new Array();
-	RangeDays = new Array();
-	WeekDays = new Array();
-	TimeScheduler = new Array();
+	GoSch();
+	HolyDays.length = 0;
+	//RangeDays.length = 0;
+	WeekDays.length = 0;
+	TimeScheduler.length = 0;
 	for(var i=0;i<Datos.length;i++)
 	{
 		Datos[i]=RemoveUnuseChar(Datos[i]);
@@ -673,8 +685,6 @@ function ProcessAgenda(Datos)
 			WeekDays[idx].Date=Datos[i].split(" ")[0];
 			WeekDays[idx].TimeScheduler=Datos[i].split(" ");
 			WeekDays[idx].TimeScheduler.splice(0,1);
-			for(var j=0;j<WeekDays[idx].TimeScheduler.length;j++)
-				WeekDays[idx].TimeScheduler[j]=GetTimeIdx(WeekDays[idx].TimeScheduler[j]);
 		}
 		else
 		{
@@ -683,17 +693,17 @@ function ProcessAgenda(Datos)
 		//-----------------------------------
 		if(Datos[i].indexOf("[Holidays & Dates]")!=-1)
 		{
-			HolyDays = new Array();
+			HolyDays.length = 0;
 			idxHD=i+1;
 		}
 		if(Datos[i].indexOf("[Range]")!=-1)
 		{
-			RangeDays = new Array();
+			RangeDays.length = 0;
 			idxHD=i+1;
 		}
 		if(Datos[i].indexOf("[weeks]")!=-1)
 		{
-			WeekDays = new Array();
+			WeekDays.length = 0;
 			idxWD=i+1;
 		}
 	}
@@ -719,7 +729,16 @@ function ProcessAgenda(Datos)
 			}
 		}
 	}
-	//ShowAgenda();
+	for(var i=0;i<WeekDays.length;i++)
+	{
+		for(var j=0;j<7;j++)
+		{
+			if(!WeekDays[i].TimeScheduler[j])
+				WeekDays[i].TimeScheduler[j] =	0;
+			else
+				WeekDays[i].TimeScheduler[j]=GetTimeIdx(WeekDays[i].TimeScheduler[j]);
+		}
+	}
 }
 
 function GetTimeIdx(Name)
@@ -857,6 +876,7 @@ function TSAddItm(Hora,Pln)
 	TimeScheduler[TimeIdx].Hs=TimeScheduler[TimeIdx].Hs.sort(sortfuncTime);
 	CleanTs();
 }
+
 function CleanTs()
 {
 	var i=0;
@@ -873,9 +893,10 @@ function CleanTs()
 
 function MakeSch()
 {
-	PLCs[PlcIdx].HolyDays=HolyDays.clone();
-	PLCs[PlcIdx].WeekDays=WeekDays.clone();
-	PLCs[PlcIdx].TimeScheduler=TimeScheduler.clone();
+	/*var iplc = PLCs()[PlcIdx];
+	iplc.HolyDays=HolyDays.clone();
+	iplc.WeekDays=WeekDays.clone();
+	iplc.TimeScheduler=TimeScheduler.clone();*/
 	ModSch();
 }
 
@@ -964,11 +985,11 @@ function MkTSF(ArgIdx,Sel)
 		out+=" selected=\"selected\"";
 	out+=" >"+Str_flashing_Plan+"</option>\n";
 	//----------------------------------
-	Cplans=PLCs[0].Plans.length;
+	Cplans=PLCs()[0].Plans.length;
 	for(var j=0;j<PLCs.length;j++)
 	{
-		if(Cplans>PLCs[j].Plans.length);
-			Cplans=PLCs[j].Plans.length
+		if(Cplans>PLCs()[j].Plans.length);
+			Cplans=PLCs()[j].Plans.length
 	}
 	for(var j=0;j<Cplans;j++)
 	{

@@ -70,31 +70,26 @@ function RstTCHw()
 }
 function RstSch()
 {
-	HolyDays = new Array();
-	WeekDays = new Array();
-	TimeScheduler = new Array();
-	WeekDays[0]=new Object();
-	WeekDays[0].Date="01/01/????";
-	WeekDays[0].TimeScheduler=new Array();
-	WeekDays[0].TimeScheduler[0]="domingo"; //Adiciona plano geral como padrão 
-	WeekDays[0].TimeScheduler[1]="domingo"; 
-	WeekDays[0].TimeScheduler[2]="domingo";
-	WeekDays[0].TimeScheduler[3]="domingo";
-	WeekDays[0].TimeScheduler[4]="domingo";
-	WeekDays[0].TimeScheduler[5]="domingo";
-	WeekDays[0].TimeScheduler[6]="domingo";
+	GoSch()
+	HolyDays.length = 0;
+	WeekDays.length = 0;
+	TimeScheduler.length = 0;
 	TimeScheduler[0]=new Object();
 	TimeScheduler[0].Nombre="domingo";
 	TimeScheduler[0].Hs=new Array();
 	TimeScheduler[0].Hs[0]=new Object();
 	TimeScheduler[0].Hs[0].Time="00:00:00";
 	TimeScheduler[0].Hs[0].Plan="99";
-	for(var j=0;j<GlobalParms().Controllers;j++)
-	{
-		PLCs()[j].HolyDays=HolyDays.clone();
-		PLCs()[j].WeekDays=WeekDays.clone();
-		PLCs()[j].TimeScheduler=TimeScheduler.clone();
-	}
+	WeekDays[0]=new Object();
+	WeekDays[0].Date="01/01/????";
+	WeekDays[0].TimeScheduler=new Array();
+	WeekDays[0].TimeScheduler[0]=0; //Adiciona plano geral como padrão 
+	WeekDays[0].TimeScheduler[1]=0; 
+	WeekDays[0].TimeScheduler[2]=0;
+	WeekDays[0].TimeScheduler[3]=0;
+	WeekDays[0].TimeScheduler[4]=0;
+	WeekDays[0].TimeScheduler[5]=0;
+	WeekDays[0].TimeScheduler[6]=0;
 	ModParm("PLCs.Sch");
 }
 function RstEvs()

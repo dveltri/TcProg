@@ -1063,9 +1063,6 @@ function RcvConfSrc(Datos)
 				if(Datos.status==200)
 				{
 					RcvAgenda(Datos);
-					PLCs()[PlcIdx].HolyDays=HolyDays.clone();
-					PLCs()[PlcIdx].WeekDays=WeekDays.clone();
-					PLCs()[PlcIdx].TimeScheduler=TimeScheduler.clone();
 				}
 				PlcIdx++;
 				percent+=2;
@@ -1073,9 +1070,6 @@ function RcvConfSrc(Datos)
 				{
 					if(PLCs()[i-1].Scheduler==PLCs()[i].Scheduler)
 					{
-						PLCs()[i].HolyDays=HolyDays.clone();
-						PLCs()[i].WeekDays=WeekDays.clone();
-						PLCs()[i].TimeScheduler=TimeScheduler.clone();
 						PlcIdx++;
 						percent+=2;
 					}
