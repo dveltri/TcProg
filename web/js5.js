@@ -295,25 +295,25 @@ function CheckEthernet()
 	temp=parseInt(document.getElementById("GlobalParms.NETMASK0").value);
 	if(ChkParm("GlobalParms.NETMASK",temp)==true)
 	{
-		GlobalParms().NETMASK0[0]=temp;
+		GlobalParms().NETMASK[0]=temp;
 		ModParm("GlobalParms.NETMASK");
 	}
 	temp=parseInt(document.getElementById("GlobalParms.NETMASK1").value);
 	if(ChkParm("GlobalParms.NETMASK",temp)==true)
 	{
-		GlobalParms().NETMASK0[1]=temp;
+		GlobalParms().NETMASK[1]=temp;
 		ModParm("GlobalParms.NETMASK");
 	}
 	temp=parseInt(document.getElementById("GlobalParms.NETMASK2").value);
 	if(ChkParm("GlobalParms.NETMASK",temp)==true)
 	{
-		GlobalParms().NETMASK0[2]=temp;
+		GlobalParms().NETMASK[2]=temp;
 		ModParm("GlobalParms.NETMASK");
 	}
 	temp=parseInt(document.getElementById("GlobalParms.NETMASK3").value);
 	if(ChkParm("GlobalParms.NETMASK",temp)==true)
 	{
-		GlobalParms().NETMASK0[3]=temp;
+		GlobalParms().NETMASK[3]=temp;
 		ModParm("GlobalParms.NETMASK");
 	}
 	//--------------------------------------------------------------

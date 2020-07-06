@@ -58,11 +58,11 @@ function SendStartup(Prg)
 	UpData+=Remplace("ETH0 "+Prg.GlobalParms.ETH0+"\n",",",".");
 	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 	{
-		UpData+=Remplace("NETMASK0 "+Prg.GlobalParms.NETMASK0+"\n",",",".");
+		UpData+=Remplace("NETMASK0 "+Prg.GlobalParms.NETMASK+"\n",",",".");
 	}
 	else
 	{
-		UpData+=Remplace("NETMASK "+Prg.GlobalParms.NETMASK0+"\n",",",".");
+		UpData+=Remplace("NETMASK "+Prg.GlobalParms.NETMASK+"\n",",",".");
 	}
 	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 	{

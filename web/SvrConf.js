@@ -11,7 +11,7 @@ function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return 
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
 function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].sdgvp;				else return PrgEd[i].sdgvp;}
-function Mstr(i){		if(i==undefined)return PrgEd[SrcIdx].mstr;				else return PrgEd[i].mstr;}
+function Mstr(i){		if(i==undefined)return PrgEd[SrcIdx].Mstr;				else return PrgEd[i].Mstr;}
 function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].gps;				else return PrgEd[i].gps;}
 function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;				else return PrgEd[i].IOs;}
 function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;				else return PrgEd[i].OPCT;}
@@ -23,6 +23,33 @@ function HOST(i){		if(i==undefined)return PrgEd[SrcIdx].host;				else return Prg
 function Links(i){		if(i==undefined)return PrgEd[SrcIdx].Links;				else return PrgEd[i].Links;}
 function GetSec(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Sec;		else return PrgEd[i].PLCs[x].Sec;}
 function GetSch(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Scheduler;	else return PrgEd[i].PLCs[x].Scheduler;}
+
+function get_file_list_conf(model)
+{
+	conf_files = [
+		{file: "startup.ini", parser:  RcvStartup},
+		{file: "phconf.ini", parser:  RcvStartup},
+		{file: "def_in.ini", parser:  RcvStartup},
+		{file: "plcs.ini", parser:  RcvStartup},
+		{file: "error.ini", parser:  RcvStartup},
+		{file: PLCs()[PlcIdx].Sec, parser:  RcvStartup},
+		{file: PLCs()[PlcIdx].Scheduler, parser:  RcvStartup},
+		{file: "ip.ini", parser:  RcvStartup},
+		{file: "gps.ini", parser:  RcvStartup},
+		{file: "dgvp.ini", parser:  RcvStartup},
+		{file: "sdgvp.ini", parser:  RcvStartup},
+		{file: "ntp.ini", parser:  RcvStartup},
+		{file: "opct.ini", parser:  RcvStartup},
+		{file: "OTU.ini", parser:  RcvStartup},
+		{file: "Master.ini", parser:  RcvStartup},
+		{file: "phc.ini", parser:  RcvStartup},
+		{file: "planmc.es4", parser:  RcvStartup},
+		{file: "planotu.es4", parser:  RcvStartup},
+		{file: "plans.es4", parser:  RcvStartup},
+		{file: "ph_group.phg", parser:  RcvStartup},
+	];
+	return conf_files;
+}
 
 function ShwLoadHd()
 {

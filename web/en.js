@@ -546,7 +546,7 @@ var VStr_Errors_Str=["Alert[0],Inicio de Operaci&#243;n - Versi&#243;n:%u.%u\n",
 "El Interpretador retorno un error [%d] PC[%u] [%s]\n",
 "El Interpretador reporto un transbordo de memoria\n"];
 
-var Str_Conf_DgvP				="Protocolo compacto(gprs)";
+var Str_Conf_DgvP				="Protocolo compacto(can, 485, gprs, ethernet)";
 var Str_DgvP_Date				="Hora del equipo";
 var Str_DgvP_Voltage			="Voltage";
 var Str_DgvP_Mode				="Mode";

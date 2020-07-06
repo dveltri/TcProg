@@ -162,10 +162,16 @@ function RcvStartup(Datos)
 		alert(Str_Error_Model);
 	//--------------------------------------------------
 	base_obj.ETH0=base_obj.ETH0.split('.');
-	base_obj.NETMASK=base_obj.NETMASK.split('.');
+	try
+	{
+		base_obj.NETMASK=base_obj.NETMASK.split('.');
+	}
+	catch(e)
+	{
+	}
+	try{base_obj.NETMASK=base_obj.NETMASK0.split('.');}catch(e){}
 	base_obj.DGW=base_obj.DGW.split('.');
-	if(base_obj.MACDGW)
-		base_obj.MACDGW=base_obj.MACDGW.split('-');
+	try{base_obj.MACDGW=base_obj.MACDGW.split('-');}catch{}
 	if(typeof base_obj.Flashing === 'string')
 	{
 		if(base_obj.Flashing.indexOf(' ')!=-1)
@@ -1269,11 +1275,17 @@ function addobj(ref, vname, val)
 				vname[i]=idx;
 			}
 			if(i<(vname.length-1))
+			{
 				obj[vname[i]]=new Object();
-			if(val!=undefined) 
-				obj[vname[i]]=val.getval();
+				obj=obj[vname[i]];
+			}
 			else
-				obj[vname[i]]=undefined;
+			{
+				if(val!=undefined) 
+					obj[vname[i]]=val.getval();
+				else
+					obj[vname[i]]=undefined;
+			}
 		}
 		else
 			if(i<(vname.length-1))
@@ -1283,7 +1295,6 @@ function addobj(ref, vname, val)
 					obj[vname[i]]=val.getval();
 				else
 					obj[vname[i]]=undefined;
-	
 	}
 }
 function obj2txt(base,obj)
