@@ -168,7 +168,7 @@ function ShwEvV2R(ph)
 			out +="<td  align=\"center\" valign=\"middle\" onclick=\"PrgEd[SrcIdx].PHASEs["+ph+"].V2R["+j+"]=chgColor2(PrgEd[SrcIdx].PHASEs["+ph+"].V2R["+j+"],MSKEV1);ReDraw(-1);\" >\n";// class=\"table1\"
 		}
 		//out +=color2svg(PHASEs[ph].V2R[j],"");
-		out+=ShwMov(PrgEd[SrcIdx].PHASEs[ph].V2R[j]);	
+		out+=ShwMov(PrgEd[SrcIdx].PHASEs[ph].V2R[j], PHASEs()[ph].Type);	
 		out +="</td>\n";
 	}
 	out +="	</tr>\n";				
@@ -219,7 +219,7 @@ function ShwEvR2V(ph)
 	{
 		out +="<td align=\"center\" valign=\"middle\" onclick=\"PrgEd[SrcIdx].PHASEs["+ph+"].R2V["+j+"]=chgColor2(PrgEd[SrcIdx].PHASEs["+ph+"].R2V["+j+"],MSKEVRV);ReDraw(-1);\" >\n"; // class=\"table1\"
 		//out +=color2svg(PrgEd[SrcIdx].PHASEs[ph].R2V[j],"")+"\n";
-		out +=ShwMov(PrgEd[SrcIdx].PHASEs[ph].R2V[j]);
+		out +=ShwMov(PrgEd[SrcIdx].PHASEs[ph].R2V[j],PHASEs()[ph].Type);
 		out +="</td>\n";
 	}
 	out +="	</tr>\n";
@@ -336,7 +336,7 @@ function ShwEntreVerdes()
 		//--------------------------------------------
 		out+="	<tr bgcolor=\"#ddd\" border=\"1\">\n";
 		out+="		<td align=\"middle\">\n";
-		out+=		ShwMov(1)+"<br/>\n";
+		out+=		ShwMov(1, PHASEs()[ph].Type)+"<br/>\n";
 		//out+=		color2svg(1,"")+"<br/>\n";
 		out+="		<b><font size=\"2\" face=\"arial\" color=\"#880000\" >"+Str_Red+"</font></b>"
 		out+="		</td>\n";
@@ -346,7 +346,7 @@ function ShwEntreVerdes()
 		out +="		</td>\n";
 		//-----------------------------------------
 		out +="		<td align=\"middle\">\n";
-		out+=		ShwMov(4)+"<br/>\n";
+		out+=		ShwMov(4, PHASEs()[ph].Type)+"<br/>\n";
 		//out+=		color2svg(4,"")+"<br/>\n";
 		out+="		<b><font size=\"2\" face=\"arial\" color=\"#008800\" >"+Str_Green+"</font></b>"
 		out +="		</td>\n";
@@ -354,7 +354,7 @@ function ShwEntreVerdes()
 		//--------------------------------------------
 		out	+="	<tr bgcolor=\"#ccc\">\n";
 		out+="		<td align=\"middle\">\n";
-		out+=		ShwMov(4)+"<br/>\n";
+		out+=		ShwMov(4,PHASEs()[ph].Type)+"<br/>\n";
 		//out+=		color2svg(4,"")+"<br/>\n";
 		out+="		<b><font size=\"2\" face=\"arial\" color=\"#008800\" >"+Str_Green+"</font></b>"
 		out +="		</td>\n";
@@ -369,7 +369,7 @@ function ShwEntreVerdes()
 		out+="		</td>\n";
 		//-----------------------------------------
 		out+="		<td align=\"middle\">\n";
-		out+=		ShwMov(1)+"<br/>\n";
+		out+=		ShwMov(1, PHASEs()[ph].Type)+"<br/>\n";
 		//out+=		color2svg(1,"")+"<br/>\n";
 		out+="		<b><font size=\"2\" face=\"arial\" color=\"#880000\" >"+Str_Red+"</font></b>"
 		out+="		</td>\n";

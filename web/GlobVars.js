@@ -160,7 +160,13 @@ var MSK_V_FF=	[0,17,18];					//off,r,a
 
 var MSKEV=		[1,2,3,17,18,20,22];		//R,A,RA,r,a,v,va
 var MSKEV1=		[2,17,18,20];				//A,r,a,v
-var MSKEVRV=	[1,2,3,4,17,18,20,22];		//R,A,RA,V,r,a,v,va
+
+var MSKEVRV=	[1,2,3,4,17,18,20,22];		//R,A,RA,V,r,a,v,va	vehicular
+var MSKEVRVv=	[0,17,18,19];				//off,r,a,ra	vehicular
+var MSKEVRVp=	[0,17];						//off,r peatonal
+var MSKEVRVg=	[0,17,18,19];				//off,r,a,ra giro
+var MSKEVRVc=	[0,17,18,19];				//off,r,a,ra ciclista
+var MSKEVPhTyp=	[MSKEVRVv,MSKEVRVp,MSKEVRVg,MSKEVRVc];
 
 var MSKtemo=	[];
 var PhTimMin=	[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];

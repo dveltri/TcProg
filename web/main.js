@@ -364,6 +364,52 @@ function getgroup(OBJ,Attrib,valor)
 	return rtn;
 }
 
+function sub_elements(element, type, attrib, value, exclude)
+{
+	element=element.getElementsByTagName('input')
+	for(idx in element)
+	{
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+		subelements=element[idx];
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+				subelements.setAttribute(attrib, value);
+		}
+	}
+}
+
+function disabled_elements(obj, type, value, exclude)
+{
+	element=obj.getElementsByTagName('input');
+	for(idx in element)
+	{
+		subelements=element[idx];
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+			continue;
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+			if(value!=false)
+				subelements.setAttribute('disabled', 'true');
+			else
+				subelements.removeAttribute('disabled');
+		}
+	}
+	element=obj.getElementsByTagName('select');
+	for(idx in element)
+	{
+		subelements=element[idx];
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+			continue;
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+			if(value!=false)
+				subelements.setAttribute('disabled', 'true');
+			else
+				subelements.removeAttribute('disabled');
+		}
+	}
+}
+
 /*===========================================================================*/
 function touchstart()
 {

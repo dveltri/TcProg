@@ -56,7 +56,7 @@ function ShwLoadHd()
 	percent=0;
 	PBarOff();
 	var temp=dialog.showOpenDialog({ properties: ['openDirectory'],defaultPath:"./Conf" });
-	if(temp && temp!="")
+	if(temp != undefined && temp != "")
 	{
 		temp=temp[0];
 		SvrIp=temp;
@@ -411,35 +411,47 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].GlobalParms.ID=ID;
 	//--------------------------------------------------------------
 	percent=0;
-	if(typ==0)
+	switch(typ)
 	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="file:/"+SvrIp;
-		PrgEd[SrcIdx].DGVFTP='info.jsp';
-		wizard=[[moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu		
-	}
-	if(typ==1)
-	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="http://"+ID+"/";
-		PrgEd[SrcIdx].DGVFTP='info.fls';
-		wizard=[[moni_general,moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu
-	}
-	if(typ==2)
-	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="http://"+ID+"/";
-		PrgEd[SrcIdx].DGVFTP='info.fls';
-		wizard=[[moni_general,moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu
+		case 0:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="file:/"+SvrIp;
+			PrgEd[SrcIdx].DGVFTP='info.jsp';
+			wizard=[
+				[moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu		
+		}
+		break;
+		case 1:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="http://"+ID+"/";
+			PrgEd[SrcIdx].DGVFTP='info.fls';
+			wizard=[
+				[moni_general,moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu
+		}
+		break;
+		case 2:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="http://"+ID+"/";
+			PrgEd[SrcIdx].DGVFTP='info.fls';
+			wizard=[
+				[moni_general,moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu
+		}
+		break;
 	}
 	PrgEd[SrcIdx].host=Remplace(PrgEd[SrcIdx].host,'///','//');
 	//--------------------------------------------------------------

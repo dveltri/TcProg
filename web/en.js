@@ -450,7 +450,12 @@ var Str_TimStpExt="tiempo de paso de extension:";
 var Str_TimBlc="tiempo de balanceo:";
 //------------------------------------------------------------------
 var OptColorFF=[0,Str_Off,17,Str_Red,18,Str_Yellow];
+var OptColorFFv=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
 var OptColorFFp=[0,Str_Off,17,Str_Red];
+var OptColorFFg=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
+var OptColorFFc=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
+var OptColorFFtyp=[OptColorFFv,OptColorFFp,OptColorFFg,OptColorFFc];
+
 var OptPhTypEv=[0,"Transiciones Predefinidas",1,"Transicion Vehicular",2,"Transicion Peatonal",3,"Transicion giro",4,"Transicion Ciclista"];
 var OptPhTyp  =[0,"Vehicular",1,"Peatonal",2,"Giro",3,"Ciclista"];
 var OptAsyDem =[0,"Normal",1,"Activar por demanda",2,"Prioritario",3,"De tiempo extensible"];

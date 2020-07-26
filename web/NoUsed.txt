@@ -120,7 +120,7 @@ function DrawPlnSyn2(Plan,Text)
 		//--------------------------------------------------------------------------------------------------------------------------------------------
 		if((Tm+1)>X3)
 		{
-			if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+			if(GlobalParms.Model.indexOf("GW4")!=-1 || GlobalParms.Model.indexOf("GW")==-1)
 			{
 				PlanGen.LCLSYCTSTSTP[nstp]+=(Tm-X3)+1;
 			}
@@ -142,7 +142,7 @@ function DrawPlnSyn2(Plan,Text)
 		ErrorMsg=Error;
 		setTimeout("alert('"+Text+":"+Error+"')",500);
 		out+="<text fill=\"#E00000\" x=\"200\" y=\"16\" stroke-width=\"0\" font-weight=\"900\" font-size=\"14\" font-family=\"Monospace\" text-anchor=\"start\" xml:space=\"preserve\">"+Error+"</text>";		
-		if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+		if(GlobalParms.Model.indexOf("GW4")!=-1 || GlobalParms.Model.indexOf("GW")==-1)
 			setTimeout("ShowPlanWizard(3)",2500);
 	}
 	else
@@ -288,7 +288,7 @@ function ShowPLNSYN2()
 	out+="<td align=\"rigth\" valign=\"middle\">";
 	out+="<font size=\"1\" face=\"arial\">"+Str_GB_Temp_All_Cicle+"["+(PlanGen.LCLSYCTCI)+"] </font>";
 	//out+="<input tabindex=\"\" type=\"text\" class=\"CssInText\" value=\""+(PlanGen.LCLSYCTCI)+"\" size=\"3\" maxlength=\"3\" onchange=\"ModSynTCicle2(this);\"/>\n";
-	if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+	if(GlobalParms.Model.indexOf("GW4")!=-1 || GlobalParms.Model.indexOf("GW")==-1)
 	{
 		out+="<font size=\"1\" face=\"arial\">"+Str_Discrepancy+"</font>";
 		out+="<input tabindex=\"\" type=\"text\" class=\"CssInText\" value=\""+(PlanGen.LCLSYCTOF)+"\" size=\"3\" maxlength=\"3\" onchange=\"ModSynTOffset2(this);\"/>\n";
@@ -362,7 +362,7 @@ function ShowPLNSYN2()
 				}
 			}
 			TRLxD+="</select>\n";
-			if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+			if(GlobalParms.Model.indexOf("GW4")!=-1 || GlobalParms.Model.indexOf("GW")==-1)
 			{
 				TRLxD+="["+Str_Priority+"<input type=\"checkbox\" onchange=\"if(this.checked==true){PlanGen.DEMPRI["+j+"]=PlanGen.LCLSYCDEMSTP["+j+"];}else{PlanGen.DEMPRI["+j+"]=0;}ShowPlanWizard(3);\" ";
 				if(PlanGen.DEMPRI[j]!=0)
@@ -599,7 +599,7 @@ function ChkMax(nsts,valor)
 {
 	if(ChkParm('PLAN.STS.TMPE',valor)==true  || 0==valor)
 	{
-		if(GlobalParms.MODEL.indexOf("GW4")!=-1 || GlobalParms.MODEL.indexOf("GW")==-1)
+		if(GlobalParms.Model.indexOf("GW4")!=-1 || GlobalParms.Model.indexOf("GW")==-1)
 		{
 			if(GetTmin(PLCs[PlcIdx],nsts)<valor || 0==valor)
 				return	true;

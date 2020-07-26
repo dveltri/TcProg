@@ -502,6 +502,7 @@ if(ColorCode==255)
 	out="<font size=\"1\" face=\"arial\">"+Str_no_Change+"<br /></font>\n";
 return out;
 }
+
 function ShwLevel(value,min,max)
 {
 	var out="";
@@ -540,6 +541,7 @@ function ShwSignal(color)
 	out+='</svg>\n';
 	return out;
 }
+
 function ShwGPSSignal(lvl)
 {
 	var out="";
@@ -608,68 +610,74 @@ function ShwSwch(color)
 function ShwMov(sts,typ)
 {
 	var out="";
-	if(typ==null || typ==0) //[0,"Vehicular",1,"Peatonal",2,"Giro",3,"Ciclista"];
+	typ=parseInt('0'+typ);
+	switch(typ)
 	{
-		out+="<svg width=\"25\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-		out+="<rect x=\"1\" y=\"1\" width=\"23\" height=\"48\" fill=\"#606060\" stroke-width=\"0\" stroke=\"black\" rx=\"3\" ry=\"3\" />\n"
-		color="\"#600\">\n";
-		if (sts&1)
+		default: //[0,"Vehicular",2,"Giro",3,"Ciclista"];
 		{
-			color="\"#F00\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			out+="<svg width=\"25\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+			out+="<rect x=\"1\" y=\"1\" width=\"23\" height=\"48\" fill=\"#606060\" stroke-width=\"0\" stroke=\"black\" rx=\"3\" ry=\"3\" />\n"
+			color="\"#600\">\n";
+			if (sts&1)
+			{
+				color="\"#F00\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"10\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			color="\"#660\">\n";
+			if (sts&2)
+			{
+				color="\"#FF0\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#660;#FF0;#FF0;#660" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"25\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			color="\"#060\">\n";
+			if (sts&4)
+			{
+				color="\"#0F0\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"40\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			out+="</svg>\n"
 		}
-		out+="<circle cx=\"13\" cy=\"10\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		color="\"#660\">\n";
-		if (sts&2)
+		break;
+		case 1:	//"Peatonal"
 		{
-			color="\"#FF0\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#660;#FF0;#FF0;#660" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+="<circle cx=\"13\" cy=\"25\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		color="\"#060\">\n";
-		if (sts&4)
-		{
-			color="\"#0F0\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+="<circle cx=\"13\" cy=\"40\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		out+="</svg>\n"
-	}
-	if(typ!=null && typ==1)
-	{
-		out+='<svg width="25" height="50" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">\n';
-		out+='<rect x="1" y="1" rx="3" ry="3" width="23" height="48" fill="#666" stroke-width="0" stroke="black" />\n';
-		out+='<circle cx="12.5" cy="12.5" fill="#400" id="BgRed" r="8" stroke=\"black\" stroke-width="1"/>\n';
-		out+='<circle cx="12.5" cy="37.5" fill="#040" id="BgGreen" r="8" stroke=\"black\" stroke-width="1"/>\n';
-		color='"#600">\n';
-		if (sts&1)
-		{
-			color='"#F00">\n';
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+='<g id="RedBody" transform="translate(2.5 2.5) scale(0.2 0.2)">\n';
-		out+='<circle cx="50" cy="20" r="5.41039" fill='+color+'</circle>\n';
-		out+='<path d="m49.95485,27.84974c-0.79035,0.0127 -6.0781,0.0311 -6.42786,0.0604c-4.15725,0.34851 -3.48717,20.70199 -3.48717,23.61009c3.42693,1.3526 4.09119,-3.53407 4.67673,-17.15366l0.0966,17.73335l4.97563,0l0.60686,0l4.97563,0l0.0966,-17.73335c0.58554,13.61959 1.2498,18.50626 4.67673,17.15366c0,-2.9081 0.67008,-23.26158 -3.48717,-23.61009c-0.34976,-0.0293 -5.63752,-0.0477 -6.42787,-0.0604c-0.0181,-0.00029 -0.0895,0.00029 -0.10264,0c-0.007,0.0002 -0.0606,-0.00019 -0.0694,0c0,0 -0.10266,0 -0.10266,0l-0.00001,0z" fill='+color+'</path>\n';
-		out+='<path d="m44.79353,53.79066l-1.9202,31.2094c6.81754,-0.47252 6.82668,2.71272 6.8264,-23.96636c0.12179,-0.0131 0.26261,-0.0368 0.3925,-0.0543c0.13102,0.0177 0.27268,0.0413 0.39551,0.0543c-0.00029,26.67908 0.006,23.49384 6.82337,23.96636l-1.91719,-31.2094l-4.60728,0.003l-1.38883,0l-4.60428,-0.003z" fill='+color+'</path>\n';
-		out+='</g>\n';
-		color='"#060">\n';
-		if (sts&4)
-		{
-			color='"#0F0">\n';
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+='<g id="GreenBody" transform="translate(2.5 7) scale(0.2 0.2)">\n';
-		out+='<circle cx="-5216.84849" cy="-970.38143" r="56" transform="matrix(0.0997151 0 0 0.0997151 567.948 217.346)"  fill='+color+'</circle>\n';
-		out+='<path d="m31.19658,152.69232c15.12346,-23.59924 13.69421,-24.26401 19.34473,-24.4302c3.2906,0.0997 3.39031,0.99715 8.97436,5.38461c6.88034,5.05224 6.38177,5.11871 6.28205,10.66952c-0.0332,6.68091 0.4321,6.18234 -4.88604,8.67521l0,-11.2678l-4.68661,-4.18804l0,15.8547l-11.16809,-0.0997l-0.0997,-12.5641c-9.17378,14.15954 -8.57549,13.36182 -13.76068,11.96581l-0.00002,-0.00001z" fill='+color+'</path>\n';
-		out+='<path d="m45.25641,154.98577l10.86895,0c0,2.49287 0.79772,2.29344 6.58119,13.16239c6.08262,11.20133 6.18234,10.43685 2.69231,16.85185l-15.05698,-27.02279c-14.25926,27.58784 -12.46439,26.75688 -20.34188,26.22507l7.87749,-14.75784c6.74739,-12.19848 7.11301,-12.23171 7.37892,-14.45868z" fill='+color+'</path>\n';
-		out+='</g>\n';
+			out+='<svg width="25" height="50" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">\n';
+			out+='<rect x="1" y="1" rx="3" ry="3" width="23" height="48" fill="#666" stroke-width="0" stroke="black" />\n';
+			out+='<circle cx="12.5" cy="12.5" fill="#400" id="BgRed" r="8" stroke=\"black\" stroke-width="1"/>\n';
+			out+='<circle cx="12.5" cy="37.5" fill="#040" id="BgGreen" r="8" stroke=\"black\" stroke-width="1"/>\n';
+			color='"#600">\n';
+			if (sts&1)
+			{
+				color='"#F00">\n';
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+='<g id="RedBody" transform="translate(2.5 2.5) scale(0.2 0.2)">\n';
+			out+='<circle cx="50" cy="20" r="5.41039" fill='+color+'</circle>\n';
+			out+='<path d="m49.95485,27.84974c-0.79035,0.0127 -6.0781,0.0311 -6.42786,0.0604c-4.15725,0.34851 -3.48717,20.70199 -3.48717,23.61009c3.42693,1.3526 4.09119,-3.53407 4.67673,-17.15366l0.0966,17.73335l4.97563,0l0.60686,0l4.97563,0l0.0966,-17.73335c0.58554,13.61959 1.2498,18.50626 4.67673,17.15366c0,-2.9081 0.67008,-23.26158 -3.48717,-23.61009c-0.34976,-0.0293 -5.63752,-0.0477 -6.42787,-0.0604c-0.0181,-0.00029 -0.0895,0.00029 -0.10264,0c-0.007,0.0002 -0.0606,-0.00019 -0.0694,0c0,0 -0.10266,0 -0.10266,0l-0.00001,0z" fill='+color+'</path>\n';
+			out+='<path d="m44.79353,53.79066l-1.9202,31.2094c6.81754,-0.47252 6.82668,2.71272 6.8264,-23.96636c0.12179,-0.0131 0.26261,-0.0368 0.3925,-0.0543c0.13102,0.0177 0.27268,0.0413 0.39551,0.0543c-0.00029,26.67908 0.006,23.49384 6.82337,23.96636l-1.91719,-31.2094l-4.60728,0.003l-1.38883,0l-4.60428,-0.003z" fill='+color+'</path>\n';
+			out+='</g>\n';
+			color='"#060">\n';
+			if (sts&4)
+			{
+				color='"#0F0">\n';
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+='<g id="GreenBody" transform="translate(2.5 7) scale(0.2 0.2)">\n';
+			out+='<circle cx="-5216.84849" cy="-970.38143" r="56" transform="matrix(0.0997151 0 0 0.0997151 567.948 217.346)"  fill='+color+'</circle>\n';
+			out+='<path d="m31.19658,152.69232c15.12346,-23.59924 13.69421,-24.26401 19.34473,-24.4302c3.2906,0.0997 3.39031,0.99715 8.97436,5.38461c6.88034,5.05224 6.38177,5.11871 6.28205,10.66952c-0.0332,6.68091 0.4321,6.18234 -4.88604,8.67521l0,-11.2678l-4.68661,-4.18804l0,15.8547l-11.16809,-0.0997l-0.0997,-12.5641c-9.17378,14.15954 -8.57549,13.36182 -13.76068,11.96581l-0.00002,-0.00001z" fill='+color+'</path>\n';
+			out+='<path d="m45.25641,154.98577l10.86895,0c0,2.49287 0.79772,2.29344 6.58119,13.16239c6.08262,11.20133 6.18234,10.43685 2.69231,16.85185l-15.05698,-27.02279c-14.25926,27.58784 -12.46439,26.75688 -20.34188,26.22507l7.87749,-14.75784c6.74739,-12.19848 7.11301,-12.23171 7.37892,-14.45868z" fill='+color+'</path>\n';
+			out+='</g>\n';
 
-		out+='</svg>\n';
+			out+='</svg>\n';
+		}
+		break;
 	}
 	//alert(out);
 	return out;

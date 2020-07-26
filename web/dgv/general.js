@@ -142,11 +142,20 @@ function ReDraw(Fnc)
 		//----------------------------------------------------- */
 		case conf_Comm:
 		{
-			document.getElementById('HOME1').innerHTML=ShowComms();
-			ShowDgvpConf(document.getElementById('comm_sdgvp_conf'));
-			ShwSutec(document.getElementById('comm_sute_conf'));
-			ShwMaster(document.getElementById('comm_master_conf'));
-			//ShwScoot((document.getElementById('comm_otu_conf'));
+			out="<hr />\n";
+			out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShowDgvpConf();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			out+=ShwSutec();
+			out+="</td></tr>\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShwMaster();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			//out+=ShwScoot();
+			out+="</td></tr>\n";
+			out+="</table>\n";
+			document.getElementById('HOME1').innerHTML=out;
 			//document.getElementById('HOME2').innerHTML=ShwSutec();
 			//document.getElementById('HOME3').innerHTML=ShwMaster();
 		}
@@ -224,16 +233,13 @@ function ShwPHHW()
 	{
 		out+="<td align=\"center\" valign=\"middle\" >\n";
 		out+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].FState=this.value;ReDraw(-1);\">\n";
-		/*if(PHASEs()[j].Type!=1)
+		if(PHASEs()[j].Type!=1)
 			out+=GenOptions(OptColorFF,PHASEs()[j].FState);
 		else
-			out+=GenOptions(OptColorFFp,PHASEs()[j].FState);// */
-		out+=GenOptions(OptColorFFtyp[PHASEs()[j].Type],PHASEs()[j].FState);
+			out+=GenOptions(OptColorFFp,PHASEs()[j].FState);
 		out+="</select><br />\n";
 		//out+=color2svg(PHASEs()[j].FState,"");
-		out+="<div onclick=\"PHASEs()["+j+"].FState=chgColor2(PHASEs()["+j+"].FState,MSKEVPhTyp[PHASEs()["+j+"].Type]);ReDraw(-1);\" >";
-		out+=ShwMov(PHASEs()[j].FState, PHASEs()[j].Type);
-		out+="</div>\n";
+		out+=ShwMov(PHASEs()[j].FState,PHASEs()[j].Type);
 		out+="</td>\n";
 	}
 	out+="</tr>\n";

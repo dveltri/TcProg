@@ -19,8 +19,5 @@
   "homepage": "https://github.com/dveltri/TcProg#readme",
   "devDependencies": {
     "electron": "^9.0.4"
-  },
-  "dependencies": {
-    "serialport": "^7.1.5"
   }
 }

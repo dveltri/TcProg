@@ -1,4 +1,19 @@
-function ShowDgvpConf()
+function ShowComms()
+ {
+	var out="<hr />\n";
+	out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
+	out+="<tr>\n";
+	out+="<td valign=\"top\" align=\"left\" id=\"comm_sdgvp_conf\" ></td>\n";
+	out+="<td valign=\"top\" align=\"right\" id=\"comm_sute_conf\" ></td>\n";
+	out+="</tr>\n";
+	out+="<tr>\n";
+	out+="<td valign=\"top\" align=\"left\" id=\"comm_master_conf\" ></td>\n";
+	out+="<td valign=\"top\" align=\"right\" id=\"comm_otu_conf\" ></td>\n";
+	out+="</tr>\n";
+	out+="</table>\n";
+	return out;
+ }
+function ShowDgvpConf(obj)
 {
 	if(SdgvP().link==null)
 		return "";
@@ -16,7 +31,7 @@ function ShowDgvpConf()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"SdgvP().link^=12;ReDraw(-1);\" "+(SdgvP().link!=0?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"(SdgvP().link!=0?SdgvP().link=0:SdgvP().link=12);ReDraw(-1);\" "+(SdgvP().link!=0?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -28,7 +43,7 @@ function ShowDgvpConf()
 		out+="	</td>\n";
 		out+="	<td valign=\"middle\">\n";
 		//out+="		<input  value=\""+SdgvP.link+"\" onkeyup=\"SdgvP.link=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" />\n";
-		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+SdgvP().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[SdgvP().link][2]+"\" "+((SdgvP().link==0)?'disabled="true"':"")+" />\n";
+		out+="		<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+SdgvP().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[SdgvP().link][2]+"\" />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 	}
@@ -43,8 +58,8 @@ function ShowDgvpConf()
 		out+="		<font size=\"1\" face=\"arial\">"+Str_period+"</font><br />\n";
 		out+="	</td>\n";
 		out+="	<td align=\"left\" valign=\"middle\">\n";
-		out+="		<input value=\""+SdgvP().Tsk[idx].IDsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP().IDsrv=this.value;":"")+"SdgvP().Tsk["+idx+"'].IDsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  "+((SdgvP.link==0)?'disabled="true"':"")+" />\n<br/>";
-		out+="		<input value=\""+SdgvP().Tsk[idx].Period+"\" onkeyup=\"SdgvP().Tsk["+idx+"'].Period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\" "+((SdgvP.link==0)?'disabled="true"':"")+" />\n";
+		out+="		<input value=\""+SdgvP().Tsk[idx].IDsrv+"\"  onkeyup=\""+((idx==0)?"SdgvP().IDsrv=this.value;":"")+"SdgvP().Tsk["+idx+"'].IDsrv=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"   />\n<br/>";
+		out+="		<input value=\""+SdgvP().Tsk[idx].Period+"\" onkeyup=\"SdgvP().Tsk["+idx+"'].Period=this.value;\" class=\"CssInText\" size=\"5\" maxlength=\"5\"  />\n";
 		out+="	</td>\n";
 		out+="</tr>\n";
 		//---------------------------------------------------------------------
@@ -102,10 +117,19 @@ function ShowDgvpConf()
 	//---------------------------------------------------------------------*/
 	out+="</table>\n";
 	out+="<hr />\n";
+	if(obj)
+	{
+		if(obj.innerHTML != undefined)
+		{
+			obj.innerHTML = out;
+			disabled_elements(obj,['text','button','select-one'],(SdgvP().link==0));
+			return out;
+		}
+	}
 	return out;
 }
 
-function ShwSutec()
+function ShwSutec(obj)
 {
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Protocolo compatible con equipos de Otro Fabricante</font><br />\n";
 	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
@@ -114,7 +138,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"OPCT().Link^=13;ReDraw(-1);\" "+((OPCT().Link!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"(OPCT().Link!=0?OPCT().Link=0:OPCT().Link=13);ReDraw(-1);\" "+((OPCT().Link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -122,7 +146,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"("+OPCT().Link+")</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+OPCT().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[OPCT().Link][2]+"\" "+((OPCT().Link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+OPCT().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[OPCT().Link][2]+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -130,7 +154,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_slave+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Esclavo0=this.value;ReDraw(-1);\"  value=\""+OPCT().Esclavo0+"\" "+((OPCT().Link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Esclavo0=this.value;ReDraw(-1);\"  value=\""+OPCT().Esclavo0+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -138,7 +162,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Group+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Grupo0=(this.value);ReDraw(-1);\" value=\""+OPCT().Grupo0+"\" "+((OPCT().Link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Grupo0=(this.value);ReDraw(-1);\" value=\""+OPCT().Grupo0+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -146,7 +170,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_Time_to_Normal_Mode+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Time_to_Normal_Mode=this.value;ReDraw(-1);\" value=\""+OPCT().Time_to_Normal_Mode+"\" "+((OPCT().Link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Time_to_Normal_Mode=this.value;ReDraw(-1);\" value=\""+OPCT().Time_to_Normal_Mode+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -154,7 +178,7 @@ function ShwSutec()
 			<font size=\"1\" face=\"arial\">"+Str_offset_inputs+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().offset_inputs=this.value;ReDraw(-1);\" value=\""+OPCT().offset_inputs+"\" "+((OPCT().Link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().offset_inputs=this.value;ReDraw(-1);\" value=\""+OPCT().offset_inputs+"\"  />\n\
 			</td>\n\
 		</tr>\n";
 	if(UsrLvl>2)
@@ -170,10 +194,19 @@ function ShwSutec()
 	}
 	out+="</table>\n";
 	out+="<hr />";
+	if(obj)
+	{
+		if(obj.innerHTML != undefined)
+		{
+			obj.innerHTML = out;
+			disabled_elements(obj,['text'],(OPCT().Link==0));
+		}
+		return out;
+	}
 	return out;
 }// */
 
-function ShwMaster()
+function ShwMaster(obj)
 {
 	if(Mstr().link==null)
 		return "";
@@ -193,8 +226,8 @@ function ShwMaster()
 			<font size=\"1\" face=\"arial\">"+Str_Type+"</font>\n\
 			</td>\n\
 			<td>\n";
-			//out+="<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().type=this.value;ReDraw(-1);\" value=\""+Mstr().type+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n";
-			out+="<select class=\"CssSelect\" onchange=\"Mstr().type=parseInt(this.value);ReDraw(-1);\" "+((Mstr().link==0)?'disabled="true"':"")+">\n";
+			//out+="<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().type=this.value;ReDraw(-1);\" value=\""+Mstr().type+"\"  />\n";
+			out+="<select class=\"CssSelect\" onchange=\"Mstr().type=parseInt(this.value);ReDraw(-1);\" >\n";
 			out+=GenOptions(OptMst,Mstr().type);
 			out+="</select>\n";
 			//out+="<font size=\"1\" face=\"arial\">0=Slave<br />1=Master<br />2=S/M<br />3=S/M+Plan<br />4=S+Plan<br />5=S+State<br />6=S+Plan+State<br />10=M+Plan<br />11=M+State<br />12=M+Plan+State</font> \n";
@@ -205,7 +238,7 @@ function ShwMaster()
 			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"("+Mstr().link+")</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+Mstr().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[Mstr().link][2]+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+Mstr().link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[Mstr().link][2]+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -213,7 +246,7 @@ function ShwMaster()
 			<font size=\"1\" face=\"arial\">"+Str_ntp_Sync_tim+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().time=(this.value);ReDraw(-1);\" value=\""+(Mstr().time)+"\" "+((Mstr().link==0)?'disabled="true"':"")+" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"Mstr().time=(this.value);ReDraw(-1);\" value=\""+(Mstr().time)+"\"  />\n\
 			</td>\n\
 		</tr>\n";
 	if(UsrLvl>2)
@@ -229,6 +262,15 @@ function ShwMaster()
 	}
 	out+="</table>\n";
 	out+="<hr />";
+	if(obj)
+	{
+		if(obj.innerHTML != undefined)
+		{
+			obj.innerHTML = out;
+			disabled_elements(obj,['text','select-one'],(Mstr().link==0));
+		}
+		return out;
+	}
 	return out;
 }
 
