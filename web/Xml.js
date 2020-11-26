@@ -110,7 +110,7 @@ function handleHttpResponse()
 					}
 					catch(e)
 					{
-						alert("Error HttpResponse:"+e.message+"\n"+e.stack);
+						if(Log_En)LOG("Error HttpResponse:"+e.message+"\n"+e.stack);
 					}
 				}
 				else
