@@ -334,7 +334,10 @@ function SendIP(Prg)
 	UpType="txt";
 	UpData="";
 	UpFile="ip.ini";
-	for(var count=0;count<Prg.Links.length;count++)
+	var count=0;
+	if (Prg.GlobalParms.ip_offset!=undefined)
+		count=Prg.GlobalParms.ip_offset;
+	for(;count<Prg.Links.length;count++)
 	{
 		UpData+=Prg.Links[count][0]
 		for(var seek=1;seek<Prg.Links[count].length;seek++)
@@ -456,8 +459,14 @@ function SendGPS(Prg)
 	UpType="txt";
 	UpData="";
 	UpFile="gps.ini"
-	UpData=obj2txt("GPS",Prg.GPS);
+	UpData=obj2txt("gps",Prg.gps);
 	seek=0;
+	/*UpData+="gps.link="
+	UpData+="gps.conf="
+	UpData+="gps.priority="
+	UpData+="gps.priority+="
+	UpData+="gps.priority-="
+	UpData+="gps.debug=" */ 
 	/*for(var i=0;i<Prg.GPS.length;i++)
 	{
 		for(var j=0;j<(Prg.GPS[i].length-1);j++)
@@ -576,17 +585,17 @@ function SendOTU(Prg)
 	UpPath="/";
 	UpType="txt";
 	UpData="";
-	UpFile="OTU.ini"
+	UpFile="otu.ini"
 	seek=0;
-	UpData+="Comm:"+Prg.OTU.Link+"\n";
-	UpData+="G1G2:"+Prg.OTU.G1G2+"\n";
+	UpData+="scoot.link="+Prg.OTU.Link+"\n";
+	UpData+="scoot.g1g2="+Prg.OTU.G1G2+"\n";
 	UpData+="\n";
 	if(Prg.OTU.CftPLCs.length)
 	{
 		Prg.OTU.CftPLCs.length=Prg.GlobalParms.Controllers;
 		for(var i=0;i<Prg.GlobalParms.Controllers;i++)
 		{
-			UpData+="CFT"+i+":"
+			UpData+="scoot.cft["+i+"]="
 			if(Prg.OTU.CftPLCs[i])
 			{
 				if(Prg.OTU.CftPLCs[i].length)
@@ -615,15 +624,15 @@ function SendOTU(Prg)
 	UpData+="\n";
 	for(var i=0;i<Prg.OTU.BitCofigRx.length;i++)
 	{
-		UpData+="Rx"+Prg.OTU.BitCofigRx[i].NBit+","+Prg.OTU.BitCofigRx[i].Fnc+","+Prg.OTU.BitCofigRx[i].Parms+"\n";
+		UpData+="scoot.rx["+Prg.OTU.BitCofigRx[i].NBit+"]=,"+Prg.OTU.BitCofigRx[i].Fnc+","+Prg.OTU.BitCofigRx[i].Parms+"\n";
 	}
 	UpData+="\n";
 	for(var i=0;i<Prg.OTU.BitCofigTx.length;i++)
 	{
-		UpData+="Tx"+Prg.OTU.BitCofigTx[i].NBit+","+Prg.OTU.BitCofigTx[i].Fnc+","+Prg.OTU.BitCofigTx[i].Parms+"\n";
+		UpData+="scoot.tx["+Prg.OTU.BitCofigTx[i].NBit+"]=,"+Prg.OTU.BitCofigTx[i].Fnc+","+Prg.OTU.BitCofigTx[i].Parms+"\n";
 	}
 	if(Prg.OTU.FO)
-	UpData+="Tx"+(Prg.OTU.FO-1)+",FO\n";
+	UpData+="scoot.tx["+(Prg.OTU.FO-1)+"]=,FO\n";
 	//alert(UpData);UpMode=0;
 	return UpData;
 }
@@ -796,7 +805,7 @@ function SendPlan98A(Prg)
 	UpFile="plan98.eil"
 	if(!PLCs[PlcIdx])
 		return "";
-	SelIObyModel(Prg.GlobalParms.Model);
+	SelIObyModel(Prg.GlobalParms);
 	if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 		UpData="#CFT:sec.sec;\n";
 	else

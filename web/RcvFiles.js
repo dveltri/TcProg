@@ -1,7 +1,8 @@
 
 
-function SelIObyModel(Model)
+function SelIObyModel(base_obj)
 {
+	var Model = base_obj.Model;
 	var out="";
 	//-------- M3
 	SwFF=7;
@@ -98,6 +99,7 @@ function SelIObyModel(Model)
 	}
 	if(Model.indexOf("DGV-uTC1-M4")!=-1)
 	{
+		base_obj.ip_offset=10;
 	}
 	if(Model.indexOf("RT")!=-1 || Model.indexOf("GW3")!=-1 || Model.indexOf("GW4")!=-1)
 	{
@@ -157,7 +159,7 @@ function RcvStartup(Datos)
 	}
 	if(GetOption(OptAddSrc,base_obj.Model)=="")
 		alert(Str_Error_Model+" ["+base_obj.Model+"]");
-	SelIObyModel(base_obj.Model);
+	SelIObyModel(base_obj);
 	if(PhasesStructSize==0)
 		alert(Str_Error_Model);
 	//--------------------------------------------------
@@ -365,6 +367,137 @@ function RcvPlc(Datos)
 	var temp;
 	var i=0;
 	var j=0;
+	var PLC=Datos.split("\n\n");
+	j=0;
+	if(PLC.length>GlobalParms().Controllers)
+		PLC.length=GlobalParms().Controllers;
+	while(j<PLC.length)
+	{
+		PLC[j]=RemoveUnuseChar(PLC[j]);
+		PLC[j]=PLC[j].trim();
+		if(PLC[j]=="")
+		{
+			PLC.splice(j,1);
+		}
+		else
+		{
+			Datos=PLC[j].split("\n");
+			i=0;
+			while(i<Datos.length)
+			{
+				Datos[i]=RemoveUnuseChar(Datos[i]);			
+				Datos[i]=Datos[i].trim();
+				if(Datos[i]=="")
+					Datos.splice(i,1);
+				else
+					i++;
+			}
+			PLC[j]=Datos.slice();
+			j++;
+		}
+	}
+	iPLC=PLCs()
+	iPLC.length = 0;
+	for(var j=0;j<PLC.length;j++)
+	{
+		iPLC[j] = new Object();
+		Datos=PLC[j].slice();
+		iPLC[j].Sts = new Array();
+		for(var i=0;i<Datos.length;i++)
+		{
+			Datos[i]=Datos[i].split(":");
+			switch(Datos[i][0])
+			{
+				case "Number":
+					iPLC[j].Number=Datos[i][1].slice();
+				break;
+				case "Name":
+					iPLC[j].Name=Datos[i][1].slice();
+				break;
+				case "Plan":
+					iPLC[j].Plan=Datos[i][1].slice();
+				break;
+				case "Flashing":
+					iPLC[j].Flashing=Datos[i][1].slice();
+				break;
+				case "SyncRef":
+					iPLC[j].SyncRef=Datos[i][1]+":"+Datos[i][2]+":"+Datos[i][3];
+				break;
+				case "Scheduler":
+					iPLC[j].Scheduler=Datos[i][1].slice();
+					PrgEd[SrcIdx][iPLC[j].Scheduler]=new Object();
+				break;
+				case "Location":
+					iPLC[j].Location=Datos[i][1].slice();
+				break;
+				case "Server":
+					iPLC[j].Server=Datos[i][1].slice();
+				break;
+				case "Phases":
+					temp=Datos[i][1].slice();
+					temp=temp.split(",");
+					RemoveUnusedItem(temp);
+					for(var x=0;x<temp.length;x++)
+					{
+						temp[x]=parseInt("0"+temp[x]);
+						if(PHASEs().length>temp[x])
+						{
+							PHASEs()[temp[x]].PLC=(j+1);
+						}
+						else
+						{
+							temp.splice(x,1);
+							x--;
+						}
+					}
+					iPLC[j].Phases=temp.slice();
+				break;
+				case "Phase1":
+					iPLC[j].Phase1=parseInt("0"+Datos[i][1].slice());
+				break;
+				case "Error Out":
+					iPLC[j].ErrorOut=Datos[i][1];
+				break;
+				case "Svg":
+					iPLC[j].Svg=Datos[i][1];
+				break;
+				case "Sec":
+					iPLC[j].Sec=Datos[i][1];
+					if(GlobalParms().Model.indexOf("M4")!=-1)
+					{
+						if(GlobalParms().Model.indexOf("/")==-1)
+						{
+							iPLC[j].Sec="/"+iPLC[j].Sec;
+							iPLC[j].Sec=iPLC[j].Sec.replace("//","/");
+						}
+					}
+				break;
+				case "Sts":
+					Datos[i]=Datos[i][1].split(".");
+					temp=iPLC[j].Sts.length;
+					iPLC[j].Sts[temp]= new Object();
+					Datos[i][0]=Datos[i][0].split(",");
+					iPLC[j].Sts[temp].Colors = new Array(iPLC[j].Phases.length);
+					for(var k=0;k<iPLC[j].Phases.length;k++)
+						if(k<Datos[i][0].length)
+							iPLC[j].Sts[temp].Colors[k]=parseInt("0"+Datos[i][0][k]);
+						else
+							iPLC[j].Sts[temp].Colors[k]=0;
+					//iPLC[j].Sts[temp].TMAX=parseInt("0"+Datos[i][1]);
+					//iPLC[j].Sts[temp].TMIN=parseInt("0"+Datos[i][2]);
+				break;
+			}
+		}
+	}
+}
+
+/*
+function RcvPlc(Datos)
+{
+	Datos=Datos.responseText;
+	var temp;
+	var i=0;
+	var j=0;
 	var ref;
 	var Datos=Datos.split("\n\n");
 	if(Datos.length>GlobalParms().Controllers)
@@ -415,6 +548,7 @@ function RcvPlc(Datos)
 		j++;
 	}
 }
+// */
 function LogPLCs()
 {
 	temp="";
@@ -735,30 +869,31 @@ function RcvIP(Datos)
 			i++;
 		}
 	}
-	if(!PrgEd[SrcIdx].Links)
-		PrgEd[SrcIdx].Links=new Array();
-	//--------------- Links Fijos por HW --------------
 	PrgEd[SrcIdx].Links = new Array();
-	PrgEd[SrcIdx].Links[0]=new Array();
-	PrgEd[SrcIdx].Links[0][0]="WebLog"
-	PrgEd[SrcIdx].Links[0][1]="0";
-	PrgEd[SrcIdx].Links[0][2]="No Config";
+	iLinks=Links()
+	//--------------- Links Fijos por HW --------------
+	iLinks[0]=new Array();
+	iLinks[0][0]="WebLog"
+	iLinks[0][1]="0";
+	iLinks[0][2]="No Config";
 	for(var j=1;j<9;j++)
 	{
-		PrgEd[SrcIdx].Links[j]=new Array();
-		PrgEd[SrcIdx].Links[j][0]="Serial Port"
-		PrgEd[SrcIdx].Links[j][1]=""+j+"";
-		PrgEd[SrcIdx].Links[j][2]="115200,8N1";
+		iLinks[j]=new Array();
+		iLinks[j][0]="Serial Port"
+		iLinks[j][1]=""+j+"";
+		iLinks[j][2]="115200,8N1";
 	}
 	if(GlobalParms().Model.indexOf("DGV")!=-1)
 	{
-		PrgEd[SrcIdx].Links[j]=new Array();
-		PrgEd[SrcIdx].Links[j][0]="USB Port"
-		PrgEd[SrcIdx].Links[j][1]=""+j+"";
-		PrgEd[SrcIdx].Links[j][2]="No Config"; // */
+		iLinks[j]=new Array();
+		iLinks[j][0]="USB Port"
+		iLinks[j][1]=""+j+"";
+		iLinks[j][2]="No Config";
+		j++;
 	}
 	//---------------------------------------------------
-	PrgEd[SrcIdx].Links=PrgEd[SrcIdx].Links.concat(Datos);
+	PrgEd[SrcIdx].GlobalParms.ip_offset=j;
+	iLinks=iLinks.concat(Datos);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvError(Datos)
@@ -831,32 +966,34 @@ function RcvDefIn(Datos)
 	DefIn().length=0;
 	var Nin=0;
 	var j=0;
+	iIOs=IOs();
 	for(i=0;i<Datos.length;i++)
 	{
 		switch(Datos[i][0])
 		{
-		case "I/O":
-			Datos[i][1]=Datos[i][1].split(",");
-					Nin=			parseInt("0"+Datos[i][1][0]);//numero de IO
-			if(IOs().length>Nin)
-			{
-				IOs()[Nin].Enable=	parseInt("0"+Datos[i][1][1]);//Enable or disable
-				IOs()[Nin].Type=		parseInt("0"+Datos[i][1][2]);//tipo
-				IOs()[Nin].Mode=		parseInt("0"+Datos[i][1][3]);//modo
-				IOs()[Nin].neg=		parseInt("0"+Datos[i][1][4]);//invert
-				IOs()[Nin].Flank=		parseInt("0"+Datos[i][1][5]);//flank de conteo 
-				IOs()[Nin].TimeOut=	parseInt("0"+Datos[i][1][6]);// estado de falla
-				IOs()[Nin].FailSts=	parseInt("0"+Datos[i][1][7]);
-				IOs()[Nin].Plcs=		parseInt("0"+Datos[i][1][8]);
-				IOs()[Nin].Name=					 Datos[i][1][9];
-				if(IOs()[Nin].Name=="")IOs()[Nin].Name="Entrada["+(Nin+1)+"]";
-				IOs()[Nin].Used=0;
-			}
-		break;
-		default:
-			DefIn()[j]=Datos[i].slice();
-			j++;
-		break;
+			case "I/O":
+				Datos[i][1]=Datos[i][1].split(",");
+						Nin=			parseInt("0"+Datos[i][1][0]);//numero de IO
+				if(iIOs.length>Nin)
+				{
+					iIOs[Nin].Enable=	parseInt("0"+Datos[i][1][1]);//Enable or disable
+					iIOs[Nin].Type=	parseInt("0"+Datos[i][1][2]);//tipo
+					iIOs[Nin].Mode=	parseInt("0"+Datos[i][1][3]);//modo
+					iIOs[Nin].neg=		parseInt("0"+Datos[i][1][4]);//invert
+					iIOs[Nin].Flank=	parseInt("0"+Datos[i][1][5]);//flank de conteo 
+					iIOs[Nin].TimeOut=	parseInt("0"+Datos[i][1][6]);// estado de falla
+					iIOs[Nin].FailSts=	parseInt("0"+Datos[i][1][7]);
+					iIOs[Nin].Plcs=	parseInt("0"+Datos[i][1][8]);
+					iIOs[Nin].Name=	Datos[i][1][9];
+					if(iIOs[Nin].Name=="" || iIOs[Nin].Name==undefined)
+						iIOs[Nin].Name="Entrada["+(Nin+1)+"]";
+					iIOs[Nin].Used=0;
+				}
+			break;
+			default:
+				DefIn()[j]=Datos[i].slice();
+				j++;
+			break;
 		}
 	}
 }
@@ -974,98 +1111,102 @@ function SdgvP_Tsk()
 	var idx=0;
 	var tsk="";
 	var ptr;
-	while(SdgvP()["tsk"+idx])
+	iSdgvP=SdgvP()
+	if(iSdgvP == undefined)
+		PrgEd[SrcIdx].sdgvp = PrgEd[SrcIdx].SdgvP;
+	iSdgvP=SdgvP()
+	while(iSdgvP["tsk"+idx])
 	{
-		tsk=SdgvP()["tsk"+idx];
-		if(!SdgvP().Tsk)
-			SdgvP().Tsk=new Array();
-		if(!SdgvP().Tsk[idx])
-			SdgvP().Tsk[idx]=new Object();
-		SdgvP().Tsk[idx].IDsrv=254;
-		SdgvP().Tsk[idx].Sck=2;
-		SdgvP().Tsk[idx].Period=10;
+		tsk=iSdgvP["tsk"+idx];
+		if(!iSdgvP.Tsk)
+			iSdgvP.Tsk=new Array();
+		if(!iSdgvP.Tsk[idx])
+			iSdgvP.Tsk[idx]=new Object();
+		iSdgvP.Tsk[idx].IDsrv=254;
+		iSdgvP.Tsk[idx].Sck=2;
+		iSdgvP.Tsk[idx].Period=10;
 		ptr=tsk.indexOf(",");	//Tsk
 		if(ptr!=-1)
 		{
-			SdgvP().Tsk[idx].cmps=tsk.substring(ptr+1);	//Byte Period
-			SdgvP().Tsk[idx].Period=parseInt("0"+SdgvP().Tsk[idx].cmps);
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=tsk.substring(ptr+1);	//Byte Period
+			iSdgvP.Tsk[idx].Period=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
-			SdgvP().Tsk[idx].IDsrv=parseInt("0"+SdgvP().Tsk[idx].cmps);
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
+			iSdgvP.Tsk[idx].IDsrv=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
-			SdgvP().Tsk[idx].Sck=parseInt("0"+SdgvP().Tsk[idx].cmps);
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
+			iSdgvP.Tsk[idx].Sck=parseInt("0"+iSdgvP.Tsk[idx].cmps);
 			//------------------------------------------
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
 			//------------------------------------------
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
-			SdgvP().Tsk[idx].Size=parseInt("0"+SdgvP().Tsk[idx].cmps);
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
+			iSdgvP.Tsk[idx].Size=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
-			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<8;
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<8;
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
-			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<16;
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<16;
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
-			SdgvP().Tsk[idx].Size+=parseInt("0"+SdgvP().Tsk[idx].cmps)<<24;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<24;
 			//------------------------------------------
-			ptr=SdgvP().Tsk[idx].cmps.indexOf(",");
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
 			if(ptr==-1)
 				break;
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.substring(ptr);// Data String
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr);// Data String
 			if(GlobalParms().Model.indexOf("M3")!=-1)
 			{
 				for(var i=0;i<DgvPM3.length;i+=2)
 				{
-					SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
+					iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
 				}
 			}
 			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
 				for(var i=0;i<DgvPM4.length;i+=2)
 				{
-					SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
+					iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
 				}
 			}
-			SdgvP().Tsk[idx].cmps=SdgvP().Tsk[idx].cmps.split(',');
-			RemoveUnusedItem(SdgvP().Tsk[idx].cmps);				
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.split(',');
+			RemoveUnusedItem(iSdgvP.Tsk[idx].cmps);				
 		}
 		//------------------------------------------
 		idx++;

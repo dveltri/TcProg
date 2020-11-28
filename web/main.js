@@ -15,16 +15,16 @@ const MnuTemplate = [
 		submenu:[
 		{
 			label:Str_mnu_new,
-			click:function(){console.log("New")}
+			click:function(){console.log(Str_mnu_new);GetUrlError=""}
 		},{
 			label:Str_mnu_load_conf,
 			submenu:[
 			{
 				label:Str_mnu_from_folder,
-				click:ShwLoadHd		
+				click:function(){console.log(Str_mnu_from_folder);ShwLoadHd();GetUrlError="";}
 			},{
 				label:Str_mnu_from_ip,
-				click:ShwLoadIP
+				click:function(){console.log(Str_mnu_from_ip);ShwLoadIP();GetUrlError="";}
 			}/*,{
 				label:"Desde Serial",
 				click:ShwLoadSer
@@ -179,7 +179,13 @@ function FncNewF()
 /*===========================================================================*/
 function LOG(log)
 {
-	if(Log_En && log)document.getElementById('dgv').innerHTML+=HTMLEncode(log)+"<br />"; //.replace("\n","<br />")
+	LOG_level(log, 0);
+}
+function LOG_level(log, level)
+{
+	if(Log_En > level && log)
+		document.getElementById('dgv').innerHTML+=HTMLEncode(log)+"<br />"; //.replace("\n","<br />")
+	console.log(log);
 }
 function ClsLOG()
 {

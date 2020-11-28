@@ -15,6 +15,7 @@ var fullscaleX=1080;
 var PhHist= new Array(fullscaleX/Pxs);
 var PhHistCant=0;
 var outX="";
+var GetUrlError=""
 //=================================================
 function addautoget(ele,url,fnc)
 {
@@ -27,6 +28,8 @@ function addautoget(ele,url,fnc)
 function fnc0()
 {
 	var digital = new Date();
+	if (GetUrlError!="")
+		return;
 	if(URLs.length && (enProceso+1000)<digital.getTime())
 	{
 		GetUrl(URLs[0],FNCs[0]);
@@ -1040,14 +1043,15 @@ function rcvIOs(Datos)
 	ioLT0[hindex]= new Array(Number_Of_Inputs);
 	ioLT1[hindex]= new Array(Number_Of_Inputs);
 	//----------------------------------------------------
+	iIOs=IOs();
 	while(inidx<Number_Of_Inputs)
 	{
 		//--------------------------------- flags
 		temp=Datos.substring(StructSizeIO*inidx+0,StructSizeIO*inidx+4);
 		itemp=ByToInt(temp);
 		ioflags[hindex][inidx]=itemp;
-		IOs()[inidx].Type=(itemp&1);
-		IOs()[inidx].Mode=((itemp>>14)&3);
+		iIOs[inidx].Type=(itemp&1);
+		iIOs[inidx].Mode=((itemp>>14)&3);
 		if(itemp&1)// es entrada?
 		{
 			//--------------------------------- Muestras
@@ -1099,6 +1103,7 @@ function rcvIOs(Datos)
 }
 function rcvIOs2()
 {
+	var iIOs=IOs();
 	var out="";
 	var temp=0;
 	var Tcount=0;
@@ -1117,20 +1122,20 @@ function rcvIOs2()
 	out4+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Occupation+"&#160;</b></font></td>\n";
 	while(Tcount<Number_Of_Inputs)
 	{
-		if(IOs()[Tcount].Name.indexOf("NoShw")==-1)
+		if(iIOs[Tcount].Name.indexOf("NoShw")==-1)
 		{
 			Pcount++;
 			out1+="<td rowspan=\"4\" class=\"hrvert\" align=\"center\"></td>\n";
-			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+IOs()[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
+			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+iIOs[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
 			temp=ioflags[hindex][Tcount];
 			if(ioflags[hindex] && ioflags[hindex][Tcount]&1)
 			{
 				out2+="<td align=\"center\"><font size=\"2\" face=\"arial\"><b>";
-				if(IOs()[Tcount].Mode==0)
+				if(iIOs[Tcount].Mode==0)
 					out2+=Str_InputOnOff
-				if(IOs()[Tcount].Mode==1)
+				if(iIOs[Tcount].Mode==1)
 					out2+=Str_InputF
-				if(IOs()[Tcount].Mode==2)
+				if(iIOs[Tcount].Mode==2)
 					out2+=Str_InputAD
 				if((ioflags[hindex][Tcount]&0x10)==0)
 					out2+=Str_disabled+"<br/>";
@@ -1149,12 +1154,12 @@ function rcvIOs2()
 					out2+="4";
 				out2+="</b>&#160;</font></td>\n";
 				//----------------------
-				if(IOs()[Tcount].Mode==0)
+				if(iIOs[Tcount].Mode==0)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
 				}
-				if(IOs()[Tcount].Mode==2)
+				if(iIOs[Tcount].Mode==2)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
@@ -1162,7 +1167,7 @@ function rcvIOs2()
 				//----------------------
 				out4+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;";
 				times=(tiempo[hindex][Tcount]-tiempo[hindexO][Tcount]);
-				if(IOs()[Tcount].Mode==0)
+				if(iIOs[Tcount].Mode==0)
 				{
 					out4+="%";
 					ocup=(ocupacion[hindex][Tcount]-ocupacion[hindexO][Tcount]);
@@ -1174,7 +1179,7 @@ function rcvIOs2()
 					else
 						ocup=Math.round((1000*ocup)/times)/10;
 				}
-				if(IOs()[Tcount].Mode==2)
+				if(iIOs[Tcount].Mode==2)
 				{
 					ocup=(ocupacion[hindex][Tcount]);
 				}

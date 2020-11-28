@@ -385,7 +385,7 @@ function updIpToAdd(entry)
 }
 function GetEth()
 {
-	return document.getElementById("IPADD").value;
+	return Remplace(document.getElementById("IPADD").value, ',', '.');
 }
 function AddSrcNow(ID,wac,typ)
 {
@@ -666,10 +666,11 @@ function LoadConfSrc()
 		case 26:
 		case 28:
 		{
-			if(PLCs()[PlcIdx].Sec!="")
+			iPLCs=PLCs();
+			if(iPLCs[PlcIdx].Sec!="")
 			{
 				ShwPBar('Loading Conflictos...');
-				request=GetUrl(HOST()+'/'+PLCs()[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
+				request=GetUrl(HOST()+'/'+iPLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
 			}
 			else
 			{
@@ -690,7 +691,8 @@ function LoadConfSrc()
 		case 36:
 		{
 			ShwPBar('Loading Agenda...');
-			request=GetUrl(HOST()+'/'+PLCs()[PlcIdx].Scheduler,RcvConfSrc);
+			iPLCs=PLCs();
+			request=GetUrl(HOST()+'/'+iPLCs[PlcIdx].Scheduler,RcvConfSrc);
 		}
 		break;
 		case 38:
@@ -764,10 +766,11 @@ function LoadConfSrc()
 		{
 			ShwPBar('Loading Lista de entre verdes...');
 			FilterFileList='.ini';
-			if(PLCs()[PlcIdx].PhcList)
-				PLCs()[PlcIdx].PhcList.length=0;
+			iPLCs=PLCs();
+			if(iPLCs[PlcIdx].PhcList)
+				iPLCs[PlcIdx].PhcList.length=0;
 			else
-				PLCs()[PlcIdx].PhcList= new Array()
+				iPLCs[PlcIdx].PhcList= new Array()
 			if(PrgEd[SrcIdx].Typ==0)
 				GetFls(HOST()+'/'+PlcIdx,RcvConfSrc);
 			else
@@ -776,14 +779,15 @@ function LoadConfSrc()
 		break;
 		case 49:
 		{
-			if (PLCs()[PlcIdx].PhcList.length)
+			iPLCs=PLCs();
+			if (iPLCs[PlcIdx].PhcList.length)
 			{
-				if(PLCs()[PlcIdx].EV)
-					PLCs()[PlcIdx].EV.length=0;
+				if(iPLCs[PlcIdx].EV)
+					iPLCs[PlcIdx].EV.length=0;
 				else
-					PLCs()[PlcIdx].EV = new Array()
-				ShwPBar('Loading entre verdes...'+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Path+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Name);
-				request=GetUrl(HOST()+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Path+"/"+PLCs()[PlcIdx].PhcList[PLCs()[PlcIdx].EV.length].Name,RcvConfSrc);
+					iPLCs[PlcIdx].EV = new Array()
+				ShwPBar('Loading entre verdes...'+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Path+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Name);
+				request=GetUrl(HOST()+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Path+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Name,RcvConfSrc);
 			}
 			else
 			{
@@ -874,7 +878,7 @@ function LoadConfSrc()
 		case 86:
 		{
 			ShwPBar('Loading Master...');
-			request=GetUrl(HOST()+'/Master.ini',RcvConfSrc);
+			request=GetUrl(HOST()+'/master.ini',RcvConfSrc);
 		}
 		break;
 		case 87:
@@ -1105,9 +1109,10 @@ function RcvConfSrc(Datos)
 				}
 				PlcIdx++;
 				percent+=2;
+				iPLCs=PLCs();
 				for(var i=1;i<PLCs().length;i++)
 				{
-					if(PLCs()[i-1].Scheduler==PLCs()[i].Scheduler)
+					if(iPLCs[i-1].Scheduler==iPLCs[i].Scheduler)
 					{
 						PlcIdx++;
 						percent+=2;
@@ -1171,14 +1176,15 @@ function RcvConfSrc(Datos)
 			break;
 			case 49:// PLCs()[PlcIdx].PhcList content of phc files
 			{
+				iPLCs=PLCs();
 				if(Datos.status==200)
 				{
 					Datos=Datos.responseText;
 					Datos=Datos.trim();
 					Datos=RemComment(Datos)
-					PLCs()[PlcIdx].EV[PLCs()[PlcIdx].EV.length]=Datos;
+					iPLCs[PlcIdx].EV[iPLCs[PlcIdx].EV.length]=Datos;
 				}
-				if(PLCs()[PlcIdx].PhcList.length==PLCs()[PlcIdx].EV.length)
+				if(iPLCs[PlcIdx].PhcList.length==iPLCs[PlcIdx].EV.length)
 					PlcIdx++;
 				if(PlcIdx>=GlobalParms().Controllers)
 				{
