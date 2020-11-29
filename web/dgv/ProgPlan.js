@@ -3,7 +3,7 @@ TP2Ed.id="";
 TP2Ed.X=10;
 TP2Ed.X2=10;
 TP2Ed.TPi=0;
-
+var PlnIdx=0;
 var ErrorMsg="";
 //LCL=Local
 //SYC=Syncronico
@@ -99,14 +99,13 @@ function UpdateTimes(PLC,Pln)
 		return TC;
 }
 
-function SaveCtrlParms(PLC,Parms,Plan)
+/*function SaveCtrlParms(PLC,Parms,Plan)
 {
 	UpMode=10;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="autorun.txt"
-	UpdateTimes(PLC,Plan);
 	var out="";
 	var out1="";
 	var out2="";
@@ -161,7 +160,7 @@ function SaveCtrlParms(PLC,Parms,Plan)
 	//out+=Parms.addvar;
 	UpData=out;
 	return out;
-}
+}*/
 
 function PlanModT(PLC,Plan,TC,TP,TPi)
 {
@@ -263,10 +262,14 @@ function PlanModT(PLC,Plan,TC,TP,TPi)
 }
 
 //------------------------------------------
+function ini_step_plan()
+{
+	PlnIdx=0;
+}
 function ShowPlan()
 {
 	var out="";
-	var iplc=PLCs()[PlcIdx]
+	var iplc = PLCs()[PlcIdx];
 	var color=(16777215/iplc.Sts.length);
 	iplc.Sts.sort(sortN);
 	if(iplc.Plans.length)
@@ -284,30 +287,37 @@ function ShowPlan()
 	out+="<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
 	//--------------
 	out+="<tr bgcolor=\"#ccc\">\n";
-	out+="<td align=\"center\" >\n";
-	out+="<font size=\"2\" face=\"arial\">"+Str_Plan+"</font>"
-	out+="</td>\n";
-	out+="<td align=\"center\" >\n";
-	out+="<select onchange=\"if(this.value==-1){PlnNew(0);}else{PlnIdx=parseInt(this.value);}ReDraw(-1);\" class=\"CssSelect\" >\n";
-	for (j=0;j<iplc.Plans.length;j++)
-	{
-		out+="<option value=\""+j+"\" "+((PlnIdx==j)?"selected=\"selected\"":"")+">["+(j+1)+"](";
-		if(iplc.Plans[j].Typ==1)
-			out+="Sincronico";
-		else
-			out+="Asincronico";
-		out+=" Ciclo:"+iplc.Plans[j].TC;
-		if(iplc.Plans[j].Typ==1)
-			out+=" Offset:"+iplc.Plans[j].OF;
-		out+=")</option>\n";
-	}
-	out+="<option style=\"background-color:rgb(238,238,238)\" value=\"-1\">"+Str_New+"</option>\n";
-	out+="</select>\n";
-	out+="</td>\n";
-	out+="<td align=\"center\" >\n";
-	out+="<input type=\"button\" class=\"CssBtn\" value=\""+Str_Delet+"\" onclick=\"PlnDel("+PlnIdx+");ReDraw(-1);\" />\n";
+	out+="<td align=\"center\" rowspan=\"3\" >\n";
+	out+="<input type=\"button\" class=\"CssBtn\" value=\""+Str_New+" "+Str_Plan+"\" onclick=\"PlnNew(0);ReDraw(-1);\" />\n";
 	out+="</td>\n";
 	out+="</tr>\n";
+	if(iplc.Plans.length)
+	{
+		out+="<tr bgcolor=\"#ccc\">\n";
+		out+="<td align=\"center\" >\n";
+		out+="<font size=\"2\" face=\"arial\">"+Str_Plan+"</font>"
+		out+="</td>\n";
+		out+="<td align=\"center\" >\n";
+		out+="<select onchange=\"PlnIdx=parseInt(this.value);ReDraw(-1);\" class=\"CssSelect\" >\n";
+		for (j=0;j<iplc.Plans.length;j++)
+		{
+			out+="<option value=\""+j+"\" "+((PlnIdx==j)?"selected=\"selected\"":"")+">["+(j+1)+"](";
+			if(iplc.Plans[j].Typ==1)
+				out+="Sincronico";
+			else
+				out+="Asincronico";
+			out+=" Ciclo:"+iplc.Plans[j].TC;
+			if(iplc.Plans[j].Typ==1)
+				out+=" Offset:"+iplc.Plans[j].OF;
+			out+=")</option>\n";
+		}
+		out+="</select>\n";
+		out+="</td>\n";
+		out+="<td align=\"center\" >\n";
+		out+="<input type=\"button\" class=\"CssBtn\" value=\""+Str_Delet+"\" onclick=\"PlnDel("+PlnIdx+");ReDraw(-1);\" />\n";
+		out+="</td>\n";
+		out+="</tr>\n";
+	}
 	//--------------
 	out+="</table>";
 	out+="<table border=\"0\" bgcolor=\"#ddd\" class=\"table1\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" >\n";
@@ -376,9 +386,10 @@ function PlnNew(typ)
 	iplc.Plans[PlnIdx].TP=new Array();
 	iplc.Plans[PlnIdx].Dem=new Array();
 	iplc.Plans[PlnIdx].Logic=new Array();
+	iplc.Plans[PlnIdx].DimTyp=0;
+	iplc.Plans[PlnIdx].Dim=[100];
 	//---------------------------------------
 	iplc.Plans[PlnIdx].TP.length=iplc.Sts.length;
-	iplc.Plans[PlnIdx].TC=0;
 	//---------------------------------------
 	for(j=0;j<iplc.Sts.length;j++)
 	{
@@ -390,6 +401,11 @@ function PlnNew(typ)
 		iplc.Plans[PlnIdx].TP[j]+=GetTmin(iplc,j);
 		iplc.Plans[PlnIdx].TC+=iplc.Plans[PlnIdx].TP[j];
 		iplc.Plans[PlnIdx].Logic[j]="";
+		iplc.Plans[PlnIdx].Dem[j]=new Object();
+		iplc.Plans[PlnIdx].Dem[j].Typ=0;
+		iplc.Plans[PlnIdx].Dem[j].Num=0;
+		iplc.Plans[PlnIdx].Dem[j].Clr=0;
+		iplc.Plans[PlnIdx].Dem[j].Dat=new Array();
 	}
 	UpdateTimes(iplc, iplc.Plans[PlnIdx]);
 }
@@ -1183,6 +1199,15 @@ function GraphPlanAislado(width,Plan)
 	return out;
 }
 
+function get_plan(prg, PlanGen)
+{
+	/*if(PlanGen.EV!=0)
+		SetPhConf(prg.PLCs[PlcIdx].EV[PlanGen.EV-1]);
+	else	// */
+		SetPhConf(prg.GlobalParms.phconf);
+	UpdateTimes(prg.PLCs[PlcIdx], PlanGen);
+	return PlanGen;
+}
 function SavePlan(PLC,Parms,Plan)
 {
 	UpdateTimes(PLC,Plan);

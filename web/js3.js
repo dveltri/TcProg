@@ -30,10 +30,10 @@ function SendObj(obj)
 function SendStartup(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
-	seek=0;
 	var dt;
 	UpFile="startup.ini"
 	var ip=Prg.GlobalParms.ETH0;
@@ -246,12 +246,12 @@ function genEv()
 function SendPhConf(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	//SetPhConf(Prg.GlobalParms.phconf);
 	UpData=Prg.GlobalParms.phconf+"\n";
 	UpFile="phconf.ini"
-	seek=0;
 	return UpData;
 }
 function SendEv(Prg)
@@ -269,7 +269,7 @@ function SendEv(Prg)
 		}
 	}
 	UpFile="phc"+(CEV+1)+".ini"
-	seek=0;
+	UpSeek=0;
 	//alert(UpData);UpMode=0;
 	return UpData;
 }
@@ -277,11 +277,11 @@ function SendEv(Prg)
 function SendPlc(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="plcs.ini"
-	seek=0;
 	for(var count=0;count<Prg.PLCs.length;count++)
 	{
 		UpData+="\n";
@@ -311,25 +311,27 @@ function SendPlc(Prg)
 function SendOPCT(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
-	UpFile="OPCT.ini"
-	seek=0;
-	for(var i=0;i<Prg.OPCT.length;i++)
+	UpFile="opct.ini"
+	UpData=obj2txt("citar",Prg.citar);
+	/*for(var i=0;i<Prg.OPCT.length;i++)
 	{
 		for(var j=0;j<(Prg.OPCT[i].length-1);j++)
 		{
 			UpData+=Prg.OPCT[i][j]+":";
 		}
 		UpData+=Prg.OPCT[i][j]+"\n";
-	}
+	}*/
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendIP(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
@@ -337,46 +339,57 @@ function SendIP(Prg)
 	var count=0;
 	if (Prg.GlobalParms.ip_offset!=undefined)
 		count=Prg.GlobalParms.ip_offset;
-	for(;count<Prg.Links.length;count++)
+	while(count<Prg.Links.length)
 	{
 		UpData+=Prg.Links[count][0]
-		for(var seek=1;seek<Prg.Links[count].length;seek++)
+		for(var idx=1;idx<Prg.Links[count].length;idx++)
 		{
-			UpData+=","+Prg.Links[count][seek];
+			UpData+=","+Prg.Links[count][idx];
 		}
 		UpData+="\n";
+		count++;
 	}
-	seek=0;
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendDGV(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
-	seek=0;
 	UpFile="dgvsoft.ini"
 	UpData=DgvSoft;
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function SendDgvP(Prg)
+function SendPdgv(Prg)
 {
-	var rslt="";
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
-	seek=0;
 	UpFile="dgvp.ini"
-	UpData=obj2txt("DgvP",Prg.DgvP);
+	UpData=obj2txt("pdgv",Prg.pdgv);
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendSdgvP(Prg)
 {
+	UpMode=10;
+	UpSeek=0;
+	UpPath="/";
+	UpType="txt";
+	UpFile="sdgvp.ini"
+	UpData=obj2txt("sdgvp",Prg.sdgvp);
+	return UpData;
+}
+/*
+function SendSdgvP_old(Prg)
+{
 	var temp="";
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpFile="sdgvp.ini"
@@ -402,45 +415,44 @@ function SendSdgvP(Prg)
 					{
 						if(Prg.GlobalParms.Model.indexOf("M3")!=-1)
 						{
-							seek=DgvPM3.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
-							if(seek!=-1)
+							idx2=DgvPM3.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
+							if(idx2!=-1)
 							{
-								temp+=DgvPM3[seek+1];
+								temp+=DgvPM3[idx2+1];
 							}
 						}
 						if(Prg.GlobalParms.Model.indexOf("M4")!=-1)
 						{
-							seek=DgvPM4.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
-							if(seek!=-1)
+							idx2=DgvPM4.indexOf(Prg.SDgvP.Tsk[idx].cmps[i]);
+							if(idx2!=-1)
 							{
-								temp+=DgvPM4[seek+1];
+								temp+=DgvPM4[idx2+1];
 							}
 						}
 					}
-					seek=temp.split(",").length-1;
-					UpData+=","+(seek&0x000000FF);
-					UpData+=","+(seek&0x0000FF00);
-					UpData+=","+(seek&0x00FF0000);
-					UpData+=","+(seek&0xFF000000);
+					idx2=temp.split(",").length-1;
+					UpData+=","+(idx2&0x000000FF);
+					UpData+=","+(idx2&0x0000FF00);
+					UpData+=","+(idx2&0x00FF0000);
+					UpData+=","+(idx2&0xFF000000);
 					UpData+=temp
 				}
 				break;
 			}
 			UpData+="\n"
 		}
-	}// */
-	seek=0;
+	}
 	return UpData;
-}
+}// */
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendIteris()
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="iteris.ini"
-	seek=0;
 	for(var i=0;i<Iteris.length;i++)
 	{
 		for(var j=0;j<(Iteris[i].length-1);j++)
@@ -455,12 +467,12 @@ function SendIteris()
 function SendGPS(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="gps.ini"
 	UpData=obj2txt("gps",Prg.gps);
-	seek=0;
 	/*UpData+="gps.link="
 	UpData+="gps.conf="
 	UpData+="gps.priority="
@@ -480,15 +492,13 @@ function SendGPS(Prg)
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendNTP(Prg)
 {
-	if(!Prg.NTP)
-		return "";
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="ntp.ini"
-	seek=0;
-	UpData=obj2txt("NTP",Prg.NTP);
+	UpData=obj2txt("ntp",Prg.ntp);
 	/*for(var i=0;i<Prg.NTP.length;i++)
 	{
 		for(var j=0;j<(Prg.NTP[i].length-1);j++)
@@ -503,11 +513,11 @@ function SendNTP(Prg)
 function SendErrCfg(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="error.ini"
-	seek=0;
 	for(var i=0;i<Prg.ErrorsCfg.length;i++)
 	{
 		if(Prg.ErrorsCfg[i][0])
@@ -530,30 +540,31 @@ function SendErrCfg(Prg)
 function SendMaster(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="master.ini"
-	seek=0;
-	for(var i=0;i<Prg.mstr.length;i++)
+	UpData=obj2txt("master",Prg.master);
+	/*for(var i=0;i<Prg.mstr.length;i++)
 	{
 		for(var j=0;j<(Prg.mstr[i].length-1);j++)
 		{
 			UpData+=Prg.mstr[i][j]+":";
 		}
 		UpData+=Prg.mstr[i][j]+"\n";
-	}
+	}*/
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendDefIn(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="def_in.ini"
-	seek=0;
 	for(var i=0;i<Prg.DefIn.length;i++)
 	{
 		for(var j=0;j<(Prg.DefIn[i].length-1);j++)
@@ -582,11 +593,11 @@ function SendDefIn(Prg)
 function SendOTU(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
 	UpFile="otu.ini"
-	seek=0;
 	UpData+="scoot.link="+Prg.OTU.Link+"\n";
 	UpData+="scoot.g1g2="+Prg.OTU.G1G2+"\n";
 	UpData+="\n";
@@ -639,6 +650,7 @@ function SendOTU(Prg)
 function SendOTUPlan(OTUPlan)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/"+PlcIdx;
 	UpType="txt";
 	UpData="";
@@ -653,7 +665,6 @@ function SendOTUPlan(OTUPlan)
 	UpData+="OTUSTSDEM:"+OTUPlan.OTUSTSDEM.toString()+"\n";
 	UpData+="OTUDEMCLR:"+OTUPlan.OTUDEMCLR.toString()+"\n";
 	UpFile="planotu.es3"
-	seek=0;
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -665,6 +676,7 @@ function SendMcPlan(McPlan)
 	if(McPlan.MACSEQSTP.length==0)McPlan.MACSEQSTP[0]=0;
 	if(McPlan.MACSTSSTP.length==0)McPlan.MACSTSSTP[0]=1;
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/"+PlcIdx;
 	UpType="txt";
 	UpData="";
@@ -672,7 +684,6 @@ function SendMcPlan(McPlan)
 	UpData+="MACSEQSTP:"+McPlan.MACSEQSTP.toString()+"\n";
 	UpData+="MACSTSSTP:"+McPlan.MACSTSSTP.toString()+"\n";
 	UpFile="planmc.es3"
-	seek=0;
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -683,6 +694,7 @@ function SendPlanAI(Prg)
 	var tp=[];
 	var t2s=[];
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
 	UpData="";
@@ -792,13 +804,35 @@ function SendPlanAI(Prg)
 	}
 	UpData+="//------------------------\n";
 	UpData+="end\n";
-	seek=0;
 	return UpData;
 }
 
+function SendPlanAR(Prg)
+{
+	UpMode=10;
+	UpSeek=0;
+	UpPath="/";
+	UpType="txt";
+	UpFile="autorun.txt"
+	//------------------------------
+	UpData="";
+	UpData+="delay 2000;\n";
+	UpData+="\tmov 1 PLC[0].service\n";
+	UpData+="\tmov 15 PLC[0].dbug\n";
+	//------------------------------
+	UpData+="loop1;\n";
+	UpData+="log 'AutoRun\n";
+	UpData+="delay 1000\n";
+	UpData+="goto INICIO\n";
+	//------------------------------
+	UpData+="end\n";
+	//------------------------------
+	return UpData;
+}
 function SendPlan98A(Prg)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/0";
 	UpType="txt";
 	UpData="";
@@ -817,7 +851,7 @@ function SendPlan98A(Prg)
 	phases ,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7\n\
 	mov 0 temp;\n\
 	loop1;\n";
-	UpData+="\tmov 1 PLC[temp].service\n";
+	//UpData+="\tmov 1 PLC[temp].service\n";
 	UpData+="\tmov 15 PLC[temp].dbug\n\
 	add 1 temp;\n";
 	UpData+="< temp CPLCS loop1;\n";
@@ -895,7 +929,6 @@ function SendPlan98A(Prg)
 	temp=XXXX;\n\
 	end\n";
 	//UpData=compilador(UpData);
-	seek=0;
 	return UpData;
 }
 
@@ -903,6 +936,7 @@ function SendPlan99(Prg)
 {
 	var out="";
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan99.eil"
@@ -926,13 +960,13 @@ function SendPlan99(Prg)
 	end\n";
 	UpData=out;
 	//UpData=compilador(UpData);
-	seek=0;
 	return out;
 }
 function SendPlan97(Prg)
 {
 	var out="";
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/0";
 	UpType="txt";
 	UpFile="plan97.eil"
@@ -956,7 +990,6 @@ function SendPlan97(Prg)
 	end\n";
 	UpData=out;
 	//UpData=compilador(UpData);
-	seek=0;
 	return out;
 }
 percent=25;

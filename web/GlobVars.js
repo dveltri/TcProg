@@ -28,7 +28,7 @@ var menu;
 //-------------------------------------------------- variables de la Web
 var Reload=0x000;
 var AutoRefresh;
-var Refresh=0;
+var wizard_step=0;
 var language="ES";
 var Log_En=0;
 var Dim_En=1;
@@ -49,7 +49,7 @@ var UpMode=0;
 var UpPath="";
 var UpFile="";
 var UpType="";
-var seek=0;
+var UpSeek=0;
 //--------------------
 var FilterFileList="";
 var FileListDat= new Array();

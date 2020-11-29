@@ -1,3 +1,4 @@
+var last_step;
 //--------------------------------------------------
 function goWizrdNext()
 {
@@ -41,15 +42,21 @@ function ClearAllHome()
 		document.getElementById("HOME4").innerHTML+="<input type=\"checkbox\" onchange=\"FoceUpLoad=this.checked\" />Compile always<br />\n";
 	}
 }
+function wizard_step_change(step, fnc)
+{
+	if(step != last_step)
+		fnc()
+}
 function ReDraw(Fnc)
 {
 	var out="";
+	last_step = wizard_step;
 	if(Fnc>=0)
-		Refresh=Fnc;
+	wizard_step=Fnc;
 	else
 		hideFlyMnu(FlyMnu.idx);
 	ClearAllHome();
-	LOG("Refresh:"+Refresh);
+	LOG("wizard["+Widx+"]["+WizrdIdx+"]");
 	//-----------------------------------------------------
 	out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
 	out+="<tr>\n";
@@ -65,7 +72,7 @@ function ReDraw(Fnc)
 	out+="</table>\n";
 	document.getElementById("WizNavButton").innerHTML+=out;
 	//-----------------------------------------------------
-	switch(Refresh)
+	switch(wizard_step)
 	{
 		case moni_general:
 		{
@@ -130,6 +137,7 @@ function ReDraw(Fnc)
 		//-----------------------------------------------------
 		case conf_plan:
 		{
+			wizard_step_change(wizard_step, ini_step_plan);
 			document.getElementById("HOME1").innerHTML=ShowPlan();
 		}
 		break;
@@ -231,7 +239,7 @@ function ShwPHHW()
 		out+=GenOptions(OptColorFFtyp[PHASEs()[j].Type],PHASEs()[j].FState);
 		out+="</select><br />\n";
 		//out+=color2svg(PHASEs()[j].FState,"");
-		out+="<div onclick=\"PHASEs()["+j+"].FState=chgColor2(PHASEs()["+j+"].FState,MSKEVPhTyp[PHASEs()["+j+"].Type]);ReDraw(-1);\" >";
+		out+="<div onclick=\"PHASEs()["+j+"].FState=chgColor2(PHASEs()["+j+"].FState,MSKEVPhTyp[PHASEs()["+j+"].Type],MSK_V_ALL);ReDraw(-1);\" >";
 		out+=ShwMov(PHASEs()[j].FState, PHASEs()[j].Type);
 		out+="</div>\n";
 		out+="</td>\n";

@@ -2,7 +2,6 @@
 var RGBcolor=["rgb(0,0,0)","rgb(255,0,0)","rgb(255,255,0)","rgb(255,255,255)","rgb(0,255,0)"];
 var StrokeWidth=8;
 var CIntReg=15;
-var PlnIdx=0;
 var OptTypPln=[0,"Plan Aislado",1,"Plan Sincronico"];
 var OptSycPot=[	"??/??/???? 00:00:00","Todos los dias 00:00:00","01/01/1970 00:00:00","01/01/1970 00:00:00","01/01/2000 00:00:00","01/01/2000 00:00:00","??/??/????A00:00:00","En el horario del ultimo cambio"]; //,"01/01/1900 00:00:00","01/01/1900 00:00:00","01/01/2000 00:00:00"
 
@@ -30,6 +29,7 @@ function ShowStss()
 {
 	var out="";
 	var PlnSts=PLCs()[PlcIdx].Sts;
+	iPHASEs=PHASEs();
 	out+="<table border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" class=\"table1\" >\n";// width=\"90%\"
 	out+="<tr>\n";
 	out+="<td valign=\"top\" align=\"center\">\n";
@@ -38,12 +38,12 @@ function ShowStss()
 	out+="<td valign=\"top\" align=\"center\">\n";
 	out+="<font size=\"1\" face=\"arial\">"+Str_Name_Stage+"</font>\n";
 	out+="</td>\n";
-	for(var y=0;y<PHASEs().length;y++)
+	for(var y=0;y<iPHASEs.length;y++)
 	{
-		if(PHASEs()[y].PLC&(1<<PlcIdx))
+		if(iPHASEs[y].PLC&(1<<PlcIdx))
 		{
 			out+="<td valign=\"top\" align=\"center\">\n";
-			out+="<font size=\"1\" face=\"arial\">"+PHASEs()[y].Name+"</font>\n";
+			out+="<font size=\"1\" face=\"arial\">"+iPHASEs[y].Name+"</font>\n";
 			out+="</td>\n";
 		}
 	}
@@ -67,6 +67,7 @@ function ShowStss()
 	out+="</table>\n";
 	return out;
 }
+
 function ShowSts(nsts)
 {
 	var colorn=0;
@@ -78,14 +79,15 @@ function ShowSts(nsts)
 		out+="<td align=\"center\">\n";
 	out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\""+PlnSts.Name+"\" size=\"8\" maxlength=\"8\" onchange=\"PLCs()["+PlcIdx+"].Sts["+nsts+"].Name=this.value;ReDraw(-1);\" />\n";
 	out+="</td>\n";
+	iPHASEs=PHASEs();
 	for (var j = 0; j<PlnSts.Colors.length; j++)
 	{
-		if(PHASEs()[j].PLC&(1<<PlcIdx))
+		if(iPHASEs[j].PLC&(1<<PlcIdx))
 		{
 			out+="<td align=\"center\" valign=\"middle\" height=\"10\" width=\"10\" onclick=\"ChgColSts("+nsts+","+j+");\" ";
 			//out+="class=\"table2\" style=\"background-color:rgb("+((Color>>16)&255)+","+((Color>>8)&255)+","+(Color&255)+")\" ";
 			out+=">\n";
-			out+=ShwMov(PlnSts.Colors[j],PHASEs()[j].Type);
+			out+=ShwMov(PlnSts.Colors[j],iPHASEs[j].Type);
 			//out+=color2svg(PlnSts.Colors[j],"");
 			out+="</td>\n";
 		}
@@ -173,21 +175,22 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 	var Trv=0;
 	var Tke=0;
 	var PlnSts=PLCs()[PlcIdx].Sts;
+	iPHASEs=PHASEs();
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
 		Color1=PlnSts[TP1].Colors[ph];
 		Color2=PlnSts[TP2].Colors[ph];
 		if(Color1==1 && Color2==4)
-			if(Trv<PHASEs()[ph].R2V.length)
-				Trv=PHASEs()[ph].R2V.length;
+			if(Trv<iPHASEs[ph].R2V.length)
+				Trv=iPHASEs[ph].R2V.length;
 		if(Color1==4 && Color2==1)
-			if(Tvr<PHASEs()[ph].V2R.length)
-				Tvr=PHASEs()[ph].V2R.length;
+			if(Tvr<iPHASEs[ph].V2R.length)
+				Tvr=iPHASEs[ph].V2R.length;
 	}
 	Tev=Tvr+Trv;
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
-		if(PHASEs()[ph].PLC&(1<<PlcIdx))
+		if(iPHASEs[ph].PLC&(1<<PlcIdx))
 		{
 			Color1=PlnSts[TP1].Colors[ph];
 			Color2=PlnSts[TP2].Colors[ph];
@@ -197,17 +200,17 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==4 && Color2==1)
 			{
-				if(PHASEs()[ph].V2R.length)
+				if(iPHASEs[ph].V2R.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-(Trv+PHASEs()[ph].V2R.length);
+					Tke=Tev-(Trv+iPHASEs[ph].V2R.length);
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs()[ph].V2R.length; j++)
+					for (j=0; j<iPHASEs[ph].V2R.length; j++)
 					{
-						out+=MkLine(PHASEs()[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(iPHASEs[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
-					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+PHASEs()[ph].V2R.length)),X+(xstp*Tev));
+					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+iPHASEs[ph].V2R.length)),X+(xstp*Tev));
 				}
 				else
 				{
@@ -216,15 +219,15 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==1 && Color2==4)
 			{
-				if(PHASEs()[ph].R2V.length)
+				if(iPHASEs[ph].R2V.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-PHASEs()[ph].R2V.length;
+					Tke=Tev-iPHASEs[ph].R2V.length;
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs()[ph].R2V.length; j++)
+					for (j=0; j<iPHASEs[ph].R2V.length; j++)
 					{
-						out+=MkLine(PHASEs()[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(iPHASEs[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
 				}
 				else
@@ -306,16 +309,19 @@ function chgColor(plc,nsts,ColIdx,posibles)
 
 function ChgColSts(nsts,j)
 {
-	var mask;
+	var mask=MSK_V_ALL;
+	Model=GlobalParms().Model;
+	iPHASEs=PHASEs();
+	iPLCs=PLCs();
 	if(true==ChkCFTSts(nsts,j))
 	{
-		if(GlobalParms().Model.indexOf("RT")!=-1)
+		if(Model.indexOf("RT")!=-1)
 		{
 			mask = MSK_ORV;
 		}
 		else
 		{
-			switch(PHASEs()[PLCs()[PlcIdx].Phases[j]].Type)
+			switch(iPHASEs[iPLCs[PlcIdx].Phases[j]].Type)
 			{
 				case 0:
 					mask = MSK_V_ALL;
@@ -328,13 +334,13 @@ function ChgColSts(nsts,j)
 	}
 	else
 	{
-		if(GlobalParms().Model.indexOf("RT")!=-1)
+		if(Model.indexOf("RT")!=-1)
 		{
 			mask = MSK_OR;
 		}
 		else
 		{
-			switch(PHASEs()[PLCs()[PlcIdx].Phases[j]].Type)
+			switch(iPHASEs[iPLCs[PlcIdx].Phases[j]].Type)
 			{
 				case 0:
 					mask = MSK_V_cft;
@@ -345,7 +351,7 @@ function ChgColSts(nsts,j)
 			}
 		}
 	}
-	PLCs()[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs()[PlcIdx].Sts[nsts].Colors[j],mask);
+	iPLCs[PlcIdx].Sts[nsts].Colors[j]=chgColor2(iPLCs[PlcIdx].Sts[nsts].Colors[j],mask);
 	ReDraw(conf_sts);
 }
 
@@ -354,11 +360,12 @@ function ChkCFTSts(nsts,ncolor)
 	var color=4;
 	var PhN=0;
 	PhN=ncolor;//PLCs()[PlcIdx].Sts[nsts].Color[ncolor];
-	if(!(color&0x30) && color&0x06 && PHASEs()[PhN].Sec.length)
+	iPHASEs=PHASEs();
+	if(!(color&0x30) && color&0x06 && iPHASEs[PhN].Sec.length)
 	{
-		for (var i = 0; i<PHASEs()[PhN].Sec.length; i++)
+		for (var i = 0; i<iPHASEs[PhN].Sec.length; i++)
 		{
-			if(PHASEs()[PhN].Sec[i]!=null && PHASEs()[PhN].Sec[i]>0)
+			if(iPHASEs[PhN].Sec[i]!=null && iPHASEs[PhN].Sec[i]>0)
 			{
 				if((PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x30)==0 && (PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x06)!=0)
 					return false;
@@ -607,6 +614,7 @@ function ShwSwch(color)
 	out+='</svg>\n';
 	return out;
 }
+
 function ShwMov(sts,typ)
 {
 	var out="";
@@ -846,6 +854,7 @@ function GetTmin2(PLC,sts1,sts2)
 	if(PLC.Sts.length>sts1 && PLC.Sts.length>sts2)
 	{
 		RemoveUnusedItem(PLC.Sts[sts1].Colors);
+		iPHASEs=PHASEs();
 		for(var i=0;i<PLC.Sts[sts1].Colors.length;i++)
 		{
 			if(//
@@ -856,13 +865,13 @@ function GetTmin2(PLC,sts1,sts2)
 			{
 				if(PLC.Sts[sts1].Colors[i]==1)
 				{
-					tiempot=PHASEs()[i].MiGT;
-					evt=PHASEs()[i].R2V.length
+					tiempot=iPHASEs[i].MiGT;
+					evt=iPHASEs[i].R2V.length
 				}
 				else
 				{
-					tiempot=PHASEs()[i].MiRT;
-					evt=PHASEs()[i].V2R.length
+					tiempot=iPHASEs[i].MiRT;
+					evt=iPHASEs[i].V2R.length
 				}
 				if(tiempo<tiempot)
 					tiempo=tiempot;
@@ -881,15 +890,16 @@ function GetTmin(PLC,sts)
 	var tiempo=0;
 	var tiempot=0;
 	var ph=0;
+	iPHASEs=PHASEs();
 	if(PLC.Sts.length>sts)
 	{
 		for(var i=0;i<PLC.Sts[sts].Colors.length;i++)
 		{
 			ph=i;//PLC.Phases[i];
 			if(PLC.Sts[sts].Colors[i]==4)
-				tiempot=PHASEs()[ph].MiGT;
+				tiempot=iPHASEs[ph].MiGT;
 			if(PLC.Sts[sts].Colors[i]==1)
-				tiempot=PHASEs()[ph].MiRT;
+				tiempot=iPHASEs[ph].MiRT;
 			if(tiempo<tiempot)
 				tiempo=tiempot;
 		}
@@ -1036,9 +1046,11 @@ function RcvPlns(Dados)
 	}
 	PlnIdx=0;
 }
+
 function SendPlans(Plans)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/"+PlcIdx;
 	UpType="txt";
 	UpData="";
@@ -1117,7 +1129,6 @@ function SendPlans(Plans)
 			UpData+="\n";
 	}
 	UpFile="plans.es3"
-	seek=0;
 	return UpData;
 }
 function myNewPlan(PLNTYP)

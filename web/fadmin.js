@@ -218,8 +218,8 @@ function rcvUpFileFileEdit(Datos)
 		UpPath=Remplace(UpPath,'//','/');
 		/*if(!SendOrAlert)
 		{
-			alert("to:"+PrgBk[TrgIdx].host+"\nMode:"+UpMode+"\nPath:"+UpPath+"\nfile:"+UpFile+"\nseek:"+seek+"\n\n"+UpData);
-			seek=0;
+			alert("to:"+PrgBk[TrgIdx].host+"\nMode:"+UpMode+"\nPath:"+UpPath+"\nfile:"+UpFile+"\nseek:"+UpSeek+"\n\n"+UpData);
+			UpSeek=0;
 			document.getElementById("LOADING").style.visibility = 'hidden';
 			UpMode=0;
 			return;
@@ -232,10 +232,10 @@ function rcvUpFileFileEdit(Datos)
 		len=UpData.length;
 		data=UpData;
 		ShwPBar("UpLoading "+UpPath+UpFile+"..");
-		percent2=Math.round((1000/len)*seek)/10;
+		percent2=Math.round((1000/len)*UpSeek)/10;
 		//PBarUpDate();
 		//----------------
-		if(seek<len)
+		if(UpSeek<len)
 		{
 			if(Datos)
 			{
@@ -245,32 +245,32 @@ function rcvUpFileFileEdit(Datos)
 				}
 				else
 				{
-					tlen=seek;
-					if(seek>=Maxlen)
+					tlen=UpSeek;
+					if(UpSeek>=Maxlen)
 						tlen=Maxlen;
-					seek-=tlen;
+						UpSeek-=tlen;
 				}
 				if(Datos.status==500)
 				{
-					seek=0;
+					UpSeek=0;
 					percent2=0;
 					//PBarOff();
 					setTimeout("UpMode=0;",50);
 				}
 			}
-			tlen=(len-seek);
+			tlen=(len-UpSeek);
 			if(tlen>Maxlen)
 				tlen=Maxlen;
 			if(UpType=="eil")
-				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+seek+"&len="+tlen+"&data="+escape(data.substring(seek,(seek+tlen+1))),rcvUpFileFileEdit);
+				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+UpSeek+"&len="+tlen+"&data="+escape(data.substring(UpSeek,(UpSeek+tlen+1))),rcvUpFileFileEdit);
 			else
-				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+seek+"&len="+tlen+"&data="+encodeURIComponent(data.substring(seek,(seek+tlen+1))),rcvUpFileFileEdit);
-			seek+=data.substring(seek,(seek+tlen)).length;
+				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+UpSeek+"&len="+tlen+"&data="+encodeURIComponent(data.substring(UpSeek,(UpSeek+tlen+1))),rcvUpFileFileEdit);
+				UpSeek+=data.substring(UpSeek,(UpSeek+tlen)).length;
 		}
 		else
 		{
 			rcvFileAdmin(Datos);
-			seek=0;
+			UpSeek=0;
 			percent2=0;
 			//PBarOff();
 			setTimeout("UpMode=0;",50);

@@ -131,6 +131,7 @@ function ShowDgvpConf(obj)
 
 function ShwSutec(obj)
 {
+	iOPCT=OPCT();
 	var out="<font size=\"3\" color=\"#0aa\" face=\"arial\">Protocolo compatible con equipos de Otro Fabricante</font><br />\n";
 	out+="<table border=\"0\" bgcolor=\"LightGrey\" align=\"center\" cellpadding=\"1\" cellspacing=\"0\" bordercolor=\"Silver\">\n\
 		<tr align=\"left\">\n\
@@ -138,15 +139,15 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_Enable+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"checkbox\" onclick=\"(OPCT().Link!=0?OPCT().Link=0:OPCT().Link=13);ReDraw(-1);\" "+((OPCT().Link!=0)?"checked=\"checked\"":"")+" />\n\
+			<input type=\"checkbox\" onclick=\"(OPCT().link!=0?OPCT().link=0:OPCT().link=13);ReDraw(-1);\" "+((iOPCT.link!=0)?"checked=\"checked\"":"")+" />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
 			<td>\n\
-			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"("+OPCT().Link+")</font>\n\
+			<font size=\"1\" face=\"arial\">"+Str_Conf_Links+"("+iOPCT.link+")</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+OPCT().Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[OPCT().Link][2]+"\"  />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"20\" onchange=\"Links()["+iOPCT.Link+"][2]=this.value;ReDraw(-1);\"  value=\""+Links()[iOPCT.link][2]+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -154,7 +155,7 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_slave+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Esclavo0=this.value;ReDraw(-1);\"  value=\""+OPCT().Esclavo0+"\"  />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().slave[0]=this.value;ReDraw(-1);\"  value=\""+iOPCT.slave[0]+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -162,7 +163,7 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_Group+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Grupo0=(this.value);ReDraw(-1);\" value=\""+OPCT().Grupo0+"\"  />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().group[0]=(this.value);ReDraw(-1);\" value=\""+iOPCT.group[0]+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -170,7 +171,7 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_Time_to_Normal_Mode+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().Time_to_Normal_Mode=this.value;ReDraw(-1);\" value=\""+OPCT().Time_to_Normal_Mode+"\"  />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().timeout=this.value;ReDraw(-1);\" value=\""+iOPCT.timeout+"\"  />\n\
 			</td>\n\
 		</tr>\n\
 		<tr align=\"left\">\n\
@@ -178,7 +179,7 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_offset_inputs+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().offset_inputs=this.value;ReDraw(-1);\" value=\""+OPCT().offset_inputs+"\"  />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"4\" onchange=\"OPCT().inputs=this.value;ReDraw(-1);\" value=\""+iOPCT.inputs+"\"  />\n\
 			</td>\n\
 		</tr>\n";
 	if(UsrLvl>2)
@@ -188,7 +189,7 @@ function ShwSutec(obj)
 			<font size=\"1\" face=\"arial\">"+Str_Debugger+"</font>\n\
 			</td>\n\
 			<td>\n\
-			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"OPCT().debug=this.value;ReDraw(-1);\" value=\""+OPCT().debug+"\" />\n\
+			<input type=\"text\" class=\"CssInText\" size=\"25\" onchange=\"OPCT().debug=this.value;ReDraw(-1);\" value=\""+iOPCT.debug+"\" />\n\
 			</td>\n\
 		</tr>\n";
 	}
@@ -199,7 +200,7 @@ function ShwSutec(obj)
 		if(obj.innerHTML != undefined)
 		{
 			obj.innerHTML = out;
-			disabled_elements(obj,['text'],(OPCT().Link==0));
+			disabled_elements(obj,['text'],(iOPCT.link==0));
 		}
 		return out;
 	}

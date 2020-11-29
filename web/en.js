@@ -4,6 +4,7 @@ var Str_mnu_load_conf="Cargar Conf.";
 var Str_mnu_from_folder="Desde Carpeta";
 var Str_mnu_from_ip="Desde IP";
 var Str_mnu_save_conf="Guardar Conf";
+var Str_dir_name_to_save="Nombre de directorio donde se guardara esta configuracion"
 var Str_mnu_to_folder="En Carpeta";
 var Str_mnu_to_ip="En IP";
 var Str_mnu_exit="Salir";
