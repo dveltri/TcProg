@@ -166,6 +166,13 @@ function RemComment(linea)
 	linea=""+linea;
 	do
 	{
+		ptr1=linea.indexOf("/*");
+		if(ptr1!=-1)
+		{
+			ptr2=linea.indexOf('*/',ptr1);
+			if(ptr2!=-1)
+				linea=linea.substring(0,ptr1)+""+linea.substring(ptr2+1);
+		}
 		ptr1=linea.indexOf("//");
 		if(ptr1!=-1)
 		{

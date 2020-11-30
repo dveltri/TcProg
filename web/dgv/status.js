@@ -301,7 +301,7 @@ function rcvTcSts(Datos)
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Ubicacion+" </font></td>\n";
-		out+="<td><a href=\"http://www.google.com/maps/place/"+PLCs()[plcidx].Location+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Location+" </font></a></td>\n";
+		out+="<td><a href=\"http://www.google.com/maps/place/"+HTMLEncode(PLCs()[plcidx].Location)+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+HTMLEncode(PLCs()[plcidx].Location)+" </font></a></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";

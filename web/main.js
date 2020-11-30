@@ -45,7 +45,14 @@ const MnuTemplate = [
 			}*/]
 		},{
 			type:"separator"
-		},{
+		},/*{
+			label:Str_mnu_reset,
+			click:function(){
+				console.log("Reset")
+				app.relaunch();
+				app.quit();
+			}
+		},*/{
 			label:Str_mnu_exit,
 			click:function(){
 				console.log("Exit")
@@ -87,7 +94,7 @@ function Start()
 	LanguageToES();
 	percent=0;
 	menu = Menu.buildFromTemplate(MnuTemplate);
-	menu.items[0].submenu.items[2].enabled=false;
+	//menu.items[0].submenu.items[2].enabled=false;
 	Menu.setApplicationMenu(menu);
 	AutoRefresh=setInterval("fnc0()",150); //executa fnc0 em 50 e 50 milissegundos
 	FlyMnu = document.getElementById("divFlyMnu");

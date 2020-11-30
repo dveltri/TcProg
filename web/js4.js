@@ -346,7 +346,7 @@ function rcvTcSts(Datos)
 		tempV=temp.search("\0");
 		if(tempV!=-1)
 			temp=temp.substring(0,tempV);
-		PLCs()[plcidx].Location=HTMLEncode(temp);
+		PLCs()[plcidx].Location=temp;
 		temp=Datos.substring(pPLC+92,pPLC+96);
 		PLCs()[plcidx].LSTCHG=ByToInt(temp);
 		temp=Datos.substring(pPLC+96,pPLC+100);
@@ -359,11 +359,11 @@ function rcvTcSts(Datos)
 		temp=Datos.substring(pPLC+131,pPLC+146);
 		PLCs()[plcidx].scheduler=temp.substring(0,temp.search("\0"));
 		//---------------------------------
-		PLCs()[plcidx].PHASE_COD_OUT=Datos.charCodeAt(pPLC+146);
-		PLCs()[plcidx].Plan=		Datos.charCodeAt(pPLC+147);
-		PLCs()[plcidx].IniPlan=	Datos.charCodeAt(pPLC+148);
-		PLCs()[plcidx].OffPlan=	Datos.charCodeAt(pPLC+149);
-		PLCs()[plcidx].FlashPlan=	Datos.charCodeAt(pPLC+150);
+		PLCs()[plcidx].PHASE_COD_OUT=	Datos.charCodeAt(pPLC+146);
+		PLCs()[plcidx].Current_Plan=	Datos.charCodeAt(pPLC+147);
+		PLCs()[plcidx].IniPlan=			Datos.charCodeAt(pPLC+148);
+		PLCs()[plcidx].OffPlan=			Datos.charCodeAt(pPLC+149);
+		PLCs()[plcidx].FlashPlan=		Datos.charCodeAt(pPLC+150);
 		temp=Datos.substring(pPLC+152,pPLC+156);
 		PLCs()[plcidx].Number=	ByToInt(temp);
 		temp=Datos.substring(pPLC+164,pPLC+168);
@@ -378,7 +378,7 @@ function rcvTcSts(Datos)
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Ubicacion+" </font></td>\n";
-		out+="<td><a href=\"http://www.google.com/maps/place/"+PLCs()[plcidx].Location+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Location+" </font></a></td>\n";
+		out+="<td><a href=\"http://www.google.com/maps/place/"+HTMLEncode(PLCs()[plcidx].Location)+"\" target=\"_blank\" ><font size=\"2\" face=\"arial\"> "+HTMLEncode(PLCs()[plcidx].Location)+" </font></a></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
@@ -399,7 +399,7 @@ function rcvTcSts(Datos)
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Plan+" </font></td>\n";
-		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Plan+" </font></td>\n";
+		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Current_Plan+" </font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		tempV=PLCs()[plcidx].NEXCHG*1000;

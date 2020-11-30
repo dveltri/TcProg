@@ -56,10 +56,18 @@ function ShwLoadHd()
 {
 	percent=0;
 	PBarOff();
-	var temp=dialog.showOpenDialog({ properties: ['openDirectory'],defaultPath:"./Conf" });
-	if(temp != undefined && temp != "")
+	var options={title:Str_dir_name_to_load, properties: ['openDirectory'], defaultPath:"./Conf", buttonLabel:"Load directorio"};
+	let loadDialog =dialog.showOpenDialog(null, options);
+	loadDialog.then(function(loadFrom) {load_hd(loadFrom);});
+}
+
+function load_hd(DirName)
+{
+	if(DirName.canceled)
+		return;
+	try
 	{
-		temp=temp[0];
+		temp=DirName.filePaths[0];
 		SvrIp=temp;
 		temp=temp.split("/Conf/");
 		if(temp.length>1)
@@ -68,7 +76,12 @@ function ShwLoadHd()
 			AddSrcNow(temp[1][0],'12345',0);
 		}
 	}
+	catch (e)
+	{
+		alert(e);
+	}
 }
+
 function ShwSaveHd()
 {
 	percent=0;
@@ -86,7 +99,7 @@ function save_hd(DirName)
 	{
 		fs.mkdir(DirName, { recursive: true }, (err) => {if(err)throw err;});
 		fs.mkdir(DirName+"/err", { recursive: true }, (err) => {if(err)throw err;});
-		for(var i=0;i<GlobalParms().Controllers;i++)
+		for(var i=0;i<4;i++)	//GlobalParms().Controllers
 		{
 			fs.mkdir(DirName+"/"+i, { recursive: true }, (err) => {if(err)throw err;});
 			fs.mkdir(DirName+"/"+i+"/err", { recursive: true }, (err) => {if(err)throw err;});
@@ -411,7 +424,7 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].ErrorsCfg = new Object();
 	PrgEd[SrcIdx].OTU = new Object();
 	PrgEd[SrcIdx].DefIn = new Object();
-	PrgEd[SrcIdx].OPCT = new Object();
+	PrgEd[SrcIdx].citar = new Object();
 	PrgEd[SrcIdx].Iteris = new Object();
 	PrgEd[SrcIdx].DgvSoft = new Object();
 	PrgEd[SrcIdx].GlobalParms.ID=ID;
@@ -602,7 +615,7 @@ function LoadConfSrc()
 	PBarUpDate();
 	switch(percent)
 	{
-		case 0:
+		case 0://	startup.ini
 		{
 			PrgEd[SrcIdx].Log="";
 			percent=1;
@@ -610,7 +623,7 @@ function LoadConfSrc()
 			request=GetUrlB(HOST()+'/startup.ini',RcvConfSrc);
 		}
 		break;
-		case 2:
+		case 2://	addvar.ini
 		{
 			ShwPBar('Loading Global vars...');
 			request=1;
@@ -618,22 +631,22 @@ function LoadConfSrc()
 			percent=3;
 		}
 		break;
-		case 3:
+		case 3://	phconf.ini
 		{
 			ShwPBar('Loading de Phases 2...');
 			request=GetUrlB(HOST()+'/phconf.ini',RcvConfSrc);
 		}
 		break;
-		case 4:
+		case 4://	plcs.ini
 		{
 			ShwPBar('Loading de Controladores...');
 			request=GetUrlB(HOST()+'/plcs.ini',RcvConfSrc);
 		}
 		break;
-		case 6:
-		case 8:
-		case 10:
-		case 12:
+		case 6://	/0/ls *.eil
+		case 8://	/1/ls *.eil
+		case 10://	/2/ls *.eil
+		case 12://	/3/ls *.eil
 		{
 			ShwPBar('Loading Lista de Planes...');
 			FilterFileList='.eil';
@@ -643,7 +656,7 @@ function LoadConfSrc()
 				request=GetUrlB(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
 		}
 		break;
-		case 13:
+		case 13://	/err/ls *.txt
 		{
 			Errors = new Array();
 			ShwPBar('Loading Lista de Errores generales');
@@ -654,10 +667,10 @@ function LoadConfSrc()
 				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/err',RcvConfSrc);
 		}
 		break;
-		case 14:
-		case 16:
-		case 18:
-		case 20:
+		case 14://	/0/err/ls *.txt
+		case 16://	/1/err/ls *.txt
+		case 18://	/2/err/ls *.txt
+		case 20://	/3/err/ls *.txt
 		{
 			ShwPBar('Loading Lista de Errores...');
 			FilterFileList='';
@@ -667,10 +680,10 @@ function LoadConfSrc()
 				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx+'/err',RcvConfSrc);
 		}
 		break;
-		case 22:
-		case 24:
-		case 26:
-		case 28:
+		case 22://	/0/sec.sec
+		case 24://	/1/sec.sec
+		case 26://	/2/sec.sec
+		case 28://	/3/sec.sec
 		{
 			iPLCs=PLCs();
 			if(iPLCs[PlcIdx].Sec)
@@ -691,17 +704,17 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 30:
-		case 32:
-		case 34:
-		case 36:
+		case 30://	PLCs()[0].sch(ag.sch)
+		case 32://	PLCs()[1].sch(ag.sch)
+		case 34://	PLCs()[2].sch(ag.sch)
+		case 36://	PLCs()[3].sch(ag.sch)
 		{
 			ShwPBar('Loading Agenda...');
 			iPLCs=PLCs();
 			request=GetUrl(HOST()+'/'+iPLCs[PlcIdx].Scheduler,RcvConfSrc);
 		}
 		break;
-		case 38:
+		case 38://	ip.ini
 		{
 			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
@@ -723,7 +736,7 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 39:
+		case 39://	ntp.ini
 		{
 			if(GlobalParms().Model.indexOf("DGV-uTC1-M4")!=-1)
 			{
@@ -737,7 +750,7 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 40:
+		case 40://	opct.ini
 		{
 			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
@@ -751,7 +764,7 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 41:
+		case 41://	gps.ini
 		{
 			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
@@ -765,10 +778,10 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 42:
-		case 44:
-		case 46:
-		case 48:
+		case 42://	/0/ls *.phc
+		case 44://	/1/ls *.phc
+		case 46://	/2/ls *.phc
+		case 48://	/3/ls *.phc
 		{
 			ShwPBar('Loading Lista de entre verdes...');
 			FilterFileList='.ini';
@@ -783,7 +796,7 @@ function LoadConfSrc()
 				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
 		}
 		break;
-		case 49:	//TODO: no more phcX.ini
+		case 49://	PLCs()[PlcIdx].PhcList content of phc files	//TODO: no more phcX.ini
 		{
 			iPLCs=PLCs();
 			if (iPLCs[PlcIdx].PhcList.length)
@@ -802,7 +815,7 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 50:
+		case 50://	dgvp.ini
 		{
 			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
@@ -816,7 +829,7 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 51:
+		case 51://	sdgvp.ini
 		{
 			if(GlobalParms().Model.indexOf("GW")==-1)
 			{
@@ -830,64 +843,64 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 52:
+		case 52://	error.ini
 		{
 			ShwPBar('Loading Error Conf...');
 			request=GetUrl(HOST()+'/error.ini',RcvConfSrc);
 		}
 		break;
-		case 54:
-		case 55:
-		case 56:
-		case 57:
+		case 54://	/0/planmc.es3
+		case 55://	/1/planmc.es3
+		case 56://	/2/planmc.es3
+		case 57://	/3/planmc.es3
 		{
 			ShwPBar('Loading Plan Manual control...');
 			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/planmc.es3',RcvConfSrc);
 		}
 		break;
-		case 58:
-		case 59:
-		case 60:
-		case 61:
+		case 58://	/0/planotu.es3
+		case 59://	/1/planotu.es3
+		case 60://	/2/planotu.es3
+		case 61://	/3/planotu.es3
 		{
 			ShwPBar('Loading Plan Centralized control...');
 			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/planotu.es3',RcvConfSrc);
 		}
 		break;
-		case 62:
-		case 63:
-		case 64:
-		case 65:
+		case 62://	/0/plans.es3
+		case 63://	/4/plans.es3
+		case 64://	/5/plans.es3
+		case 65://	/6/plans.es3
 		{
 			ShwPBar('Loading Plans Local control...');
 			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/plans.es3',RcvConfSrc);
 		}
 		break;
-		case 83:
+		case 83://	ph_group.phg
 		{
 			ShwPBar('Loading Phases Group..');
 			request=GetUrl(HOST()+'/ph_group.phg',RcvConfSrc);
 		}
 		break;
-		case 84:
+		case 84://	def_in.ini
 		{
 			ShwPBar('Loading Def In...');
 			request=GetUrl(HOST()+'/def_in.ini',RcvConfSrc);
 		}
 		break;
-		case 85:
+		case 85://	otu.ini
 		{
 			ShwPBar('Loading OTU...');
 			request=GetUrl(HOST()+'/otu.ini',RcvConfSrc);
 		}
 		break;
-		case 86:
+		case 86://	master.ini
 		{
 			ShwPBar('Loading Master...');
 			request=GetUrl(HOST()+'/master.ini',RcvConfSrc);
 		}
 		break;
-		case 87:
+		case 87://	iteris.ini
 		{
 			request=1;
 			percent=88;
@@ -895,7 +908,7 @@ function LoadConfSrc()
 			//request=GetUrl(HOST()+'/Iteris.ini',RcvConfSrc);
 		}
 		break;
-		case 88:
+		case 88://	dgvsoft.ini
 		{
 			request=1;
 			percent=90;
@@ -903,7 +916,7 @@ function LoadConfSrc()
 			//request=GetUrl(HOST()+'/dgvsoft.ini',RcvConfSrc);
 		}
 		break;
-		case 90:
+		case 90://	Error content of files
 		{
 			if (Errors.length)
 			{
@@ -1404,8 +1417,8 @@ function SendConf()
 			case 5://	plan98
 			{
 				//ShwPBar(Str_looking_for_difference+" "+Str_Initial_Plan);
-				ttemp=SendPlan98A(PrgTrg);
-				stemp=SendPlan98A(PrgSrc);
+				ttemp=SendPlan98(PrgTrg);
+				stemp=SendPlan98(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1469,6 +1482,18 @@ function SendConf()
 					UpMode=0;
 				PlcIdx=0;
 
+				percent+=4;
+			}
+			break;
+			case 20:// master.ini
+			{
+				ttemp=SendMaster(PrgTrg);
+				stemp=SendMaster(PrgSrc);
+				if(ttemp!==stemp || FoceUpLoad)
+					rcvUpFileFileEdit();
+				else
+					UpMode=0;
+				PlcIdx=0;
 				percent=32;	//for DGVuTc solo tiene el entre verde principal
 				percent+=4;
 			}
@@ -1919,7 +1944,10 @@ function SendConf()
 			case 100:
 			{
 				PrgBk[TrgIdx]=PrgTrg.clone()
-				PrgEd[TrgIdx]=PrgTrg.clone()
+				if(SrcIdx!=TrgIdx)
+				{
+					PrgEd[TrgIdx]=PrgTrg.clone()
+				}
 				PBarUpDate();
 				percent=0;
 				FoceUpLoad=0;

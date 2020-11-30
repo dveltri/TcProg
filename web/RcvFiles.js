@@ -420,6 +420,9 @@ function RcvPlc(Datos)
 				case "Flashing":
 					iPLC[j].Flashing=Datos[i][1].slice();
 				break;
+				case "PlanOff":
+					iPLC[j].Flashing=Datos[i][1].slice();
+				break;
 				case "SyncRef":
 					iPLC[j].SyncRef=Datos[i][1]+":"+Datos[i][2]+":"+Datos[i][3];
 				break;
@@ -490,65 +493,6 @@ function RcvPlc(Datos)
 		}
 	}
 }
-
-/*
-function RcvPlc(Datos)
-{
-	Datos=Datos.responseText;
-	var temp;
-	var i=0;
-	var j=0;
-	var ref;
-	var Datos=Datos.split("\n\n");
-	if(Datos.length>GlobalParms().Controllers)
-		Datos.length=GlobalParms().Controllers;
-	iPLC=PLCs()
-	iPLC.length = 0;
-	j=0;
-	while(j<Datos.length)
-	{
-		Datos[j]=RemoveUnuseChar(Datos[j]);
-		RemoveUnusedItem(Datos[j]);
-		iPLC[j] = new Object();
-		RcvFile(iPLC[j], Datos[j]);
-		//----------------------------------------------
-		temp=iPLC[j].Phases.split(",");
-		RemoveUnusedItem(temp);
-		for(var x=0;x<temp.length;x++)
-		{
-			temp[x]=parseInt("0"+temp[x]);
-			if(PHASEs().length>temp[x])
-			{
-				PHASEs()[temp[x]].PLC=(j+1);
-			}
-		}
-		iPLC[j].Phases=temp.slice();
-		//----------------------------------------------
-		Sts=iPLC[j].Sts
-		for(i=0;i<Sts.length;i++)
-		{
-			Colors = Sts[i].split(",");
-			Sts[i] = new Object();
-			Sts[i].Colors = new Array();
-			for(var k=0;k<iPLC[j].Phases.length;k++)
-			{
-				if(k<Colors.length)
-					Sts[i].Colors[k]=parseInt("0"+Colors[k]);
-				else
-					Sts[i].Colors[k]=0;
-			}
-		}
-		//---------------------------------------------- parche
-		if(GlobalParms().Model.indexOf("M4")!=-1)
-			iPLC[j].Sec="/"+iPLC[j].Sec;
-		Remplace(iPLC[j].Sec,"//","/");
-		//----------------------------------------------
-		PrgEd[SrcIdx][iPLC[j].Scheduler]=new Object();
-		//----------------------------------------------
-		j++;
-	}
-}
-// */
 function LogPLCs()
 {
 	temp="";
@@ -829,28 +773,6 @@ function LogPHASEs()
 	LOG(temp);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvOPCT(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
-	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			i++;
-		}
-	}
-	PrgEd[SrcIdx].OPCT = new Array();
-	PrgEd[SrcIdx].OPCT=Datos.slice();
-}
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvIP(Datos)
 {
 	Datos=Datos.responseText;
@@ -870,7 +792,7 @@ function RcvIP(Datos)
 		}
 	}
 	PrgEd[SrcIdx].Links = new Array();
-	iLinks=Links()
+	iLinks=PrgEd[SrcIdx].Links
 	//--------------- Links Fijos por HW --------------
 	iLinks[0]=new Array();
 	iLinks[0][0]="WebLog"
@@ -893,7 +815,7 @@ function RcvIP(Datos)
 	}
 	//---------------------------------------------------
 	PrgEd[SrcIdx].GlobalParms.ip_offset=j;
-	iLinks=iLinks.concat(Datos);
+	PrgEd[SrcIdx].Links=iLinks.concat(Datos);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvError(Datos)
@@ -1000,8 +922,9 @@ function RcvDefIn(Datos)
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvOTU(Datos)
 {
-	Datos=Datos.responseText;
-	RcvOTU2(Datos);
+	RcvFile(PrgEd[SrcIdx], Datos);
+	//Datos=Datos.responseText;
+	//RcvOTU2(Datos);
 }
 function RcvOTU2(Datos)
 {
@@ -1112,9 +1035,6 @@ function SdgvP_Tsk()
 	var tsk="";
 	var ptr;
 	iSdgvP=SdgvP()
-	if(iSdgvP == undefined)
-		PrgEd[SrcIdx].sdgvp = PrgEd[SrcIdx].SdgvP;
-	iSdgvP=SdgvP()
 	while(iSdgvP["tsk"+idx])
 	{
 		tsk=iSdgvP["tsk"+idx];
@@ -1218,6 +1138,7 @@ function RcvFile(base_obj,Datos)
 {
 	if(Datos.responseText != undefined)
 		Datos=Datos.responseText;
+	RemComment(Datos);
 	Datos=Datos.split("\n");
 	RemoveUnusedItem(Datos);
 	var i=0;
@@ -1246,47 +1167,51 @@ function RcvFile(base_obj,Datos)
 function addobj(ref, vname, val)
 {
 	var obj = ref;
+	var lst_obj = obj;
 	for(i=0;i<vname.length;i++)
 	{
 		//vname[i]=vname[i].toLowerCase();
-		if(!obj[vname[i]])
+
+		[idx,name]=get_string_index(vname[i]);
+		if(idx == null)
+		    name=vname[i];
+		if(!obj[name])
 		{
-			[idx,name]=get_string_index(vname[i]);
 			if(idx != null)
 			{
-				vname[i]=name;
-				if(!obj[vname[i]])
-					obj[vname[i]]=new Array();
-				obj=obj[vname[i]];
-				vname[i]=idx;
+				obj[name]=new Array();
+				obj=obj[name];
+				name=idx;
 			}
-			if(i<(vname.length-1))
-			{
-				obj[vname[i]]=new Object();
-				obj=obj[vname[i]];
-			}
-			else
-			{
-				if(val!=undefined) 
-					obj[vname[i]]=val.getval();
-				else
-					obj[vname[i]]=undefined;
-			}
+			obj[name]=new Object();
 		}
 		else
-			if(i<(vname.length-1))
-				obj=obj[vname[i]];
-			else
-				if(val!=undefined) 
-					obj[vname[i]]=val.getval();
-				else
-					obj[vname[i]]=undefined;
+		{
+			if(idx != null)
+			{
+				obj = obj[name];
+				name = idx;
+				if(obj[name]==undefined)
+					obj[name]=new Object();
+			}
+		}
+		lst_obj=obj;
+		obj=obj[name];
 	}
+	if(val!=undefined) 
+		lst_obj[name]=val.getval();
+	else
+		lst_obj[name]=undefined;
 }
 function obj2txt(base,obj)
 {
 	var out="";
 	var rslt;
+	rslt=Object.prototype.toString.call(obj);
+	if(rslt != '[object Undefined]' && rslt != '[object Function]' && rslt != '[object Null]' && rslt != '[object Object]' && rslt != "[object Array]")
+	{
+		return (base+"="+obj.toString()+"\n");
+	}
 	for (var prop in obj)
 	{
 		rslt=Object.prototype.toString.call(obj[prop]);
