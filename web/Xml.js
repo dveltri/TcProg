@@ -121,7 +121,7 @@ function handleHttpResponse()
 			}
 			else
 			{
-				if(Log_En)LOG("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
+				LOG("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
 				enProceso = 0;
 				response(http);
 			}

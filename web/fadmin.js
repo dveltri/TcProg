@@ -211,70 +211,70 @@ function rcvUpFileFileEdit(Datos)
 		{
 			alert(e);
 		}
+		return;
 	}
 	if(PrgBk[TrgIdx].Typ==1)
 	{
 		UpPath=UpPath+"/";
 		UpPath=Remplace(UpPath,'//','/');
-		/*if(!SendOrAlert)
-		{
-			alert("to:"+PrgBk[TrgIdx].host+"\nMode:"+UpMode+"\nPath:"+UpPath+"\nfile:"+UpFile+"\nseek:"+UpSeek+"\n\n"+UpData);
-			UpSeek=0;
-			document.getElementById("LOADING").style.visibility = 'hidden';
-			UpMode=0;
-			return;
-		}*/
-		var len,data;
+		var len;
+		var data;
 		var tlen=0;
 		//----------------
-		if(UpData.length==0)
-			UpData=" ";
-		len=UpData.length;
-		data=UpData;
-		ShwPBar("UpLoading "+UpPath+UpFile+"..");
-		percent2=Math.round((1000/len)*UpSeek)/10;
-		//PBarUpDate();
+		//if(UpData.length==0)UpData=" ";
+		len = UpData.length;
+		data = UpData;
 		//----------------
-		if(UpSeek<len)
+		if(Datos)
 		{
-			if(Datos)
+			if(Datos.status==200)
 			{
-				if(Datos.status==200)
-				{
-					rcvFileAdmin(Datos);
-				}
-				else
-				{
-					tlen=UpSeek;
-					if(UpSeek>=Maxlen)
-						tlen=Maxlen;
-						UpSeek-=tlen;
-				}
-				if(Datos.status==500)
-				{
-					UpSeek=0;
-					percent2=0;
-					//PBarOff();
-					setTimeout("UpMode=0;",50);
-				}
+				rcvFileAdmin(Datos);
+				UpSeek += UpPacket.len;
 			}
-			tlen=(len-UpSeek);
-			if(tlen>Maxlen)
-				tlen=Maxlen;
-			if(UpType=="eil")
-				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+UpSeek+"&len="+tlen+"&data="+escape(data.substring(UpSeek,(UpSeek+tlen+1))),rcvUpFileFileEdit);
 			else
-				GetUrlB(PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP+"?mode="+UpMode+"&path="+UpPath+"&file="+UpFile+"&seek="+UpSeek+"&len="+tlen+"&data="+encodeURIComponent(data.substring(UpSeek,(UpSeek+tlen+1))),rcvUpFileFileEdit);
-				UpSeek+=data.substring(UpSeek,(UpSeek+tlen)).length;
+			{
+				//tlen=UpSeek;
+				//if(UpSeek > Maxlen) tlen=Maxlen;
+				//UpSeek-=tlen;
+				alert("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
+			}
+			if(Datos.status==500)
+			{
+				UpSeek=0;
+				LOG("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
+				setTimeout("UpMode=0;",50);
+				return;
+			}
+		}
+
+		if(UpSeek >= len)
+		{
+			UpSeek=0;
+			setTimeout("UpMode=0;",50);
+			return;
+		}
+
+		tlen = (len - UpSeek);
+		if(tlen > Maxlen) tlen = Maxlen;
+
+		var url = "";
+		url += PrgBk[TrgIdx].host+"/"+PrgBk[TrgIdx].DGVFTP;
+		url += "?mode=" + UpMode;
+		url += "&path=" + UpPath + "&file=" + UpFile;
+		url += "&seek=" + UpSeek + "&len=" + tlen;
+		UpPacket.data = data.substring(UpSeek,(UpSeek + tlen + 2));
+		UpPacket.len  = data.substring(UpSeek,(UpSeek + tlen)).length;
+		if(UpType=="eil")
+		{
+			url+="&data="+escape(UpPacket.data);
 		}
 		else
 		{
-			rcvFileAdmin(Datos);
-			UpSeek=0;
-			percent2=0;
-			//PBarOff();
-			setTimeout("UpMode=0;",50);
+			url+="&data="+encodeURIComponent(UpPacket.data);
 		}
+		GetUrlB(url, rcvUpFileFileEdit);
+		return;
 	}
 }
 

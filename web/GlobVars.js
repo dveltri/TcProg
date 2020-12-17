@@ -49,6 +49,7 @@ var UpMode=0;
 var UpPath="";
 var UpFile="";
 var UpType="";
+var UpPacket= {data:"", len:0};
 var UpSeek=0;
 //--------------------
 var FilterFileList="";

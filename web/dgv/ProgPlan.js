@@ -1230,14 +1230,17 @@ function SavePlan(PLC,Parms,Plan)
 		out+="INICIO\n";
 		if(Parms.Model.indexOf("M4")!=-1)
 		{
-			if(Plan.PHC)
-				out+="ldphc /"+PlcIdx+"/phc"+Plan.PHC+".ini\n";
-			else
-				out+="ldphc /phconf.ini\n";
+			if(Parms.Model.indexOf("DGV-uTC1-M4")==-1)
+			{
+				if(Plan.PHC)
+					out+="ldphc /"+PlcIdx+"/phc"+Plan.PHC+".ini\n";
+				else
+					out+="ldphc /phconf.ini\n";
+			}
 		}
 		if(Plan.DimTyp!=0)
 		{
-			for(var j=0;j<PHASEs().length;j++)
+			for(var j=0;j<Parms.Phases;j++)
 			{
 				if(!Plan.Dim[j])Plan.Dim[j]=100;
 				if(Plan.DimTyp==2)

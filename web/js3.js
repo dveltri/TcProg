@@ -149,47 +149,47 @@ function genPhc()
 {
 	var out="";
 	var color=0;
-	for(var j=0;j<PrgEd[SrcIdx].PHASEs.length;j++)
+	for(var j=0;j<PrgEd[SrcIdx].Phases.length;j++)
 	{
-		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
+		if(PrgEd[SrcIdx].Phases[j].FlagsWeb==0)
 		{
-			out+=""+PrgEd[SrcIdx].PHASEs[j].Numero;
-			out+=","+Math.abs(PrgEd[SrcIdx].PHASEs[j].MskError);
-			out+=","+PrgEd[SrcIdx].PHASEs[j].FState;
-			out+=","+(PrgEd[SrcIdx].PHASEs[j].MiRT+(PrgEd[SrcIdx].PHASEs[j].AMiRT<<8));
-			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiYT+(PrgEd[SrcIdx].PHASEs[j].AMiYT<<8));
-			out+=" "+(PrgEd[SrcIdx].PHASEs[j].MiGT+(PrgEd[SrcIdx].PHASEs[j].AMiGT<<8));
-			out+=","+PrgEd[SrcIdx].PHASEs[j].MaRT;
-			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaYT;
-			out+=" "+PrgEd[SrcIdx].PHASEs[j].MaGT;
-			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEE;
-			out+=","+PrgEd[SrcIdx].PHASEs[j].TOEC;
+			out+=""+PrgEd[SrcIdx].Phases[j].Numero;
+			out+=","+Math.abs(PrgEd[SrcIdx].Phases[j].MskError);
+			out+=","+PrgEd[SrcIdx].Phases[j].FState;
+			out+=","+(PrgEd[SrcIdx].Phases[j].MiRT+(PrgEd[SrcIdx].Phases[j].AMiRT<<8));
+			out+=" "+(PrgEd[SrcIdx].Phases[j].MiYT+(PrgEd[SrcIdx].Phases[j].AMiYT<<8));
+			out+=" "+(PrgEd[SrcIdx].Phases[j].MiGT+(PrgEd[SrcIdx].Phases[j].AMiGT<<8));
+			out+=","+PrgEd[SrcIdx].Phases[j].MaRT;
+			out+=" "+PrgEd[SrcIdx].Phases[j].MaYT;
+			out+=" "+PrgEd[SrcIdx].Phases[j].MaGT;
+			out+=","+PrgEd[SrcIdx].Phases[j].TOEE;
+			out+=","+PrgEd[SrcIdx].Phases[j].TOEC;
 			out+=","
 			color=255;
-			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].Phases[j].R2V.length;i++)
 			{
-				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].Phases[j].R2V[i])
 				{
-					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].Phases[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].Phases[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].Phases[j].V2R.length;i++)
 			{
-				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].Phases[j].V2R[i])
 				{
-					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].Phases[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].Phases[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";
-			out+=","+PrgEd[SrcIdx].PHASEs[j].PotLR;
-			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLY;
-			out+=" "+PrgEd[SrcIdx].PHASEs[j].PotLG;
-			out+=","+PrgEd[SrcIdx].PHASEs[j].Type;
-			out+=","+PrgEd[SrcIdx].PHASEs[j].Name;
+			out+=","+PrgEd[SrcIdx].Phases[j].PotLR;
+			out+=" "+PrgEd[SrcIdx].Phases[j].PotLY;
+			out+=" "+PrgEd[SrcIdx].Phases[j].PotLG;
+			out+=","+PrgEd[SrcIdx].Phases[j].Type;
+			out+=","+PrgEd[SrcIdx].Phases[j].Name;
 			out+="\n";
 		}
 	}
@@ -206,9 +206,9 @@ function genEv()
 	for(var x=0;x<PrgEd[SrcIdx].PLCs[PlcIdx].Phases.length;x++)
 	{
 		j=PrgEd[SrcIdx].PLCs[PlcIdx].Phases[x];
-		if(PrgEd[SrcIdx].PHASEs[j].FlagsWeb==0)
+		if(PrgEd[SrcIdx].Phases[j].FlagsWeb==0)
 		{
-			out+=""+PHASEs[j].Numero;
+			out+=""+Phases[j].Numero;
 			out+=",";
 			out+=",";
 			out+=",";
@@ -217,22 +217,22 @@ function genEv()
 			out+=",";
 			out+=",";
 			color=255;
-			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].R2V.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].Phases[j].R2V.length;i++)
 			{
-				if(color!=PrgEd[SrcIdx].PHASEs[j].R2V[i])
+				if(color!=PrgEd[SrcIdx].Phases[j].R2V[i])
 				{
-					color=PrgEd[SrcIdx].PHASEs[j].R2V[i];
-					out+="R"+color+":"+(PrgEd[SrcIdx].PHASEs[j].R2V.length-i);
+					color=PrgEd[SrcIdx].Phases[j].R2V[i];
+					out+="R"+color+":"+(PrgEd[SrcIdx].Phases[j].R2V.length-i);
 				}
 			}
 			out+="R4:0";
 			color=255;
-			for(var i=0;i<PrgEd[SrcIdx].PHASEs[j].V2R.length;i++)
+			for(var i=0;i<PrgEd[SrcIdx].Phases[j].V2R.length;i++)
 			{
-				if(color!=PrgEd[SrcIdx].PHASEs[j].V2R[i])
+				if(color!=PrgEd[SrcIdx].Phases[j].V2R[i])
 				{
-					color=PrgEd[SrcIdx].PHASEs[j].V2R[i];
-					out+="V"+color+":"+(PrgEd[SrcIdx].PHASEs[j].V2R.length-i);
+					color=PrgEd[SrcIdx].Phases[j].V2R[i];
+					out+="V"+color+":"+(PrgEd[SrcIdx].Phases[j].V2R.length-i);
 				}
 			}
 			out+="V1:0";
@@ -694,8 +694,6 @@ function SendMcPlan(McPlan)
 	return UpData;
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendPlanAI(Prg)
 {
 	var tp=[];
@@ -819,25 +817,29 @@ function SendPlanAR(Prg)
 	UpSeek=0;
 	UpPath="/";
 	UpType="txt";
+	UpData="";
 	UpFile="autorun.eil"
 	//------------------------------
-	UpData="";
-	UpData+="mov 1 PLC[0].lamp\n";
+	UpData+="delay 1000;\n";
 	UpData+="mov 1 PLC[0].service\n";
 	UpData+="mov 15 PLC[0].debug\n";
-	UpData+="delay 2000;\n";
 	//------------------------------
-	UpData+="INICIO;\n";
+	UpData+="LOOP;\n";
 	UpData+="delay 1000\n";
 	UpData+="log 'AutoRun\n";
-	UpData+="== 0 in[12].in"
-	UpData+="log 'input-12\n";
-	UpData+="goto INICIO\n";
+	UpData+="mov 0 temp\n";
+	UpData+="== 0 in[11].in\n";
+	UpData+="mov 1 temp\n";
+	UpData+="mov temp PLC[0].lamp\n";
+	UpData+="goto LOOP\n";
 	//------------------------------
 	UpData+="end\n";
+	UpData+="#VAR:\n";
+	UpData+="temp=XXXX\n";
 	//------------------------------
 	return UpData;
 }
+//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function SendPlan98(Prg)
 {
 	UpMode=10;

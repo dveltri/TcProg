@@ -159,6 +159,18 @@ function delay(millis)
 	while(curDate-date < millis);
 }
 
+
+function clear_file(data)
+{
+	var keys = [["\t"," "], ["  "," "], [" \n","\n"], ["\n ","\n"], ["\n\n","\n"]];
+	for(var idx1=0;idx1<keys.length;idx1++)
+	{
+		while(data.indexOf(keys[idx1][0]) != -1)
+		{
+			data=data.replace(keys[idx1][0],keys[idx1][1]);
+		}
+	}
+}
 function RemComment(linea)
 {
 	var ptr1=-1;
@@ -184,7 +196,7 @@ function RemComment(linea)
 		}
 		linea=linea.replace("\t"," ");
 		linea=linea.replace("  "," ");
-	}while(linea.indexOf("\t")!=-1 || linea.indexOf("  ")!=-1 || linea.indexOf("//")!=-1);
+	}while(linea.indexOf("\t")!=-1 || linea.indexOf("  ")!=-1 || linea.indexOf("//")!=-1 || linea.indexOf("/*")!=-1);
 	return linea;
 }
 

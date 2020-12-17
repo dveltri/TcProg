@@ -7,7 +7,7 @@ function PLCs(i)
 	else
 		return PrgEd[i].PLCs;
 }
-function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return PrgEd[i].PHASEs;}
+function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].Phases;			else return PrgEd[i].Phases;}
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
 function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].sdgvp;				else return PrgEd[i].sdgvp;}
@@ -417,7 +417,7 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].GlobalParms=  new Object();
 	PrgEd[SrcIdx].GlobalVars=new Object();
 	PrgEd[SrcIdx].PLCs = new Array();
-	PrgEd[SrcIdx].PHASEs = new Array();
+	PrgEd[SrcIdx].Phases = new Array();
 	PrgEd[SrcIdx].IOs = new Array();
 	PrgEd[SrcIdx].Srv = new Array();
 	PrgEd[SrcIdx].Links = new Array();
@@ -541,7 +541,7 @@ function AddSrcNow(ID,wac,typ)
 			dif="";
 			dif+=compare2objects(PrgEd[SrcIdx].GlobalParms,	PrgEd[TrgIdx].GlobalParms);
 			dif+=compare2objects(PrgEd[SrcIdx].PLCs,		PrgEd[TrgIdx].PLCs);
-			dif+=compare2objects(PrgEd[SrcIdx].PHASEs,		PrgEd[TrgIdx].PHASEs);
+			dif+=compare2objects(PrgEd[SrcIdx].Phases,		PrgEd[TrgIdx].Phases);
 			dif+=compare2objects(PrgEd[SrcIdx].IOs,			PrgEd[TrgIdx].IOs);
 			dif+=compare2objects(PrgEd[SrcIdx].Srv,			PrgEd[TrgIdx].Srv);
 			dif+=compare2objects(PrgEd[SrcIdx].ErrorsCfg,	PrgEd[TrgIdx].ErrorsCfg);
@@ -552,7 +552,7 @@ function AddSrcNow(ID,wac,typ)
 		dif="";
 		dif+=compare2objects(PrgEd[i].GlobalParms,	PrgBk[i].GlobalParms);
 		dif+=compare2objects(PrgEd[i].PLCs,			PrgBk[i].PLCs);
-		dif+=compare2objects(PrgEd[i].PHASEs,		PrgBk[i].PHASEs);
+		dif+=compare2objects(PrgEd[i].Phases,		PrgBk[i].Phases);
 		dif+=compare2objects(PrgEd[i].IOs,			PrgBk[i].IOs);
 		dif+=compare2objects(PrgEd[i].Srv,			PrgBk[i].Srv);
 		dif+=compare2objects(PrgEd[i].ErrorsCfg,	PrgBk[i].ErrorsCfg);

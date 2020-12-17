@@ -129,6 +129,10 @@ function RcvStartup(Datos)
 		base_obj.ID=base_obj.ETH0.trim();
 	base_obj.ID=Remplace(base_obj.ID,"_"," ");
 	//--------------------------------------------------
+	if(!base_obj.Controllers)base_obj.Controllers=1;
+	if(!base_obj.Phases)base_obj.Phases=4;
+	if(!base_obj.Inputs)base_obj.Inputs=16;
+	//--------------------------------------------------
 	PhasesStructSize=0;
 	if(base_obj.Model.indexOf("MAC_TC1")!=-1 || base_obj.Model.indexOf("MAC-TC1")!=-1)
 		base_obj.Model="MAC-TC1M4";
@@ -269,7 +273,7 @@ function UpdateSizeOfStruct()
 			}
 		}
 	}
-	if(PHASEs().length!=(GlobalParms().PHASEs+GlobalParms().Virtual_PHASEs+GlobalParms().Groups_Phases))
+	if(PHASEs().length!=(GlobalParms().Phases+GlobalParms().Virtual_PHASEs+GlobalParms().Groups_Phases))
 	{
 		for(var j=0;j<(GlobalParms().Phases+GlobalParms().Virtual_Phases+GlobalParms().Groups_Phases);j++)
 		{
@@ -298,7 +302,7 @@ function UpdateSizeOfStruct()
 				PHASEs()[j].R2V= new Array();
 				PHASEs()[j].V2R= new Array();
 				PHASEs()[j].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-				PHASEs()[j].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+				PHASEs()[j].TOEC=GlobalParms().Time_Out_Consumption_Error;	//parseInt("0"+Datos[j][17]);
 				PHASEs()[j].PLC=0;
 				PHASEs()[j].Type=0;
 				PHASEs()[j].Sec= new Array();
@@ -523,7 +527,7 @@ function LogPLCs()
 	Datos=Datos.split("\n");
 	var j=0;
 	var i=0;
-	while(j<Datos.length && j<PHASEs.length)
+	while(j<Datos.length && j<Phases.length)
 	{
 		Datos[j]=Remplace(Datos[j],";",",");
 		Datos[j]=RemoveUnuseChar(Datos[j]);
@@ -534,56 +538,56 @@ function LogPLCs()
 		{
 			Datos[j]=Datos[j].split(",");
 			PhN=parseInt("0"+Datos[j][0]);
-			if(PhN>=PHASEs.length)
-				PHASEs[PhN]=new Object();
-			PHASEs[PhN].FlagsWeb=0;
-			PHASEs[PhN].Numero=PhN;
+			if(PhN>=Phases.length)
+				Phases[PhN]=new Object();
+			Phases[PhN].FlagsWeb=0;
+			Phases[PhN].Numero=PhN;
 			if(Datos[j][1].indexOf("0x")!=-1)
 			{
-				PHASEs[PhN].MskError=Math.abs(parseInt(Datos[j][1],16));
+				Phases[PhN].MskError=Math.abs(parseInt(Datos[j][1],16));
 			}
 			else
 			{
-				PHASEs[PhN].MskError=Math.abs(parseInt("0"+Datos[j][1]));
+				Phases[PhN].MskError=Math.abs(parseInt("0"+Datos[j][1]));
 			}
-			//PHASEs[PhN].FState=parseInt("0"+Datos[j][2]);
-			PHASEs[PhN].AMiRT=((parseInt("0"+Datos[j][3])&0x100)>>8);
-			//PHASEs[PhN].AMiYT=(parseInt("0"+Datos[j][3])>>1)&0x01;
-			PHASEs[PhN].AMiGT=((parseInt("0"+Datos[j][2])&0x100)>>8);
-			PHASEs[PhN].MiRT=parseInt("0"+Datos[j][3]);
-			//PHASEs[PhN].MiYT=parseInt("0"+Datos[j][5]);
-			PHASEs[PhN].MiGT=parseInt("0"+Datos[j][2]);
-			//PHASEs[PhN].MaRT=parseInt("0"+Datos[j][7]);
-			//PHASEs[PhN].MaYT=parseInt("0"+Datos[j][8]);
-			//PHASEs[PhN].MaGT=parseInt("0"+Datos[j][9]);
-			//PHASEs[PhN].Type=parseInt("0"+Datos[j][10])&0x07;
-			//PHASEs[PhN].PotLR=parseInt("0"+Datos[j][11])&0xFFFF;
-			//PHASEs[PhN].PotLY=parseInt("0"+Datos[j][12])&0xFFFF;
-			//PHASEs[PhN].PotLG=parseInt("0"+Datos[j][13])&0xFFFF;
-			//PHASEs[PhN].R2V=Datos[j][14].split("R");
-			//RemoveUnusedItem(PHASEs[PhN].R2V);
-			PHASEs[PhN].V2R=Datos[j][4].split("V");
+			//Phases[PhN].FState=parseInt("0"+Datos[j][2]);
+			Phases[PhN].AMiRT=((parseInt("0"+Datos[j][3])&0x100)>>8);
+			//Phases[PhN].AMiYT=(parseInt("0"+Datos[j][3])>>1)&0x01;
+			Phases[PhN].AMiGT=((parseInt("0"+Datos[j][2])&0x100)>>8);
+			Phases[PhN].MiRT=parseInt("0"+Datos[j][3]);
+			//Phases[PhN].MiYT=parseInt("0"+Datos[j][5]);
+			Phases[PhN].MiGT=parseInt("0"+Datos[j][2]);
+			//Phases[PhN].MaRT=parseInt("0"+Datos[j][7]);
+			//Phases[PhN].MaYT=parseInt("0"+Datos[j][8]);
+			//Phases[PhN].MaGT=parseInt("0"+Datos[j][9]);
+			//Phases[PhN].Type=parseInt("0"+Datos[j][10])&0x07;
+			//Phases[PhN].PotLR=parseInt("0"+Datos[j][11])&0xFFFF;
+			//Phases[PhN].PotLY=parseInt("0"+Datos[j][12])&0xFFFF;
+			//Phases[PhN].PotLG=parseInt("0"+Datos[j][13])&0xFFFF;
+			//Phases[PhN].R2V=Datos[j][14].split("R");
+			//RemoveUnusedItem(Phases[PhN].R2V);
+			Phases[PhN].V2R=Datos[j][4].split("V");
 			i=0;
-			while(i<PHASEs[PhN].V2R.length)
+			while(i<Phases[PhN].V2R.length)
 			{
-				PHASEs[PhN].V2R[i]=PHASEs[PhN].V2R[i].trim();
-				if(PHASEs[PhN].V2R[i]=="")
-					PHASEs[PhN].V2R.splice(i,1);
+				Phases[PhN].V2R[i]=Phases[PhN].V2R[i].trim();
+				if(Phases[PhN].V2R[i]=="")
+					Phases[PhN].V2R.splice(i,1);
 				else
 				{
-					PHASEs[PhN].V2R[i]=PHASEs[PhN].V2R[i].split(":");
+					Phases[PhN].V2R[i]=Phases[PhN].V2R[i].split(":");
 					i++;
 				}
 			}
-			//RemoveUnusedItem(PHASEs[PhN].V2R);
+			//RemoveUnusedItem(Phases[PhN].V2R);
 			if(GlobalParms().Time_Out_Electrical_Error<160)
 				GlobalParms().Time_Out_Electrical_Error=160;
 			if(GlobalParms().Time_Out_Consumption_Error<256)
 				GlobalParms().Time_Out_Consumption_Error=256;
-			PHASEs[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-			PHASEs[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
-			PHASEs[PhN].PLC=0;
-			//PHASEs[PhN].Sec= new Array();
+			Phases[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
+			Phases[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+			Phases[PhN].PLC=0;
+			//Phases[PhN].Sec= new Array();
 			j++;
 		}
 	}
@@ -616,7 +620,7 @@ function SetPhConf(Datos)
 		{
 			Datos[j]=Datos[j].split(",");
 			PhN=parseInt("0"+Datos[j][0]);
-			if(PhN<(GlobalParms().Phases+GlobalParms().Virtual_Phases+GlobalParms().Groups_Phases))
+			if(PhN < (GlobalParms().Phases + GlobalParms().Virtual_Phases + GlobalParms().Groups_Phases))
 			{
 				PHASEs()[PhN].Numero=PhN;
 				if(Datos[j][1]!="")
@@ -1198,10 +1202,10 @@ function addobj(ref, vname, val)
 		lst_obj=obj;
 		obj=obj[name];
 	}
-	if(val!=undefined) 
+	if(val!=undefined && val!="undefined") 
 		lst_obj[name]=val.getval();
 	else
-		lst_obj[name]=undefined;
+		lst_obj[name]=0; //undefined;
 }
 function obj2txt(base,obj)
 {

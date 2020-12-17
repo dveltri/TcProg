@@ -269,13 +269,13 @@ function SendSec(Prg)
 	UpFile="sec.sec";
 	if(!Prg.PLCs[PlcIdx])
 		return "";
-	for(var y=0;y<Prg.PHASEs.length;y++)
+	for(var y=0;y<Prg.Phases.length;y++)
 	{
 		UpData+="("+y+")";
-		for(var x=0;x<Prg.PHASEs[y].Sec.length;x++)
+		for(var x=0;x<Prg.Phases[y].Sec.length;x++)
 		{
-			if(Prg.PHASEs[y].Sec[x]>0)
-				UpData+="["+x+","+(Prg.PHASEs[y].Sec[x]-1)+"]";
+			if(Prg.Phases[y].Sec[x]>0)
+				UpData+="["+x+","+(Prg.Phases[y].Sec[x]-1)+"]";
 		}
 		UpData+="\n"
 	}

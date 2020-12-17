@@ -20,7 +20,7 @@ Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[
 Modified:0,Reload:0x300,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[],														Range:[[10,90]],														Nombre:"GlobalParms.FlasCA",					AlerTxt:"Este parametro debe ser entre 10 y 90"},{
 Modified:0,Reload:0x100,	Unit:8,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[RstTCHw,RstSch,RstCfts,RstPlnPlc,RstOTUPlc,RstPMCPlc],	Range:[[0,16]],															Nombre:"GlobalParms.Loops",						AlerTxt:"Error en el valor ingresado para este parametro"},{
 Modified:0,Reload:0x100,	Unit:8,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[],														Range:[[0,16]],															Nombre:"GlobalParms.Inputs",					AlerTxt:"Error en el valor ingresado para este parametro"},{
-Modified:0,Reload:0x100,	Unit:2,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[RstTCHw,RstSch,RstCfts,RstPlnPlc,RstOTUPlc,RstPMCPlc],	Range:[[0,24]],															Nombre:"GlobalParms.Phases",					AlerTxt:"Error en el valor ingresado para este parametro"},{
+Modified:0,Reload:0x100,	Unit:2,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[RstTCHw,RstSch,RstCfts,RstPlnPlc,RstOTUPlc,RstPMCPlc],	Range:[[2,24]],															Nombre:"GlobalParms.Phases",					AlerTxt:"Error en el valor ingresado para este parametro"},{
 Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[RstTCHw,RstSch,RstCfts,RstPlnPlc,RstOTUPlc,RstPMCPlc],	Range:[[1,4]],															Nombre:"GlobalParms.Controllers",				AlerTxt:"Error en el valor ingresado para este parametro"},{
 Modified:0,Reload:0x300,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[],														Range:[[0,240]],														Nombre:"GlobalParms.Time_Cap",					AlerTxt:"Este parametro puede ser como maximo hasta 240minutos 0->disabled"},{
 Modified:0,Reload:0x300,	Unit:1,		Type:"int",		MaxLen:[1,1],	FncChk:0,			Child:[],														Range:[[0,3]],															Nombre:"GlobalParms.Enable_GPS",				AlerTxt:"Este parametro puede ser como maximo hasta 3 o 0->disabled"},{
@@ -37,14 +37,14 @@ Modified:0,Reload:0x100,	Unit:1,		Type:"aryint",	MaxLen:[1,16],	FncChk:0,			Chil
 Modified:0,Reload:0x1FF,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[RstPlnPlc,RstOTUPlc,RstPMCPlc],							Range:[[0,30]],															Nombre:"pPLCs.Sts",								AlerTxt:"Error en el valor ingresado para este parametro"},{
 Modified:0,Reload:0x1FF,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[],														Range:[[0,30]],															Nombre:"pPLCs.Sec",								AlerTxt:"Error en el valor ingresado para este parametro"},{
 Modified:0,Reload:0x0F0,	Unit:1,		Type:"int",		MaxLen:[1,2],	FncChk:0,			Child:[],														Range:[[0,30]],															Nombre:"PLCs.Sch",								AlerTxt:"Error en el valor ingresado para este parametro"},{
-Modified:0,Reload:0x20F,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"PHASEs.FState",							AlerTxt:"Codigo de color incorrecto"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,4],	FncChk:0,			Child:[],														Range:[[0,1023]],														Nombre:"PHASEs.TOEE",							AlerTxt:"Error en el valor ingresado para este parametro"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,4],	FncChk:0,			Child:[],														Range:[[0,1023]],														Nombre:"PHASEs.TOEC",							AlerTxt:"Error en el valor ingresado para este parametro"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,5],	FncChk:0,			Child:[],														Range:[[0,65535]],														Nombre:"PHASEs.MskError",						AlerTxt:"Error en dato"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,1]],															Nombre:"PHASEs.AMiGT",							AlerTxt:"Minimo tiempo de verde automatico true o false"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"PHASEs.MiGT",							AlerTxt:"Este parametro puede ser como maximo hasta 255segundos 0->disabled"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,1]],															Nombre:"PHASEs.AMiRT",							AlerTxt:"Minimo tiempo de rojo automatico true o false"},{
-Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"PHASEs.MiRT",							AlerTxt:"Este parametro puede ser como maximo hasta 255segundos 0->disabled"},{
+Modified:0,Reload:0x20F,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"Phases.FState",							AlerTxt:"Codigo de color incorrecto"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,4],	FncChk:0,			Child:[],														Range:[[0,1023]],														Nombre:"Phases.TOEE",							AlerTxt:"Error en el valor ingresado para este parametro"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,4],	FncChk:0,			Child:[],														Range:[[0,1023]],														Nombre:"Phases.TOEC",							AlerTxt:"Error en el valor ingresado para este parametro"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,5],	FncChk:0,			Child:[],														Range:[[0,65535]],														Nombre:"Phases.MskError",						AlerTxt:"Error en dato"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,1]],															Nombre:"Phases.AMiGT",							AlerTxt:"Minimo tiempo de verde automatico true o false"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"Phases.MiGT",							AlerTxt:"Este parametro puede ser como maximo hasta 255segundos 0->disabled"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,1]],															Nombre:"Phases.AMiRT",							AlerTxt:"Minimo tiempo de rojo automatico true o false"},{
+Modified:0,Reload:0x100,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[0,255]],														Nombre:"Phases.MiRT",							AlerTxt:"Este parametro puede ser como maximo hasta 255segundos 0->disabled"},{
 Modified:0,Reload:0x2F0,	Unit:512,	Type:"int",		MaxLen:[3,6],	FncChk:0,			Child:[],														Range:[[0,262144]]				,Show:0.016666666,						Nombre:"IOs.TimeOut",							AlerTxt:"El time out de las entradas puede ser 0 a 2184minutos siendo que 0 desactiva esta funcionalidad"},{
 Modified:0,Reload:0x00F,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[RstPlnLs],												Range:[[1,1000]],														Nombre:"PLAN.Ls",								AlerTxt:"Error en plan control manual"},{
 Modified:0,Reload:0x00F,	Unit:1,		Type:"int",		MaxLen:[1,3],	FncChk:0,			Child:[],														Range:[[1,1000]],														Nombre:"PLAN.MC",								AlerTxt:"Error en plan control manual"},{
@@ -380,20 +380,20 @@ function Setdphc()
 	for(var j=0;j<PLCs()[PlcIdx].Phases.length;j++)
 	{
 		var i=PLCs()[PlcIdx].Phases[j];
-		if(i<PHASEs.length)
+		if(i<Phases.length)
 		{
 			temp=parseInt(document.getElementById("TOEE"+i+"").innerHTML);
-			if(ChkParm("PHASEs.TOEE",temp)==true)
+			if(ChkParm("Phases.TOEE",temp)==true)
 			{
 				PHASEs()[i].TOEE=temp;
-				ModParm("PHASEs.TOEE");
+				ModParm("Phases.TOEE");
 			}
 			var temp=0;
 			temp=parseInt(document.getElementById("TOEC"+i+"").innerHTML);
-			if(ChkParm("PHASEs.TOEC",temp)==true)
+			if(ChkParm("Phases.TOEC",temp)==true)
 			{
 				PHASEs()[i].TOEC=temp;
-				ModParm("PHASEs.TOEC");
+				ModParm("Phases.TOEC");
 			}// */
 			var temp=0;
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -420,7 +420,7 @@ function Setdphc()
 				if(temp!=PHASEs()[i].MskError)
 				{
 					PHASEs()[i].MskError=temp;
-					ModParm("PHASEs.MskError");
+					ModParm("Phases.MskError");
 				}
 			}
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
@@ -430,7 +430,7 @@ function Setdphc()
 				if(temp!=PHASEs()[i].AMiGT)
 				{
 					PHASEs()[i].AMiGT=temp;
-					ModParm("PHASEs.AMiGT");
+					ModParm("Phases.AMiGT");
 				}
 			}// */
 			temp=parseInt(document.getElementById("Ph"+i+"_MiGT").innerHTML);
@@ -445,7 +445,7 @@ function Setdphc()
 				}
 				PHASEs()[i].MiGT=temp;
 				PLCs()[PlcIdx].Plans = new Array();// borra los planos
-				ModParm("PHASEs.MiGT");
+				ModParm("Phases.MiGT");
 			}
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 			/*if(OTU.Link==0)
@@ -454,7 +454,7 @@ function Setdphc()
 				if(temp!=PHASEs()[i].AMiRT)
 				{
 					PHASEs()[i].AMiRT=temp;
-					ModParm("PHASEs.AMiRT");
+					ModParm("Phases.AMiRT");
 				}
 			}*/
 			temp=parseInt(document.getElementById("Ph"+i+"_MiRT").innerHTML);
@@ -469,7 +469,7 @@ function Setdphc()
 				}
 				PHASEs()[i].MiRT=temp;
 				PLCs()[PlcIdx].Plans = new Array();// borra los planos
-				ModParm("PHASEs.MiRT");
+				ModParm("Phases.MiRT");
 			}
 			//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 		}
@@ -520,7 +520,7 @@ function ModSec()
 						timeg=parseInt(timeg);
 						if(timeg<0 || isNaN(timeg))timeg=0;
 						CElmt.value=timeg;
-						if(ph<PHASEs.length)
+						if(ph<Phases.length)
 						{
 							for(var X=0;X<PLCs()[ph].Sec.length;X++)
 							{
