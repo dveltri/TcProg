@@ -1,5 +1,5 @@
 {
-  "name": "TcProg",
+  "name": "tcprog",
   "productName": "Configuracionde Controlador",
   "version": "0.0.1",
   "description": "Programacion de controlador de transito uTC1",
@@ -7,10 +7,17 @@
   "scripts": {
     "start": "electron ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dveltri/TcProg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dveltri/TcProg/issues"
+  },
+  "homepage": "https://github.com/dveltri/TcProg#readme",
   "devDependencies": {
-    "electron": "^4.2.9",
-    "electron-packager": "^14.0.4",
-    "electron-rebuild": "^1.8.2",
-    "serialport": "^7.1.4"
+    "electron": "^9.0.4"
   }
 }

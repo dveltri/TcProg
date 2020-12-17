@@ -1,5 +1,3 @@
-Resource = new Array();
-var Hsize=2;
 var ioflags= new Array(Hsize);
 var tiempo= new Array(Hsize);
 var ocupacion= new Array(Hsize);
@@ -10,75 +8,6 @@ var ioLT1= new Array(Hsize);
 var hindex=-1;
 var hindexO;
 var Number_Of_Inputs=0;
-var Pxs=12;
-var fullscaleX=1080;
-var PhHist= new Array(fullscaleX/Pxs);
-var PhHistCant=0;
-var outX="";
-var GetUrlError=""
-//=================================================
-function addautoget(ele,url,fnc)
-{
-	var i=Resource.length;
-	Resource[i]=new Object();
-	Resource[i].Element=ele;
-	Resource[i].url=url;
-	Resource[i].Fnc=fnc;
-}
-function fnc0()
-{
-	var digital = new Date();
-	if (GetUrlError!="")
-		return;
-	if(URLs.length && (enProceso+1000)<digital.getTime())
-	{
-		GetUrl(URLs[0],FNCs[0]);
-		FNCs.splice(0,1);
-		URLs.splice(0,1);
-		return;
-	}
-	RsrcIdx%=parseInt("0"+Resource.length);
-	if(Resource.length && Resource.length>RsrcIdx)
-	{
-		GetUrl(Resource[RsrcIdx].url,RcvMoni);
-	}
-	//=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=-·-=
-}
-function RcvMoni(Datos)
-{
-	var out="";
-	if(Datos)
-	{
-		if(Datos.status==200)
-		{
-			if(Resource.length && Resource.length>RsrcIdx)
-			{
-				Datos=Resource[RsrcIdx].Fnc(Datos);
-				if(out=validateXML(Datos)=="")
-				{
-					try
-					{
-						Resource[RsrcIdx].Element.innerHTML=Datos;
-					}
-					catch(e)
-					{
-						LOG("Error RcvMoni:"+e.message);
-					}
-				}
-				else
-				{
-					LOG("Validating RcvMoni:"+out);
-				}
-			}
-		}
-		else
-		{
-			out=Datos.status+" "+Datos.statusText;
-			LOG(out);
-		}
-	}
-	RsrcIdx++;
-}
 
 function ShwStsTbl()
 {
@@ -275,16 +204,13 @@ function rcvGbVars(Datos)
 	out+="</td>\n";
 	out+="</tr>\n";
 	//-------------
-	if(Log_En)
-	{
-		out+="<tr><td colspan=\"2\"><hr /></td></tr>\n";
-		out+="<tr>\n";
-		out+="<td valign=\"middle\" align=\"center\"><font size=\"3\" face=\"arial\"> "+Str_Others+" </font></td>\n";
-		out+="<td valign=\"top\" align=\"center\">\n";
-		out+=outX;
-		out+="</td>\n";
-		out+="</tr>\n";
-	}
+	out+="<tr><td colspan=\"2\"><hr /></td></tr>\n";
+	out+="<tr>\n";
+	out+="<td valign=\"middle\" align=\"center\"><font size=\"3\" face=\"arial\"> "+Str_Others+" </font></td>\n";
+	out+="<td valign=\"top\" align=\"center\">\n";
+	out+=outX;
+	out+="</td>\n";
+	out+="</tr>\n";
 	//------------- */
 	out+="</table>\n";
 	return out;
@@ -343,10 +269,7 @@ function rcvTcSts(Datos)
 		temp=Datos.substring(pPLC+43,pPLC+68);
 		PLCs()[plcidx].Name=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+68,pPLC+92);
-		tempV=temp.search("\0");
-		if(tempV!=-1)
-			temp=temp.substring(0,tempV);
-		PLCs()[plcidx].Location=temp;
+		PLCs()[plcidx].Location=temp.substring(0,temp.search("\0"));
 		temp=Datos.substring(pPLC+92,pPLC+96);
 		PLCs()[plcidx].LSTCHG=ByToInt(temp);
 		temp=Datos.substring(pPLC+96,pPLC+100);
@@ -359,11 +282,11 @@ function rcvTcSts(Datos)
 		temp=Datos.substring(pPLC+131,pPLC+146);
 		PLCs()[plcidx].scheduler=temp.substring(0,temp.search("\0"));
 		//---------------------------------
-		PLCs()[plcidx].PHASE_COD_OUT=	Datos.charCodeAt(pPLC+146);
-		PLCs()[plcidx].Current_Plan=	Datos.charCodeAt(pPLC+147);
-		PLCs()[plcidx].IniPlan=			Datos.charCodeAt(pPLC+148);
-		PLCs()[plcidx].OffPlan=			Datos.charCodeAt(pPLC+149);
-		PLCs()[plcidx].FlashPlan=		Datos.charCodeAt(pPLC+150);
+		PLCs()[plcidx].PHASE_COD_OUT=Datos.charCodeAt(pPLC+146);
+		PLCs()[plcidx].Plan=		Datos.charCodeAt(pPLC+147);
+		PLCs()[plcidx].IniPlan=	Datos.charCodeAt(pPLC+148);
+		PLCs()[plcidx].OffPlan=	Datos.charCodeAt(pPLC+149);
+		PLCs()[plcidx].FlashPlan=	Datos.charCodeAt(pPLC+150);
 		temp=Datos.substring(pPLC+152,pPLC+156);
 		PLCs()[plcidx].Number=	ByToInt(temp);
 		temp=Datos.substring(pPLC+164,pPLC+168);
@@ -399,7 +322,7 @@ function rcvTcSts(Datos)
 		out+="<tr><td colspan=\"2\" valign=\"middle\" align=\"center\" ><hr /></td></tr>\n";
 		out+="<tr>\n";
 		out+="<td><font size=\"2\" face=\"arial\"> "+Str_Plan+" </font></td>\n";
-		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Current_Plan+" </font></td>\n";
+		out+="<td><font size=\"2\" face=\"arial\"> "+PLCs()[plcidx].Plan+" </font></td>\n";
 		out+="</tr>\n";
 		//-----------------------------
 		tempV=PLCs()[plcidx].NEXCHG*1000;
@@ -1043,15 +966,14 @@ function rcvIOs(Datos)
 	ioLT0[hindex]= new Array(Number_Of_Inputs);
 	ioLT1[hindex]= new Array(Number_Of_Inputs);
 	//----------------------------------------------------
-	iIOs=IOs();
 	while(inidx<Number_Of_Inputs)
 	{
 		//--------------------------------- flags
 		temp=Datos.substring(StructSizeIO*inidx+0,StructSizeIO*inidx+4);
 		itemp=ByToInt(temp);
 		ioflags[hindex][inidx]=itemp;
-		iIOs[inidx].Type=(itemp&1);
-		iIOs[inidx].Mode=((itemp>>14)&3);
+		IOs()[inidx].Type=(itemp&1);
+		IOs()[inidx].Mode=((itemp>>14)&3);
 		if(itemp&1)// es entrada?
 		{
 			//--------------------------------- Muestras
@@ -1103,7 +1025,6 @@ function rcvIOs(Datos)
 }
 function rcvIOs2()
 {
-	var iIOs=IOs();
 	var out="";
 	var temp=0;
 	var Tcount=0;
@@ -1122,20 +1043,20 @@ function rcvIOs2()
 	out4+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Occupation+"&#160;</b></font></td>\n";
 	while(Tcount<Number_Of_Inputs)
 	{
-		if(iIOs[Tcount].Name.indexOf("NoShw")==-1)
+		if(IOs()[Tcount].Name.indexOf("NoShw")==-1)
 		{
 			Pcount++;
 			out1+="<td rowspan=\"4\" class=\"hrvert\" align=\"center\"></td>\n";
-			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+iIOs[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
+			out1+="<td align=\"center\" ><font color=\"#0aa\" size=\"2\" face=\"arial\"><b>"+IOs()[Tcount].Name+"</b></font></td>\n";//&#160;"+Pcount+"&#160;
 			temp=ioflags[hindex][Tcount];
 			if(ioflags[hindex] && ioflags[hindex][Tcount]&1)
 			{
 				out2+="<td align=\"center\"><font size=\"2\" face=\"arial\"><b>";
-				if(iIOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 					out2+=Str_InputOnOff
-				if(iIOs[Tcount].Mode==1)
+				if(IOs()[Tcount].Mode==1)
 					out2+=Str_InputF
-				if(iIOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 					out2+=Str_InputAD
 				if((ioflags[hindex][Tcount]&0x10)==0)
 					out2+=Str_disabled+"<br/>";
@@ -1154,12 +1075,12 @@ function rcvIOs2()
 					out2+="4";
 				out2+="</b>&#160;</font></td>\n";
 				//----------------------
-				if(iIOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
 				}
-				if(iIOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 				{
 					count=(conteo[hindex][Tcount]-conteo[hindexO][Tcount]);
 					out3+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;"+count+"&#160;</font></td>\n";
@@ -1167,7 +1088,7 @@ function rcvIOs2()
 				//----------------------
 				out4+="<td align=\"center\"><font size=\"2\" face=\"arial\">&#160;";
 				times=(tiempo[hindex][Tcount]-tiempo[hindexO][Tcount]);
-				if(iIOs[Tcount].Mode==0)
+				if(IOs()[Tcount].Mode==0)
 				{
 					out4+="%";
 					ocup=(ocupacion[hindex][Tcount]-ocupacion[hindexO][Tcount]);
@@ -1179,7 +1100,7 @@ function rcvIOs2()
 					else
 						ocup=Math.round((1000*ocup)/times)/10;
 				}
-				if(iIOs[Tcount].Mode==2)
+				if(IOs()[Tcount].Mode==2)
 				{
 					ocup=(ocupacion[hindex][Tcount]);
 				}
@@ -1407,4 +1328,187 @@ function rcvInterprete(Datos)
 	document.getElementById("interpCode").scrollTop =(temp/8)+55;//+document.getElementById('interpCode').scrollTop // */
 }
 
-percent=28;
+
+//--------------------------------------------------
+var DelErr=0;
+var DelIdxAll=1;
+function DelAllErrors()
+{
+	if(DelIdxAll<Errors.length)
+	{
+		if(PrgEd[SrcIdx].Typ)
+		{
+			GetUrlB(HOST()+"/"+DGVFTP()+"?mode=256&path="+Errors[DelIdxAll].Path+"&file="+Errors[DelIdxAll].Name,NextDelError);
+		}
+	}
+}
+function NextDelError(Datos)
+{
+	if(Datos.status==200)
+	{
+		DelIdxAll++;
+		if(DelIdxAll<Errors.length)
+		{
+			DelAllErrors();
+		}
+		else
+		{
+			DelIdxAll=1;
+			Errors.length=1;
+			ReDraw(moni_errors);
+			percent=0;
+			LoadConfSrc();
+		}
+	}
+}
+function ShowErrorFileList()
+{
+	var temp=""
+	var out="";
+	var pidx=0;
+	out+="<a href=\"\" onclick=\"if(confirm('"+Str_Delet+"?')){DelAllErrors();}return false;\">\n";
+	out+="<img src=\"./img/remove.png\" width=\"20\" height=\"20\" alt=\"Delete All\" border=\"0\"   />";
+	out+="</a>";
+	out+="<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"  align=\"center\" >\n";
+	//--------------------------
+	out+="<tr>\n";
+	out+="<td align=\"left\" valign=\"top\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n";
+	for(var x=0;x<Errors.length;x++)
+	{
+		temp=Errors[x].Name.substr(2);
+		out+="<a href=\""+HOST()+(Errors[x].Path+"/").replace("//","/")+HTMLEncode(Errors[x].Name)+"?WAC="+WAC+"\" target=\"_blank\">\n";
+		out+="<img src=\"./img/save1.png\" width=\"20\" height=\"20\" border=\"0\" />";
+		out+="</a>";
+		out+="<a href=\"\" onclick=\"UpFile='"+HTMLEncode(Errors[x].Name)+"';UpPath='"+Errors[x].Path+"';UpType='txt';rcvERR(Errors["+x+"].Datos);return false\">\n";
+		out+="[";
+		if(Errors[x].Path=="/err" || Errors[x].Path=="/err/")
+			out+=Str_General;
+		else
+		{
+			pidx=parseInt(Errors[x].Path.substr(1));
+			if(pidx<PLCs().length)
+				out+=PLCs()[pidx].Name;
+			else
+				out+="No Name";
+		}
+		out+=":"+temp.substring(4,6)+"/"+temp.substring(2,4)+"/"+temp.substring(0,2)+"]\n";
+		out+="</a>\n";
+		if(x>0)
+		{
+			out+="<a href=\"\" onclick=\"if(confirm('"+Str_Delet+" ["+HTMLEncode(Errors[x].Name)+"]?')){DelErr="+x+";"
+			if(PrgEd[SrcIdx].Typ)
+				out+="GetUrlB('"+HOST()+"/"+DGVFTP()+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
+			else
+				out+="GetUrlB('"+HOST()+"/"+DGVFTP()+"?mode=256&#38;path="+HTMLEncode(Errors[x].Path)+"&#38;file="+HTMLEncode(Errors[x].Name)+"',UpdateErrorList);"
+			out+="}return false;\">\n";
+			out+="<img src=\"./img/defile.png\" width=\"16\" height=\"16\" border=\"0\" />";
+			out+="</a>";
+		}
+		out+="<br/>";
+	}
+	out+="</font>\n";
+	out+="</td>\n";
+	out+="<td align=\"left\" valign=\"top\" width=\"80%\" >\n";
+	out+="<div id=\"ErrorFile\">\n";
+	out+="<table width=\"100%\" border=\"0\" id=\"tabelaError\" align=\"center\">\n";
+	out+="<tr>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#D3D3D3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_Cod_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#D3D3D3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_Descr_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#D3D3D3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_DtHr_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="</tr>\n";
+	out+="</table>\n";
+	out+="</div>\n";
+	out+="</td>\n";
+	out+="</tr>\n";
+	//--------------------------
+	out+="</table>\n";
+	return out;
+}
+function UpdateErrorList(Datos)
+{
+	if(Datos.status==200)
+	{
+		Errors.splice(DelErr,1);
+	}
+	ReDraw(moni_errors);
+}
+function rcvERR(Dados)
+{
+	var out = "";
+	var idx = 0;
+	var ErrorFile = new Array();
+	var ErrorList = new Array();
+	var aux = new Array();
+	ErrorFile.length = 0;
+	ErrorList.length = 0;
+	aux.length = 0;
+	//Dados=Remplace(Dados,"<","&#60;");
+	//Dados=Remplace(Dados,">","&#62;");
+	ErrorFile = Dados.split("\n");
+	var i=0;
+	while(i<ErrorFile.length)
+	{
+		ErrorFile[i]=RemoveUnuseChar(ErrorFile[i]);
+		ErrorFile[i]=ErrorFile[i].trim();
+		if(ErrorFile[i]=="")
+		{
+			ErrorFile.splice(i,1);
+		}
+		else
+		{
+			ErrorList[idx] = new Object();
+			ErrorList[idx].CodErr=0;
+			ErrorList[idx].DescrErr="";
+			ErrorList[idx].DtHrErr="";
+			aux = ErrorFile[i].split(",");
+			if(aux[0])ErrorList[idx].CodErr = aux[0];
+			if(aux[1])ErrorList[idx].DescrErr = aux[1];
+			if (aux.length > 3)
+				ErrorList[idx].DtHrErr = aux[aux.length-1];
+			else
+				if(aux[2])
+					ErrorList[idx].DtHrErr = aux[2];
+			idx++;
+			i++;
+		}
+	}
+	out+="<table width=\"98%\" border=\"0\" id=\"tabelaError\" align=\"left\">\n";
+	out+="<tr>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#A3A3A3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_Cod_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#A3A3A3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_Descr_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="<td align=\"center\" valign=\"middle\" bgcolor=\"#A3A3A3\">\n";
+	out+="<font size=\"1\" face=\"arial\">\n"+Str_DtHr_Ocorr+"</font>";
+	out+="</td>\n";
+	out+="</tr>\n";
+	for(var i=0;i<ErrorList.length;i++)
+	{
+		out+="<tr ";
+		if(i%2)out+="bgcolor=\"#40FF40\""
+		out+=">\n";
+		out+="<td align=\"center\" valign=\"middle\">\n";
+		out+="<font size=\"1\" face=\"arial\">\n"+ErrorList[i].CodErr+"</font>";
+		out+="</td>\n";
+		out+="<td align=\"center\" valign=\"middle\">\n";
+		out+="<font size=\"1\" face=\"arial\">\n"+HTMLEncode(ErrorList[i].DescrErr)+"</font>";
+		out+="</td>\n";
+		out+="<td align=\"center\" valign=\"middle\">\n";
+		out+="<font size=\"1\" face=\"arial\">\n"+ErrorList[i].DtHrErr+"</font>";
+		out+="</td>\n";
+		out+="</tr>";
+	}
+	out+="</table>\n";
+	document.getElementById("ErrorFile").innerHTML=out;
+}
+//--------------------------------------------------
+percent=15;

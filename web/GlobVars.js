@@ -1,9 +1,11 @@
 var PrgBk= new Array();
 var PrgEd= new Array();
 /*var SrcFiles=[
-	'/startup.ini',RcvStartup,
-	'/phconf.ini',RcvPhConf,
-	'/plcs.ini',RcvPlc,
+	1,'Loading General...','/startup.ini',RcvStartup,
+	3,'Loading Global vars...',null,null,
+	4,'Loading de Phases 2...','/phconf.ini',RcvPhConf,
+	6,'Loading de Controladores...','/plcs.ini',RcvPlc,
+	'Loading Lista de Planes...',null,RcvConfSrc
 	GetSec(SrcIdx,PlcIdx),RcvSec,
 	GetSch(SrcIdx,PlcIdx),RcvAgenda, 
 	'/ip.ini',RcvIP, 
@@ -26,7 +28,7 @@ var menu;
 //-------------------------------------------------- variables de la Web
 var Reload=0x000;
 var AutoRefresh;
-var Refresh=0;
+var wizard_step=0;
 var language="ES";
 var Log_En=0;
 var Dim_En=1;
@@ -47,7 +49,8 @@ var UpMode=0;
 var UpPath="";
 var UpFile="";
 var UpType="";
-var seek=0;
+var UpPacket= {data:"", len:0};
+var UpSeek=0;
 //--------------------
 var FilterFileList="";
 var FileListDat= new Array();
@@ -145,16 +148,27 @@ var V2RTyp=		[[20,20,2,2,2,1],[17,17,17,17,17,17,17,17,1,1],[20,20,20,20,20,1],[
 var R2VTyp=		[[3],[],[],[]];
 var FStateTyp=	[18,17,17,18];
 //---------------------------------------------------
-var MSKCOLORFF=	[0,17,18]; 				//off,r,y
-var MSKCOLORST=	[0,1,4];	  			//off,R,V
-var MSKC_OR=	[0,1,18,17];	  		//off,R,V
-var MSKC_ORV=	[0,1,2,3,4,17,18,19,20];//off,R,A,RA,V,r,ra,v
-var MSKC_ORVvar=[0,1,2,3,4,17,18,19,20];//off,R,A,RA,V,r,ra,v
-var MSKC_ORAV=	[0,1,2,4];	  			//off,R,V
-var MSKEV=		[1,2,3,17,18,20,22];	//R,A,RA,r,a,v,va
-var MSKEV1=		[2,17,18,20];	  	//A,r,a,v
-var MSKEVRV=	[1,2,3,4,17,18,20,22];		//R,A,RA,V,r,a,v,va
-var MSKALL=		[0,1,2,3,4,17,18,19,20,22];//off,R,A,RA,V,r,ra,v,va
+var MSK_V_ALL=	[0,1,2,3,4,17,18,19,20,22];	//off,R,A,RA,V,r,ra,v,va
+var MSK_P_ALL=	[0,1,4,17,20]				//off,R,V,r,v
+
+var MSK_ORV=	[0,1,4];					//off,R,V
+var MSK_OR=		[0,1];						//off,R
+
+var MSK_V_cft=	[0,1,17];					//off,R,r
+var MSK_P_cft=	[0,1,17]					//off,R,r
+
+var MSK_V_FF=	[0,17,18];					//off,r,a
+
+var MSKEV=		[1,2,3,17,18,20,22];		//R,A,RA,r,a,v,va
+var MSKEV1=		[2,17,18,20];				//A,r,a,v
+
+var MSKEVRV=	[1,2,3,4,17,18,20,22];		//R,A,RA,V,r,a,v,va	vehicular
+var MSKEVRVv=	[0,17,18,19];				//off,r,a,ra	vehicular
+var MSKEVRVp=	[0,17];						//off,r peatonal
+var MSKEVRVg=	[0,17,18,19];				//off,r,a,ra giro
+var MSKEVRVc=	[0,17,18,19];				//off,r,a,ra ciclista
+var MSKEVPhTyp=	[MSKEVRVv,MSKEVRVp,MSKEVRVg,MSKEVRVc];
+
 var MSKtemo=	[];
 var PhTimMin=	[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 //---------------------------------------------------
@@ -187,6 +201,8 @@ var OptMDV4=["0","0 MDV4","4","1 MDV4"];
 var OptFlashingHz=["1","1hz","2","2hz","4","4hz","6","6hz","8","8hz","10","10hz","12","12hz","14","14hz"];
 var OptLogLinks=["0","Web","1","Serial 1","2","Serial 2","3","Serial 3","4","Serial 4","5","Serial 5","6","Serial 6","7","Serial 7","8","Serial 8"];
 var OptTimeZone=[-720,"GMT -12:00 Eniwetok, Kwajalein",-660,"GMT -11:00 Midway Island, Samoa",-600,"GMT -10:00 Hawaii",-540,"GMT -09:00 Alaska",-480,"GMT -08:00 Pacific Time US &amp; Canada",-420,"GMT -07:00 Mountain Time US &amp; Canada",-360,"GMT -06:00 Central Time US &amp; Canada, Mexico City",-300,"GMT -05:00 Eastern Time US &amp; Canada, Bogota, Lima",-240,"GMT -04:00 Atlantic Time Canada, Caracas, La Paz",-210,"GMT-03:30 Newfoundland",-180,"GMT -03:00 Brazil, Buenos Aires, Georgetown",-120,"GMT -02:00 Mid-Atlantic",-60,"GMT -01:00 Azores, Cape Verde Islands",0,"GMT 0 Western Europe Time, London, Lisbon, Casablanca",60,"GMT +01:00 Brussels, Copenhagen, Madrid, Paris",120,"GMT +02:00 Kaliningrad, South Africa",180,"GMT +03:00 Baghdad, Riyadh, Moscow, St. Petersburg",210,"GMT +03:30 Tehran",240,"GMT +04:00 Abu Dhabi, Muscat, Baku, Tbilisi",270,"GMT +04:30 Kabul",300,"GMT +05:00 Ekaterinburg, Islamabad, Karachi, Tashkent",330,"GMT +05:30 Bombay, Calcutta, Madras, New Delhi",360,"GMT +06:00 Almaty, Dhaka, Colombo",420,"GMT +07:00 Bangkok, Hanoi, Jakarta",480,"GMT +08:00 Beijing, Perth, Singapore, Hong Kong",540,"GMT +09:00 Tokyo, Seoul, Osaka, Sapporo, Yakutsk",570,"GMT +09:30 Adelaide, Darwin",600,"GMT +10:00 Eastern Australia, Guam, Vladivostok",660,"GMT +11:00 Magadan, Solomon Islands, New Caledonia",720,"GMT +12:00 Auckland, Wellington, Fiji, Kamchatka"];
+//---------------------------------------------------
+var OptMst=[0,"Slave",1,"Master",2,"Slave/Master",3,"Slave/Master+Plan",4,"Slave+Plan",5,"Slave+State",6,"Slave+Plan+State",10,"Master+Plan",11,"Master+State",12,"Master+Plan+State"];
 //---------------------------------------------------
 var IntReg=[
 {Type:"Int",Nombre:"THIS",Valor:null},

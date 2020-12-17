@@ -568,6 +568,24 @@ color: red;
 	box-shadow:inset -2px  -2px 3px 3px #888;
 }
 
+.CssMaxBtn
+{
+	background-color: #CCC;
+	BORDER-STYLE: solid;
+	BORDER-TOP: black 1px solid;
+	BORDER-LEFT: black 1px solid;
+	BORDER-RIGHT: black 1px solid;
+	BORDER-BOTTOM: black 1px solid;
+	color: #000;
+	font-family: arial;
+	text-align: center;
+	font-weight: normal;
+	text-align: center;
+	font-size: 16pt;
+	box-shadow:inset -1px  -1px 3px 3px #888;
+	border-radius: 3px;
+}
+
 .CssBtn
 {
 	background-color: #CCC;
@@ -584,6 +602,24 @@ color: red;
 	font-size: 12pt;
 	box-shadow:inset -1px  -1px 3px 3px #888;
 	border-radius: 3px;
+}
+
+.CssMinBtn
+{
+	background-color: #CCC;
+	BORDER-STYLE: solid;
+	BORDER-TOP: black 1px solid;
+	BORDER-LEFT: black 1px solid;
+	BORDER-RIGHT: black 1px solid;
+	BORDER-BOTTOM: black 1px solid;
+	color: #000;
+	font-family: arial;
+	text-align: center;
+	font-weight: normal;
+	text-align: center;
+	font-size: 8pt;
+    /*box-shadow:inset -1px  -1px 2px 2px #888;*/
+	border-radius: 2px;
 }
 
 .CssInText

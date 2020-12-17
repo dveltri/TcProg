@@ -159,6 +159,18 @@ function delay(millis)
 	while(curDate-date < millis);
 }
 
+
+function clear_file(data)
+{
+	var keys = [["\t"," "], ["  "," "], [" \n","\n"], ["\n ","\n"], ["\n\n","\n"]];
+	for(var idx1=0;idx1<keys.length;idx1++)
+	{
+		while(data.indexOf(keys[idx1][0]) != -1)
+		{
+			data=data.replace(keys[idx1][0],keys[idx1][1]);
+		}
+	}
+}
 function RemComment(linea)
 {
 	var ptr1=-1;
@@ -166,6 +178,13 @@ function RemComment(linea)
 	linea=""+linea;
 	do
 	{
+		ptr1=linea.indexOf("/*");
+		if(ptr1!=-1)
+		{
+			ptr2=linea.indexOf('*/',ptr1);
+			if(ptr2!=-1)
+				linea=linea.substring(0,ptr1)+""+linea.substring(ptr2+1);
+		}
 		ptr1=linea.indexOf("//");
 		if(ptr1!=-1)
 		{
@@ -177,7 +196,7 @@ function RemComment(linea)
 		}
 		linea=linea.replace("\t"," ");
 		linea=linea.replace("  "," ");
-	}while(linea.indexOf("\t")!=-1 || linea.indexOf("  ")!=-1 || linea.indexOf("//")!=-1);
+	}while(linea.indexOf("\t")!=-1 || linea.indexOf("  ")!=-1 || linea.indexOf("//")!=-1 || linea.indexOf("/*")!=-1);
 	return linea;
 }
 
@@ -244,6 +263,19 @@ function RemoveUnusedItem(Datos)
 		else
 			j++;
 	}
+}
+
+function get_string_index(str)
+{
+	var ini = str.indexOf("[");
+	var end = str.indexOf("]");
+	if(ini != -1 & end != -1)
+	{
+		end = parseInt(str.substring(ini+1,end));
+		str = str.substring(0,ini)
+		return [end, str];
+	}
+	return [null, null];
 }
 
 Object.compare = function (obj1, obj2)

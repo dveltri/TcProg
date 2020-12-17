@@ -1,8 +1,31 @@
+var Str_mnu_files="Archivos";
+var Str_mnu_new="Nuevo";
+var Str_mnu_load_conf="Cargar Conf.";
+var Str_mnu_from_folder="Desde Carpeta";
+var Str_mnu_from_ip="Desde IP";
+var Str_mnu_save_conf="Guardar Conf";
+var Str_dir_name_to_save="Nombre de directorio donde se guardara esta configuracion"
+var Str_dir_name_to_load="Seleccion el Nombre de directorio donde se encuentran las configuraciones del controlador"
+var Str_mnu_to_folder="En Carpeta";
+var Str_mnu_to_ip="En IP";
+var Str_mnu_reset="Reiniciar aplicacion";
+var Str_mnu_exit="Salir";
+var Str_mnu_configs="Configuraciones";
+var Str_mnu_status="Estado";
+var Str_mnu_general="General";
+var Str_mnu_functionalty="Funcionamiento";
+var Str_mnu_comms="Comunicacion";
+var Str_mnu_reload="Recargar";
+var Str_Mstr_title="Configuracion Maestro / Esclavo";
+var Str_NTP_title="Actualizacion de hora mediante NTP";
+var Str_GPS_title="Configuracion GPS";
+
 var SpeedTypePhase=	[[277,"Vehiculo lento 10k/h","Vold.png",416,"Vehiculo normal 15k/h","Vnormal.png",555,"Vehiculo r&#225;pido 20k/h","Vsport.png"]
 					,[114,"Peaton lento 1.14 m/s","Pold.png",148,"Peaton normal 1.48 m/s","Pnormal.png",202,"Peaton r&#225;pido 2.02 m/s","Psport.png"]
 					,[166,"Vehiculo lento 6k/h","Vold.png",222,"Vehiculo normal 8k/h","Vnormal.png",333,"Vehiculo r&#225;pido 12k/h","Vsport.png"]
 					,[222,"Ciclista lento 8k/h","Cold.png",333,"Ciclista normal 12k/h","Cnormal.png",555,"Ciclista r&#225;pido 20k/h","Csport.png"]];
 
+var Str_dgvp_sck_inf ="Inf. Tiempo Real";
 var Str_Version="Version";
 var Str_Voltage="Tension";
 var Str_Over_Voltage="Over Voltage";
@@ -36,6 +59,7 @@ var Str_All_Right="All right";
 var Str_Diming="Diming";
 var Str_All_Phases="All Phases";
 var Str_Individual_Phase="Individual Phase";
+var Str_OPB_PWR="Atenuacion<br />Consumo";
 
 var Str_Title_io="Inputs and Outputs<br/>Type:";
 var Str_MN_Info="Informacion";
@@ -56,7 +80,7 @@ var Str_Output="Output";
 var Str_Service="Safe mode"
 
 var Str_Uploading="Uploading";
-var SchTyp=["Mostrar Agenda","Agenda de dia(D)","Agenda de rango de Fechas(R)","Agenda Semanal(S)","Agenda horaria"];
+var SchTyp=["Mostrar Agenda","Agenda de dia(D)","Agenda Semanal(S)","Agenda horaria"]; //,"Agenda de rango de Fechas(R)"
 var Str_Error_Model="Error, update Model in startup.ini";
 var Str_FromStep="From step";
 var Str_ToStep="to step";
@@ -88,6 +112,7 @@ var Str_InputAD="Input Analog";
 var Str_ntp_Sync_tim="Sync frecuency (segs)";
 var Str_ntp_prio="Prioridad si no recive respuesta del servidor se decrementa";
 
+var Str_gps_prio="Prioridad";
 var Str_gps_priop="Prioridad con validacionde posicion positiva";
 var Str_gps_priol="Prioridad con validacionde posicion negativa";
 
@@ -101,17 +126,17 @@ var Str_Dgvp_ID="Device ID";
 var Str_Dgvp_ipport="port";
 var Str_Dgvp_cmps="Info Description";
 
-var Str_Config_OTU = "Config Scoot";							//Márcio - TESC - 24/06/2013
-var Str_Ctrl_OTU   = "Control";								//Márcio - TESC - 25/06/2013
+var Str_Config_OTU = "Config Scoot";							//Mï¿½rcio - TESC - 24/06/2013
+var Str_Ctrl_OTU   = "Control";								//Mï¿½rcio - TESC - 25/06/2013
 var	Str_Reply_OTU  = "Reply";
-var Str_OTU_Command = "Command";							//Márcio - TESC - 27/06/2013
+var Str_OTU_Command = "Command";							//Mï¿½rcio - TESC - 27/06/2013
 var	Str_OTU_Demand= "Demand";
-var	Str_OTU_Menu1 = " IN/OUT Bits";							//Márcio - TESC - 15/07/2013
+var	Str_OTU_Menu1 = " IN/OUT Bits";							//Mï¿½rcio - TESC - 15/07/2013
 var	Str_OTU_Menu2 = " Between green";				
 var	Str_OTU_Menu3 = " Conflict Sequence";
-var Str_OTU_CEV = " Colors";								//Márcio - TESC - 16/07/2013
+var Str_OTU_CEV = " Colors";								//Mï¿½rcio - TESC - 16/07/2013
 var Str_Control = " Controls";
-var Str_FO = "Focus off";									//Márcio - TESC - 02/10/2013
+var Str_FO = "Focus off";									//Mï¿½rcio - TESC - 02/10/2013
 var	Str_Manual_CTRL = "Manual Control";
 var Str_Excesso = "Excess of";	
 var Str_Bord_off = "Lack of board";
@@ -261,7 +286,7 @@ var Str_Ident="Identificaci&#243;n";
 var Str_Controllers="Controllers";
 var Str_Config="Configuraci&#243;n";
 var Str_Config_Links="Config Links";
-var Str_Config_Phases="Config Phases";				//Márcio - TESC - 26/03/2013
+var Str_Config_Phases="Config Phases";				//Mï¿½rcio - TESC - 26/03/2013
 var Str_Config_Iteris="Config Iteris";
 var Str_Config_OPCT="Config OPCT";
 var Str_Config_Inputs="Config Imputs";
@@ -278,7 +303,7 @@ var Str_New_scheduler="New Scheduler";
 var Str_Input="Input";
 var Str_Inputs="Inputs";
 var Str_All_Inputs="All Imputs";
-var Str_About="About";					//Márcio - 14/08/2012
+var Str_About="About";					//Mï¿½rcio - 14/08/2012
 var Str_FilerManager="File Manager";
 var Str_LogOut="LogOut";
 var Str_Restart="Restart";
@@ -428,7 +453,12 @@ var Str_TimStpExt="tiempo de paso de extension:";
 var Str_TimBlc="tiempo de balanceo:";
 //------------------------------------------------------------------
 var OptColorFF=[0,Str_Off,17,Str_Red,18,Str_Yellow];
+var OptColorFFv=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
 var OptColorFFp=[0,Str_Off,17,Str_Red];
+var OptColorFFg=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
+var OptColorFFc=[0,Str_Off,17,Str_Red,18,Str_Yellow,19,Str_Red+'+'+Str_Yellow];
+var OptColorFFtyp=[OptColorFFv,OptColorFFp,OptColorFFg,OptColorFFc];
+
 var OptPhTypEv=[0,"Transiciones Predefinidas",1,"Transicion Vehicular",2,"Transicion Peatonal",3,"Transicion giro",4,"Transicion Ciclista"];
 var OptPhTyp  =[0,"Vehicular",1,"Peatonal",2,"Giro",3,"Ciclista"];
 var OptAsyDem =[0,"Normal",1,"Activar por demanda",2,"Prioritario",3,"De tiempo extensible"];
@@ -524,7 +554,7 @@ var VStr_Errors_Str=["Alert[0],Inicio de Operaci&#243;n - Versi&#243;n:%u.%u\n",
 "El Interpretador retorno un error [%d] PC[%u] [%s]\n",
 "El Interpretador reporto un transbordo de memoria\n"];
 
-var Str_Conf_DgvP				="Protocolo compacto(gprs)";
+var Str_Conf_DgvP				="Protocolo compacto(can, 485, gprs, ethernet)";
 var Str_DgvP_Date				="Hora del equipo";
 var Str_DgvP_Voltage			="Voltage";
 var Str_DgvP_Mode				="Mode";

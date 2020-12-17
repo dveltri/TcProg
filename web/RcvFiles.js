@@ -1,7 +1,8 @@
 
 
-function SelIObyModel(MODEL)
+function SelIObyModel(base_obj)
 {
+	var Model = base_obj.Model;
 	var out="";
 	//-------- M3
 	SwFF=7;
@@ -11,21 +12,21 @@ function SelIObyModel(MODEL)
 	OutMc=11;
 	OutRemote=12;
 	//-----------
-	if(MODEL.indexOf("GW1")!=-1)
+	if(Model.indexOf("GW1")!=-1)
 	{
 		SwFF=0;
 		OutAdv=0;
 		OutMc=0;
 		OutRemote=0;
 	}
-	if(MODEL.indexOf("GW2M4")!=-1)
+	if(Model.indexOf("GW2M4")!=-1)
 	{
 		SwFF=11;
 		OutAdv=2;
 		OutMc=0;
 		OutRemote=0;
 	}
-	if(MODEL.indexOf("GW3M3")!=-1)
+	if(Model.indexOf("GW3M3")!=-1)
 	{
 		OutAdv = 10;
 		OutMc = 11;
@@ -34,7 +35,7 @@ function SelIObyModel(MODEL)
 		SwEnMc = 15;	//plug
 		SwCmMc = 16;	//comando
 	}
-	if(MODEL.indexOf("GW3M4")!=-1)
+	if(Model.indexOf("GW3M4")!=-1)
 	{
 		OutAdv=17;
 		OutMc=18;
@@ -43,7 +44,7 @@ function SelIObyModel(MODEL)
 		SwEnMc=22;	//plug
 		SwCmMc=23;	//comando
 	}
-	if(MODEL.indexOf("GW4")!=-1)
+	if(Model.indexOf("GW4")!=-1)
 	{
 		OutAdv=9;
 		OutMc=10;
@@ -54,7 +55,7 @@ function SelIObyModel(MODEL)
 		SwEnMc=15;
 		SwCmMc=16;
 	}
-	if(MODEL.indexOf("MSTC-V1M3")!=-1)
+	if(Model.indexOf("MSTC-V1M3")!=-1)
 	{
 		OutAdv = 0;
 		OutMc = 0;
@@ -63,7 +64,7 @@ function SelIObyModel(MODEL)
 		SwEnMc = 0;	//plug
 		SwCmMc = 0;	//comando
 	}
-	if(MODEL.indexOf("SAD-V1")!=-1)
+	if(Model.indexOf("SAD-V1")!=-1)
 	{
 		OutAdv=0;
 		OutMc=0;
@@ -74,7 +75,7 @@ function SelIObyModel(MODEL)
 		SwEnMc=8;
 		SwCmMc=9;
 	}
-	if(MODEL.indexOf("SAD-V2")!=-1)
+	if(Model.indexOf("SAD-V2")!=-1)
 	{
 		OutAdv=0;
 		OutMc=0;
@@ -85,7 +86,7 @@ function SelIObyModel(MODEL)
 		SwEnMc=8;
 		SwCmMc=9;
 	}
-	if(MODEL.indexOf("SAD-V3")!=-1)
+	if(Model.indexOf("SAD-V3")!=-1)
 	{
 		OutAdv=0;
 		OutMc=0;
@@ -96,10 +97,11 @@ function SelIObyModel(MODEL)
 		SwEnMc=8;
 		SwCmMc=9;
 	}
-	if(MODEL.indexOf("DGV-uTC1-M4")!=-1)
+	if(Model.indexOf("DGV-uTC1-M4")!=-1)
 	{
+		base_obj.ip_offset=10;
 	}
-	if(MODEL.indexOf("RT")!=-1 || MODEL.indexOf("GW3")!=-1 || MODEL.indexOf("GW4")!=-1)
+	if(Model.indexOf("RT")!=-1 || Model.indexOf("GW3")!=-1 || Model.indexOf("GW4")!=-1)
 	{
 		out+="mov 0 otu.fr\n";
 		out+="mov 0 otu.sr\n";
@@ -114,217 +116,97 @@ function RcvStartup(Datos)
 	var i=0;
 	var j=0;
 	PrgEd[SrcIdx].GlobalParms= new Object();
-	Datos=Datos.split("\n");
-	while(i<Datos.length)
+	base_obj = PrgEd[SrcIdx].GlobalParms;
+	RcvFile(base_obj, Datos);
+	//--------------------------------------------------
+	if(!base_obj.IniFsh)
+		base_obj.IniFsh=5;
+	//--------------------------------------------------
+	if(!base_obj.IniRed)
+		base_obj.IniRed=3;
+	//--------------------------------------------------
+	if(!base_obj.ID)
+		base_obj.ID=base_obj.ETH0.trim();
+	base_obj.ID=Remplace(base_obj.ID,"_"," ");
+	//--------------------------------------------------
+	if(!base_obj.Controllers)base_obj.Controllers=1;
+	if(!base_obj.Phases)base_obj.Phases=4;
+	if(!base_obj.Inputs)base_obj.Inputs=16;
+	//--------------------------------------------------
+	PhasesStructSize=0;
+	if(base_obj.Model.indexOf("MAC_TC1")!=-1 || base_obj.Model.indexOf("MAC-TC1")!=-1)
+		base_obj.Model="MAC-TC1M4";
+	if(base_obj.Model.indexOf("Flex3")!=-1)
+		base_obj.Model="GW1M3FT";
+	if(base_obj.Model.indexOf("Flex4")!=-1)
+		base_obj.Model="GW2M3FT";
+	if(base_obj.Model.indexOf("Flex")!=-1)
+		base_obj.Model="GW1M3FT";
+	if(base_obj.Model.indexOf("GW4")!=-1)
+		base_obj.Model="GW4M4RT";
+	if(base_obj.Model.indexOf("STC-S4")!=-1)
+		base_obj.Model="MSTC-V1M3";
+	if(base_obj.Model.indexOf("SAD-V1")!=-1 || base_obj.Model.indexOf("SAD_V1")!=-1)
+		base_obj.Model="SAD-V1M4";
+	if(base_obj.Model.indexOf("SAD-V2")!=-1)
+		base_obj.Model="SAD-V2M4";
+	if(base_obj.Model.indexOf("SAD-V3")!=-1)
+		base_obj.Model="SAD-V3M4";
+	//--------------------------
+	HW_IOS=9;
+	PhasesStructSize=56;
+	//--------------------------
+	if(base_obj.Model.indexOf("M4")!=-1)
 	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-		{
-			Datos.splice(i,1);
-		}
-		else
-		{
-			temp = Datos[i].lastIndexOf(" "); 
-			Datos[i]=Datos[i].substring(0,temp)+"^"+Datos[i].substring(temp+1);
-			Datos[i]=Datos[i].split("^");
-			i++;
-		}
+		HW_IOS=16;
+		PhasesStructSize=60;
 	}
-	if(!GlobalParms().IniFsh)
-		GlobalParms().IniFsh=5;
-	if(!GlobalParms().IniRed)
-		GlobalParms().IniRed=3;
-	for(i=0;i<Datos.length;i++)
+	if(GetOption(OptAddSrc,base_obj.Model)=="")
+		alert(Str_Error_Model+" ["+base_obj.Model+"]");
+	SelIObyModel(base_obj);
+	if(PhasesStructSize==0)
+		alert(Str_Error_Model);
+	//--------------------------------------------------
+	base_obj.ETH0=base_obj.ETH0.split('.');
+	try
 	{
-		//Datos[i]=RemoveUnuseChar(Datos[i]);
-		//Datos[i]=Datos[i].split(" ");
-		switch(Datos[i][0])
+		base_obj.NETMASK=base_obj.NETMASK.split('.');
+	}
+	catch(e)
+	{
+	}
+	try{base_obj.NETMASK=base_obj.NETMASK0.split('.');}catch(e){}
+	base_obj.DGW=base_obj.DGW.split('.');
+	try{base_obj.MACDGW=base_obj.MACDGW.split('-');}catch{}
+	if(typeof base_obj.Flashing === 'string')
+	{
+		if(base_obj.Flashing.indexOf(' ')!=-1)
+			base_obj.FlasCA=parseInt("0"+base_obj.Flashing.split(' ')[1]);
+		base_obj.Flashing=parseInt("0"+base_obj.Flashing[0]);
+	}
+	//--------------------------------------------------
+	if(base_obj.ATZ)
+	{
+		ref=base_obj.ATZ;
+		base_obj.ATZ = new Array()
+		ref=ref.split('&');
+		RemoveUnusedItem(ref);
+		ref.length-=(ref.length%8);
+		x=0;
+		while(x < (ref.length/4))
 		{
-			case "ID":
-				GlobalParms().ID=Datos[i][1].trim();
-				GlobalParms().ID=Remplace(GlobalParms().ID,"_"," ");
-			break;
-			case "Model":
-			{
-				GlobalParms().MODEL=Datos[i][1].trim();
-				PhasesStructSize=0;
-				if(GlobalParms().MODEL.indexOf("DGV-uTC1-M4")!=-1)
-					GlobalParms().MODEL="DGV-uTC1-M4";
-				if(GlobalParms().MODEL.indexOf("MAC_TC1")!=-1)
-					GlobalParms().MODEL="MAC-TC1M4";
-					if(GlobalParms().MODEL.indexOf("Flex3")!=-1)
-					GlobalParms().MODEL="GW1M3FT";
-				if(GlobalParms().MODEL.indexOf("Flex4")!=-1)
-					GlobalParms().MODEL="GW2M3FT";
-				if(GlobalParms().MODEL.indexOf("Flex")!=-1)
-					GlobalParms().MODEL="GW1M3FT";
-				if(GlobalParms().MODEL.indexOf("GW4")!=-1)
-					GlobalParms().MODEL="GW4M4RT";
-				if(GlobalParms().MODEL.indexOf("STC-S4")!=-1)
-					GlobalParms().MODEL="MSTC-V1M3";
-				if(GlobalParms().MODEL.indexOf("SAD-V1")!=-1 || GlobalParms().MODEL.indexOf("SAD_V1")!=-1)
-					GlobalParms().MODEL="SAD-V1M4";
-				if(GlobalParms().MODEL.indexOf("SAD-V2")!=-1)
-					GlobalParms().MODEL="SAD-V2M4";
-				if(GlobalParms().MODEL.indexOf("SAD-V3")!=-1)
-					GlobalParms().MODEL="SAD-V3M4";
-				//--------------------------
-				HW_IOS=9;
-				PhasesStructSize=56;
-				//--------------------------
-				if(GlobalParms().MODEL.indexOf("M4")!=-1)
-				{
-					HW_IOS=16;
-					PhasesStructSize=60;
-				}
-				if(GlobalParms().MODEL.indexOf("SAD-V")!=-1 || GlobalParms().MODEL.indexOf("MAC-TC1")!=-1)
-				{
-					HW_IOS=16;
-					PhasesStructSize=60;
-				}
-				if(GetOption(OptAddSrc,GlobalParms().MODEL)=="")
-				{
-					alert(Str_Error_Model+" ["+GlobalParms().MODEL+"]");
-				}
-				SelIObyModel(GlobalParms().MODEL);
-				if(PhasesStructSize==0)
-				{
-					alert(Str_Error_Model);
-				}
-			}
-			break;
-			case "Ver":
-				GlobalParms().Version=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "IniFsh":
-				GlobalParms().IniFsh=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "IniRed":
-				GlobalParms().IniRed=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "MAC":
-				GlobalParms().MAC=Datos[i][1].trim();
-			break;
-			case "ETH0":
-				GlobalParms().ETH0=Datos[i][1].trim();
-				GlobalParms().ETH0=GlobalParms().ETH0.split('.');
-			break;
-			case "NETMASK0":
-				GlobalParms().NETMASK0=Datos[i][1].trim();
-				GlobalParms().NETMASK0=GlobalParms().NETMASK0.split('.');
-			break;
-			case "NETMASK":
-				GlobalParms().NETMASK0=Datos[i][1].trim();
-				GlobalParms().NETMASK0=GlobalParms().NETMASK0.split('.');
-			break;
-			case "DGW":
-				GlobalParms().DGW=Datos[i][1].trim();
-				GlobalParms().DGW=GlobalParms().DGW.split('.');
-			break;
-			case "MACDGW":
-				GlobalParms().MACDGW=Datos[i][1].trim();
-				GlobalParms().MACDGW=GlobalParms().MACDGW.split('-');
-			break;
-			case "LOG":
-				GlobalParms().LOG=Datos[i][1].trim();
-			break;
-			case "Flashing":
-				GlobalParms().Flashing=Datos[i][1].trim();
-				GlobalParms().Flashing=GlobalParms().Flashing.split(' ');
-				GlobalParms().FlasCA=parseInt("0"+GlobalParms().Flashing[1]);
-			break;
-			case "FlasCA":
-				GlobalParms().FlasCA=parseInt("0"+Datos[i][1].trim());
-				GlobalParms().Flashing=GlobalParms().Flashing[0];
-			break;
-			case "Loops":
-				GlobalParms().Loops=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Inputs":
-				GlobalParms().Inputs=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Phases":
-				GlobalParms().Phases=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Virtual Phases":
-				GlobalParms().Virtual_Phases=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Groups Phases":
-				GlobalParms().Groups_Phases=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Controllers":
-				GlobalParms().Controllers=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Time Out Electrical Error":
-				GlobalParms().Time_Out_Electrical_Error=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Time Out Consumption Error":
-				GlobalParms().Time_Out_Consumption_Error=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "VoltPen":
-				GlobalParms().VoltPen=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "VoltDes":
-				GlobalParms().VoltDes=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Alert Over Voltage":
-				GlobalParms().Alert_Over_Voltage=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Normal Voltage":
-				GlobalParms().Normal_Voltage=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Error Minimal Voltage":
-				GlobalParms().Error_Minimal_Voltage=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Error Critical Voltage":
-				GlobalParms().Error_Critical_Voltage=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Web Access Code R/W":
-				GlobalParms().Web_Access_Code_RW=Datos[i][1].trim();
-			break;
-			case "Web Access Code Ro":
-				GlobalParms().Web_Access_Code_RO=Datos[i][1].trim();
-			break;
-			case "Time Zone GMT":
-				GlobalParms().Time_Zone_GMT=parseInt(Datos[i][1].trim());
-			break;
-			case "Enable GPS":
-				GlobalParms().Enable_GPS=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "Time Cap":
-				GlobalParms().Time_Cap_In=parseInt("0"+Datos[i][1].trim());
-			break;
-			case "ATZ":
-				if(GlobalParms().MODEL.indexOf("GW4")!=-1 || GlobalParms().MODEL.indexOf("GW")==-1)
-				{
-					GlobalParms().ATZ=new Array();
-					Datos[i][1]=Datos[i][1].trim();
-					Datos[i][1]=Datos[i][1].split('&');
-					RemoveUnusedItem(Datos[i][1]);
-					Datos[i][1].length-=(Datos[i][1].length%8);
-					x=0;
-					while(x < (Datos[i][1].length/4))
-					{
-						GlobalParms().ATZ[ x ] =parseInt((Datos[i][1][(x*4)+3]+Datos[i][1][(x*4)+2]+Datos[i][1][(x*4)+1]+Datos[i][1][(x*4)+0]),16);
-						temp=new Date(GlobalParms().ATZ[ x ]*1000);
-						GlobalParms().ATZ[ x ]=temp.getUTCFullYear()+"/"+(temp.getUTCMonth()+1)+"/"+temp.getUTCDate();
-						GlobalParms().ATZ[x+1] =parseInt((Datos[i][1][(x*4)+7]+Datos[i][1][(x*4)+6]+Datos[i][1][(x*4)+5]+Datos[i][1][(x*4)+4]),16);
-						if(GlobalParms().ATZ[x+1]&0x80000000)
-						{
-							GlobalParms().ATZ[x+1]=-(0x100000000-GlobalParms().ATZ[x+1]);
-						}
-						x+=2;
-					}
-				}
-			break;
+			temp =parseInt((ref[(x*4)+3] + ref[(x*4)+2] + ref[(x*4)+1] + ref[(x*4)+0]), 16);
+			temp=new Date(temp*1000);
+			base_obj.ATZ[ x ] = temp.getUTCFullYear()+"/"+(temp.getUTCMonth()+1)+"/"+temp.getUTCDate();
+			temp = parseInt((ref[(x*4)+7] + ref[(x*4)+6] + ref[(x*4)+5] + ref[(x*4)+4]), 16);
+			if(temp&0x80000000)
+				temp=-(0x100000000-temp);
+			base_obj.ATZ[x+1] = temp
+			x+=2;
 		}
 	}
-	if(!GlobalParms().ID)
-	{
-		GlobalParms().ID=Remplace(GlobalParms().ETH0.toString(),",",".");
-	}
-	GlobalParms().HwIo=HW_IOS;
+	//--------------------------------------------------
+	base_obj.HwIo=HW_IOS;
 	PLCs().length=0;
 	PHASEs().length=0;
 	IOs().length=0;
@@ -359,9 +241,9 @@ function UpdateSizeOfStruct()
 					PLCs()[j].Phase1="";
 					PLCs()[j].ErrorOut="0";
 					PLCs()[j].Svg="";
-					if(GlobalParms().MODEL.indexOf("M4")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
+					if(GlobalParms().Model.indexOf("M4")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
 						PLCs()[j].Sec="/"+j+"/sec.sec";
-					if(GlobalParms().MODEL.indexOf("M3")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
+					if(GlobalParms().Model.indexOf("M3")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
 						PLCs()[j].Sec="sec.sec";
 					PLCs()[j].HolyDays=new Array();
 					PLCs()[j].WeekDays=new Array();
@@ -391,7 +273,7 @@ function UpdateSizeOfStruct()
 			}
 		}
 	}
-	if(PHASEs().length!=(GlobalParms().PHASEs+GlobalParms().Virtual_PHASEs+GlobalParms().Groups_Phases))
+	if(PHASEs().length!=(GlobalParms().Phases+GlobalParms().Virtual_PHASEs+GlobalParms().Groups_Phases))
 	{
 		for(var j=0;j<(GlobalParms().Phases+GlobalParms().Virtual_Phases+GlobalParms().Groups_Phases);j++)
 		{
@@ -420,7 +302,7 @@ function UpdateSizeOfStruct()
 				PHASEs()[j].R2V= new Array();
 				PHASEs()[j].V2R= new Array();
 				PHASEs()[j].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-				PHASEs()[j].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+				PHASEs()[j].TOEC=GlobalParms().Time_Out_Consumption_Error;	//parseInt("0"+Datos[j][17]);
 				PHASEs()[j].PLC=0;
 				PHASEs()[j].Type=0;
 				PHASEs()[j].Sec= new Array();
@@ -518,39 +400,45 @@ function RcvPlc(Datos)
 			j++;
 		}
 	}
+	iPLC=PLCs()
+	iPLC.length = 0;
 	for(var j=0;j<PLC.length;j++)
 	{
+		iPLC[j] = new Object();
 		Datos=PLC[j].slice();
-		PLCs()[j].Sts.length=0;
+		iPLC[j].Sts = new Array();
 		for(var i=0;i<Datos.length;i++)
 		{
 			Datos[i]=Datos[i].split(":");
 			switch(Datos[i][0])
 			{
 				case "Number":
-					PLCs()[j].Number=Datos[i][1].slice();
+					iPLC[j].Number=Datos[i][1].slice();
 				break;
 				case "Name":
-					PLCs()[j].Name=Datos[i][1].slice();
+					iPLC[j].Name=Datos[i][1].slice();
 				break;
 				case "Plan":
-					PLCs()[j].Plan=Datos[i][1].slice();
+					iPLC[j].Plan=Datos[i][1].slice();
 				break;
 				case "Flashing":
-					PLCs()[j].Flashing=Datos[i][1].slice();
+					iPLC[j].Flashing=Datos[i][1].slice();
+				break;
+				case "PlanOff":
+					iPLC[j].Flashing=Datos[i][1].slice();
 				break;
 				case "SyncRef":
-					PLCs()[j].SyncRef=Datos[i][1]+":"+Datos[i][2]+":"+Datos[i][3];
+					iPLC[j].SyncRef=Datos[i][1]+":"+Datos[i][2]+":"+Datos[i][3];
 				break;
 				case "Scheduler":
-					PLCs()[j].Scheduler=Datos[i][1].slice();
-					PrgEd[SrcIdx][PLCs()[j].Scheduler]=new Object();
+					iPLC[j].Scheduler=Datos[i][1].slice();
+					PrgEd[SrcIdx][iPLC[j].Scheduler]=new Object();
 				break;
 				case "Location":
-					PLCs()[j].Location=Datos[i][1].slice();
+					iPLC[j].Location=Datos[i][1].slice();
 				break;
 				case "Server":
-					PLCs()[j].Server=Datos[i][1].slice();
+					iPLC[j].Server=Datos[i][1].slice();
 				break;
 				case "Phases":
 					temp=Datos[i][1].slice();
@@ -569,41 +457,41 @@ function RcvPlc(Datos)
 							x--;
 						}
 					}
-					PLCs()[j].Phases=temp.slice();
+					iPLC[j].Phases=temp.slice();
 				break;
 				case "Phase1":
-					PLCs()[j].Phase1=parseInt("0"+Datos[i][1].slice());
+					iPLC[j].Phase1=parseInt("0"+Datos[i][1].slice());
 				break;
 				case "Error Out":
-					PLCs()[j].ErrorOut=Datos[i][1].slice();
+					iPLC[j].ErrorOut=Datos[i][1];
 				break;
 				case "Svg":
-					PLCs()[j].Svg=Datos[i][1].slice();
+					iPLC[j].Svg=Datos[i][1];
 				break;
 				case "Sec":
-					PLCs()[j].Sec=Datos[i][1].slice();
-					if(GlobalParms().MODEL.indexOf("M4")!=-1)
+					iPLC[j].Sec=Datos[i][1];
+					if(GlobalParms().Model.indexOf("M4")!=-1)
 					{
-						if(GlobalParms().MODEL.indexOf("/")==-1)
+						if(GlobalParms().Model.indexOf("/")==-1)
 						{
-							PLCs()[j].Sec="/"+PLCs()[j].Sec;
-							PLCs()[j].Sec=PLCs()[j].Sec.replace("//","/");
+							iPLC[j].Sec="/"+iPLC[j].Sec;
+							iPLC[j].Sec=iPLC[j].Sec.replace("//","/");
 						}
 					}
 				break;
 				case "Sts":
 					Datos[i]=Datos[i][1].split(".");
-					temp=PLCs()[j].Sts.length;
-					PLCs()[j].Sts[temp]= new Object();
+					temp=iPLC[j].Sts.length;
+					iPLC[j].Sts[temp]= new Object();
 					Datos[i][0]=Datos[i][0].split(",");
-					PLCs()[j].Sts[temp].Colors = new Array(PLCs()[j].Phases.length);
-					for(var k=0;k<PLCs()[j].Phases.length;k++)
+					iPLC[j].Sts[temp].Colors = new Array(iPLC[j].Phases.length);
+					for(var k=0;k<iPLC[j].Phases.length;k++)
 						if(k<Datos[i][0].length)
-							PLCs()[j].Sts[temp].Colors[k]=parseInt("0"+Datos[i][0][k]);
+							iPLC[j].Sts[temp].Colors[k]=parseInt("0"+Datos[i][0][k]);
 						else
-							PLCs()[j].Sts[temp].Colors[k]=0;
-					//PLCs()[j].Sts[temp].TMAX=parseInt("0"+Datos[i][1]);
-					//PLCs()[j].Sts[temp].TMIN=parseInt("0"+Datos[i][2]);
+							iPLC[j].Sts[temp].Colors[k]=0;
+					//iPLC[j].Sts[temp].TMAX=parseInt("0"+Datos[i][1]);
+					//iPLC[j].Sts[temp].TMIN=parseInt("0"+Datos[i][2]);
 				break;
 			}
 		}
@@ -632,14 +520,14 @@ function LogPLCs()
 	LOG(temp);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvPh_Conf(Datos)
+/*function RcvPh_Conf(Datos)
 {
 	var PhN=0;
 	Datos=Datos.responseText;
 	Datos=Datos.split("\n");
 	var j=0;
 	var i=0;
-	while(j<Datos.length && j<PHASEs.length)
+	while(j<Datos.length && j<Phases.length)
 	{
 		Datos[j]=Remplace(Datos[j],";",",");
 		Datos[j]=RemoveUnuseChar(Datos[j]);
@@ -650,60 +538,60 @@ function RcvPh_Conf(Datos)
 		{
 			Datos[j]=Datos[j].split(",");
 			PhN=parseInt("0"+Datos[j][0]);
-			if(PhN>=PHASEs.length)
-				PHASEs[PhN]=new Object();
-			PHASEs[PhN].FlagsWeb=0;
-			PHASEs[PhN].Numero=PhN;
+			if(PhN>=Phases.length)
+				Phases[PhN]=new Object();
+			Phases[PhN].FlagsWeb=0;
+			Phases[PhN].Numero=PhN;
 			if(Datos[j][1].indexOf("0x")!=-1)
 			{
-				PHASEs[PhN].MskError=Math.abs(parseInt(Datos[j][1],16));
+				Phases[PhN].MskError=Math.abs(parseInt(Datos[j][1],16));
 			}
 			else
 			{
-				PHASEs[PhN].MskError=Math.abs(parseInt("0"+Datos[j][1]));
+				Phases[PhN].MskError=Math.abs(parseInt("0"+Datos[j][1]));
 			}
-			//PHASEs[PhN].FState=parseInt("0"+Datos[j][2]);
-			PHASEs[PhN].AMiRT=((parseInt("0"+Datos[j][3])&0x100)>>8);
-			//PHASEs[PhN].AMiYT=(parseInt("0"+Datos[j][3])>>1)&0x01;
-			PHASEs[PhN].AMiGT=((parseInt("0"+Datos[j][2])&0x100)>>8);
-			PHASEs[PhN].MiRT=parseInt("0"+Datos[j][3]);
-			//PHASEs[PhN].MiYT=parseInt("0"+Datos[j][5]);
-			PHASEs[PhN].MiGT=parseInt("0"+Datos[j][2]);
-			//PHASEs[PhN].MaRT=parseInt("0"+Datos[j][7]);
-			//PHASEs[PhN].MaYT=parseInt("0"+Datos[j][8]);
-			//PHASEs[PhN].MaGT=parseInt("0"+Datos[j][9]);
-			//PHASEs[PhN].Type=parseInt("0"+Datos[j][10])&0x07;
-			//PHASEs[PhN].PotLR=parseInt("0"+Datos[j][11])&0xFFFF;
-			//PHASEs[PhN].PotLY=parseInt("0"+Datos[j][12])&0xFFFF;
-			//PHASEs[PhN].PotLG=parseInt("0"+Datos[j][13])&0xFFFF;
-			//PHASEs[PhN].R2V=Datos[j][14].split("R");
-			//RemoveUnusedItem(PHASEs[PhN].R2V);
-			PHASEs[PhN].V2R=Datos[j][4].split("V");
+			//Phases[PhN].FState=parseInt("0"+Datos[j][2]);
+			Phases[PhN].AMiRT=((parseInt("0"+Datos[j][3])&0x100)>>8);
+			//Phases[PhN].AMiYT=(parseInt("0"+Datos[j][3])>>1)&0x01;
+			Phases[PhN].AMiGT=((parseInt("0"+Datos[j][2])&0x100)>>8);
+			Phases[PhN].MiRT=parseInt("0"+Datos[j][3]);
+			//Phases[PhN].MiYT=parseInt("0"+Datos[j][5]);
+			Phases[PhN].MiGT=parseInt("0"+Datos[j][2]);
+			//Phases[PhN].MaRT=parseInt("0"+Datos[j][7]);
+			//Phases[PhN].MaYT=parseInt("0"+Datos[j][8]);
+			//Phases[PhN].MaGT=parseInt("0"+Datos[j][9]);
+			//Phases[PhN].Type=parseInt("0"+Datos[j][10])&0x07;
+			//Phases[PhN].PotLR=parseInt("0"+Datos[j][11])&0xFFFF;
+			//Phases[PhN].PotLY=parseInt("0"+Datos[j][12])&0xFFFF;
+			//Phases[PhN].PotLG=parseInt("0"+Datos[j][13])&0xFFFF;
+			//Phases[PhN].R2V=Datos[j][14].split("R");
+			//RemoveUnusedItem(Phases[PhN].R2V);
+			Phases[PhN].V2R=Datos[j][4].split("V");
 			i=0;
-			while(i<PHASEs[PhN].V2R.length)
+			while(i<Phases[PhN].V2R.length)
 			{
-				PHASEs[PhN].V2R[i]=PHASEs[PhN].V2R[i].trim();
-				if(PHASEs[PhN].V2R[i]=="")
-					PHASEs[PhN].V2R.splice(i,1);
+				Phases[PhN].V2R[i]=Phases[PhN].V2R[i].trim();
+				if(Phases[PhN].V2R[i]=="")
+					Phases[PhN].V2R.splice(i,1);
 				else
 				{
-					PHASEs[PhN].V2R[i]=PHASEs[PhN].V2R[i].split(":");
+					Phases[PhN].V2R[i]=Phases[PhN].V2R[i].split(":");
 					i++;
 				}
 			}
-			//RemoveUnusedItem(PHASEs[PhN].V2R);
+			//RemoveUnusedItem(Phases[PhN].V2R);
 			if(GlobalParms().Time_Out_Electrical_Error<160)
 				GlobalParms().Time_Out_Electrical_Error=160;
 			if(GlobalParms().Time_Out_Consumption_Error<256)
 				GlobalParms().Time_Out_Consumption_Error=256;
-			PHASEs[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
-			PHASEs[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
-			PHASEs[PhN].PLC=0;
-			//PHASEs[PhN].Sec= new Array();
+			Phases[PhN].TOEE=GlobalParms().Time_Out_Electrical_Error;	//parseInt("0"+Datos[j][16]);
+			Phases[PhN].TOEC=GlobalParms().Time_Out_Consumption_Error;//parseInt("0"+Datos[j][17]);
+			Phases[PhN].PLC=0;
+			//Phases[PhN].Sec= new Array();
 			j++;
 		}
 	}
-}
+}*/
 function RcvPhConf(Datos)
 {
 	Datos=Datos.responseText;
@@ -732,7 +620,7 @@ function SetPhConf(Datos)
 		{
 			Datos[j]=Datos[j].split(",");
 			PhN=parseInt("0"+Datos[j][0]);
-			if(PhN<(GlobalParms().Phases+GlobalParms().Virtual_Phases+GlobalParms().Groups_Phases))
+			if(PhN < (GlobalParms().Phases + GlobalParms().Virtual_Phases + GlobalParms().Groups_Phases))
 			{
 				PHASEs()[PhN].Numero=PhN;
 				if(Datos[j][1]!="")
@@ -820,7 +708,7 @@ function SetPhConf(Datos)
 				}
 				//-----------------------------------------
 				if(Datos[j][9]!="")
-				PHASEs()[PhN].Type=parseInt("0"+Datos[j][9])&0x07;
+					PHASEs()[PhN].Type=parseInt("0"+Datos[j][9])&0x07;
 				//-----------------------------------------
 				if(Datos[j][10]!="")
 				{
@@ -889,28 +777,6 @@ function LogPHASEs()
 	LOG(temp);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvOPCT(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
-	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			i++;
-		}
-	}
-	PrgEd[SrcIdx].OPCT.length=0;
-	PrgEd[SrcIdx].OPCT=Datos.slice();
-}
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvIP(Datos)
 {
 	Datos=Datos.responseText;
@@ -929,27 +795,31 @@ function RcvIP(Datos)
 			i++;
 		}
 	}
-	if(!PrgEd[SrcIdx].Links)
-		PrgEd[SrcIdx].Links=new Array();
+	PrgEd[SrcIdx].Links = new Array();
+	iLinks=PrgEd[SrcIdx].Links
 	//--------------- Links Fijos por HW --------------
-	PrgEd[SrcIdx].Links.length=0;
-	PrgEd[SrcIdx].Links[0]=new Array();
-	PrgEd[SrcIdx].Links[0][0]="WebLog"
-	PrgEd[SrcIdx].Links[0][1]="0";
-	PrgEd[SrcIdx].Links[0][2]="No Config";
+	iLinks[0]=new Array();
+	iLinks[0][0]="WebLog"
+	iLinks[0][1]="0";
+	iLinks[0][2]="No Config";
 	for(var j=1;j<9;j++)
 	{
-		PrgEd[SrcIdx].Links[j]=new Array();
-		PrgEd[SrcIdx].Links[j][0]="Serial Port"
-		PrgEd[SrcIdx].Links[j][1]=""+j+"";
-		PrgEd[SrcIdx].Links[j][2]="115200,8N1";
-	}	
-	PrgEd[SrcIdx].Links[j]=new Array();
-	PrgEd[SrcIdx].Links[j][0]="USB Port"
-	PrgEd[SrcIdx].Links[j][1]=""+j+"";
-	PrgEd[SrcIdx].Links[j][2]="No Config"; // */
+		iLinks[j]=new Array();
+		iLinks[j][0]="Serial Port"
+		iLinks[j][1]=""+j+"";
+		iLinks[j][2]="115200,8N1";
+	}
+	if(GlobalParms().Model.indexOf("DGV")!=-1)
+	{
+		iLinks[j]=new Array();
+		iLinks[j][0]="USB Port"
+		iLinks[j][1]=""+j+"";
+		iLinks[j][2]="No Config";
+		j++;
+	}
 	//---------------------------------------------------
-	PrgEd[SrcIdx].Links=PrgEd[SrcIdx].Links.concat(Datos);
+	PrgEd[SrcIdx].GlobalParms.ip_offset=j;
+	PrgEd[SrcIdx].Links=iLinks.concat(Datos);
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvError(Datos)
@@ -1022,40 +892,43 @@ function RcvDefIn(Datos)
 	DefIn().length=0;
 	var Nin=0;
 	var j=0;
+	iIOs=IOs();
 	for(i=0;i<Datos.length;i++)
 	{
 		switch(Datos[i][0])
 		{
-		case "I/O":
-			Datos[i][1]=Datos[i][1].split(",");
-					Nin=			parseInt("0"+Datos[i][1][0]);//numero de IO
-			if(IOs().length>Nin)
-			{
-				IOs()[Nin].Enable=	parseInt("0"+Datos[i][1][1]);//Enable or disable
-				IOs()[Nin].Type=		parseInt("0"+Datos[i][1][2]);//tipo
-				IOs()[Nin].Mode=		parseInt("0"+Datos[i][1][3]);//modo
-				IOs()[Nin].neg=		parseInt("0"+Datos[i][1][4]);//invert
-				IOs()[Nin].Flank=		parseInt("0"+Datos[i][1][5]);//flank de conteo 
-				IOs()[Nin].TimeOut=	parseInt("0"+Datos[i][1][6]);// estado de falla
-				IOs()[Nin].FailSts=	parseInt("0"+Datos[i][1][7]);
-				IOs()[Nin].Plcs=		parseInt("0"+Datos[i][1][8]);
-				IOs()[Nin].Name=					 Datos[i][1][9];
-				if(IOs()[Nin].Name=="")IOs()[Nin].Name="Entrada["+(Nin+1)+"]";
-				IOs()[Nin].Used=0;
-			}
-		break;
-		default:
-			DefIn()[j]=Datos[i].slice();
-			j++;
-		break;
+			case "I/O":
+				Datos[i][1]=Datos[i][1].split(",");
+						Nin=			parseInt("0"+Datos[i][1][0]);//numero de IO
+				if(iIOs.length>Nin)
+				{
+					iIOs[Nin].Enable=	parseInt("0"+Datos[i][1][1]);//Enable or disable
+					iIOs[Nin].Type=	parseInt("0"+Datos[i][1][2]);//tipo
+					iIOs[Nin].Mode=	parseInt("0"+Datos[i][1][3]);//modo
+					iIOs[Nin].neg=		parseInt("0"+Datos[i][1][4]);//invert
+					iIOs[Nin].Flank=	parseInt("0"+Datos[i][1][5]);//flank de conteo 
+					iIOs[Nin].TimeOut=	parseInt("0"+Datos[i][1][6]);// estado de falla
+					iIOs[Nin].FailSts=	parseInt("0"+Datos[i][1][7]);
+					iIOs[Nin].Plcs=	parseInt("0"+Datos[i][1][8]);
+					iIOs[Nin].Name=	Datos[i][1][9];
+					if(iIOs[Nin].Name=="" || iIOs[Nin].Name==undefined)
+						iIOs[Nin].Name="Entrada["+(Nin+1)+"]";
+					iIOs[Nin].Used=0;
+				}
+			break;
+			default:
+				DefIn()[j]=Datos[i].slice();
+				j++;
+			break;
 		}
 	}
 }
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
 function RcvOTU(Datos)
 {
-	Datos=Datos.responseText;
-	RcvOTU2(Datos);
+	RcvFile(PrgEd[SrcIdx], Datos);
+	//Datos=Datos.responseText;
+	//RcvOTU2(Datos);
 }
 function RcvOTU2(Datos)
 {
@@ -1160,211 +1033,189 @@ function RcvOTU2(Datos)
 	//-----------------------------------
 }// */
 //==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvSDgvP(Datos)
+function SdgvP_Tsk()
 {
-	var ptr;
-	var tmpt="";
 	var idx=0;
-	//-----------------------------------
-	Datos=Datos.responseText;
-	Datos=RemComment(Datos)
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	//SDgvP()=null;
-	//SDgvP()=new Object();
-	SDgvP().Tsk=null;
-	SDgvP().Link=0;
-	SDgvP().Debug=255;
-	//-----------------------------------
-	for(var j=0;j<Datos.length;j++)
+	var tsk="";
+	var ptr;
+	iSdgvP=SdgvP()
+	while(iSdgvP["tsk"+idx])
 	{
-		ptr=Datos[j].indexOf("SDgvP.Link=");
+		tsk=iSdgvP["tsk"+idx];
+		if(!iSdgvP.Tsk)
+			iSdgvP.Tsk=new Array();
+		if(!iSdgvP.Tsk[idx])
+			iSdgvP.Tsk[idx]=new Object();
+		iSdgvP.Tsk[idx].IDsrv=254;
+		iSdgvP.Tsk[idx].Sck=2;
+		iSdgvP.Tsk[idx].Period=10;
+		ptr=tsk.indexOf(",");	//Tsk
 		if(ptr!=-1)
 		{
-			SDgvP().Link=parseInt("0"+Datos[j].substring(ptr+11));
-		}
-		ptr=Datos[j].indexOf("SDgvP.SrvId=");
-		if(ptr!=-1)
-		{
-			SDgvP().SrvId=parseInt("0"+Datos[j].substring(ptr+12));
-		}
-		ptr=Datos[j].indexOf("SDgvP.debug=");
-		if(ptr!=-1)
-		{
-			SDgvP().Debug=parseInt("0"+Datos[j].substring(ptr+12));
-		}
-		ptr=Datos[j].indexOf("SDgvP.Tsk");
-		if(ptr!=-1)
-		{
-			if(!SDgvP().Tsk)
-			{
-				SDgvP().Tsk=new Array();
-			}
-			tmpt=Datos[j].substring(ptr+9);
-			idx=parseInt("0"+tmpt);
-			if(!SDgvP().Tsk[idx])
-				SDgvP().Tsk[idx]=new Object();
-			SDgvP().Tsk[idx].IDsrv=254;
-			SDgvP().Tsk[idx].Sck=2;
-			SDgvP().Tsk[idx].Period=10;
-			ptr=Datos[j].indexOf(",");	//Tsk
-			if(ptr!=-1)
-			{
-				SDgvP().Tsk[idx].cmps=Datos[j].substring(ptr+1);	//Byte Period
-				SDgvP().Tsk[idx].Period=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
-				SDgvP().Tsk[idx].IDsrv=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
-				SDgvP().Tsk[idx].Sck=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
-				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
-				SDgvP().Tsk[idx].Size=parseInt("0"+SDgvP().Tsk[idx].cmps);
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<8;
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<16;
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
-				SDgvP().Tsk[idx].Size+=parseInt("0"+SDgvP().Tsk[idx].cmps)<<24;
-				//------------------------------------------
-				ptr=SDgvP().Tsk[idx].cmps.indexOf(",");
-				if(ptr==-1)
-					break;
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.substring(ptr);// Data String
-				if(GlobalParms().MODEL.indexOf("M3")!=-1)
-				{
-					for(var i=0;i<DgvPM3.length;i+=2)
-					{
-						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
-					}
-				}
-				if(GlobalParms().MODEL.indexOf("M4")!=-1)
-				{
-					for(var i=0;i<DgvPM4.length;i+=2)
-					{
-						SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
-					}
-				}
-				SDgvP().Tsk[idx].cmps=SDgvP().Tsk[idx].cmps.split(',');
-				RemoveUnusedItem(SDgvP().Tsk[idx].cmps);				
-			}
+			iSdgvP.Tsk[idx].cmps=tsk.substring(ptr+1);	//Byte Period
+			iSdgvP.Tsk[idx].Period=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Ctrl
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1); //Byte ID-Src
+			iSdgvP.Tsk[idx].IDsrv=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte ID-Trg
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Src
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Sck-Trg
+			iSdgvP.Tsk[idx].Sck=parseInt("0"+iSdgvP.Tsk[idx].cmps);
 			//------------------------------------------
-		}
-	}
-}// */
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-/*function RcvIteris(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
-	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			i++;
-		}
-	}
-	Iteris().length=0;
-	Iteris()=Datos.slice();
-}*/
-//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
-function RcvFile(Datos)
-{
-	Datos=Datos.responseText;
-	Datos=Datos.split("\n");
-	RemoveUnusedItem(Datos);
-	var i=0;
-	while(i<Datos.length)
-	{
-		Datos[i]=RemoveUnuseChar(Datos[i]);
-		Datos[i]=Datos[i].trim();
-		if(Datos[i]=="")
-			Datos.splice(i,1);
-		else
-		{
-			Datos[i]=Datos[i].split(":");
-			if(Datos[i].length==1)
-				Datos[i]=Datos[i][0].split("=");
-			Datos[i][0]=Datos[i][0].split(".");
-			addobj(PrgEd[SrcIdx],Datos[i][0],Datos[i][1]);
-			i++;
-		}
-	}
-}
-function addobj(obj,vname,val)
-{
-	for(i=0;i<vname.length;i++)
-	{
-		if(!obj[vname[i]])
-		{
-			if(i<(vname.length-1))
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Stuf
+			//------------------------------------------
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-0
+			iSdgvP.Tsk[idx].Size=parseInt("0"+iSdgvP.Tsk[idx].cmps);
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-1
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<8;
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-2
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<16;
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr+1);// Byte Size-3
+			iSdgvP.Tsk[idx].Size+=parseInt("0"+iSdgvP.Tsk[idx].cmps)<<24;
+			//------------------------------------------
+			ptr=iSdgvP.Tsk[idx].cmps.indexOf(",");
+			if(ptr==-1)
+				break;
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.substring(ptr);// Data String
+			if(GlobalParms().Model.indexOf("M3")!=-1)
 			{
-				obj[vname[i]]=new Object();
+				for(var i=0;i<DgvPM3.length;i+=2)
+				{
+					iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.replace(DgvPM3[i+1],(","+DgvPM3[i]));
+				}
 			}
+			if(GlobalParms().Model.indexOf("M4")!=-1)
+			{
+				for(var i=0;i<DgvPM4.length;i+=2)
+				{
+					iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.replace(DgvPM4[i+1],(","+DgvPM4[i]));
+				}
+			}
+			iSdgvP.Tsk[idx].cmps=iSdgvP.Tsk[idx].cmps.split(',');
+			RemoveUnusedItem(iSdgvP.Tsk[idx].cmps);				
+		}
+		//------------------------------------------
+		idx++;
+	}	
+}
+//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
+//==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==
+function RcvFile(base_obj,Datos)
+{
+	if(Datos.responseText != undefined)
+		Datos=Datos.responseText;
+	RemComment(Datos);
+	Datos=Datos.split("\n");
+	RemoveUnusedItem(Datos);
+	var i=0;
+	while(i<Datos.length)
+	{
+		if(Datos[i].indexOf(":") != -1)
+			Datos[i]=Datos[i].split(":");
+		else
+			if(Datos[i].indexOf("=") != -1)
+				Datos[i]=Datos[i].split("=");
 			else
 			{
-				if(val!=undefined) 
-					obj[vname[i]]=val.getval();
-				else
-					obj[vname[i]]=undefined;
+				idx=Datos[i].lastIndexOf(" ");
+				if(idx != -1)
+					Datos[i]=[Datos[i].substring(0,idx), Datos[i].substring(idx+1)]
+			}
+		Datos[i][0]=Datos[i][0].trim();
+		Datos[i][0]=Remplace(Datos[i][0]," ","_");
+		RemoveUnusedItem(Datos[i]);
+		Datos[i][0]=Datos[i][0].split(".");
+		RemoveUnusedItem(Datos[i][0]);
+		addobj(base_obj, Datos[i][0], Datos[i][1]);
+		i++;
+	}
+}
+function addobj(ref, vname, val)
+{
+	var obj = ref;
+	var lst_obj = obj;
+	for(i=0;i<vname.length;i++)
+	{
+		//vname[i]=vname[i].toLowerCase();
+
+		[idx,name]=get_string_index(vname[i]);
+		if(idx == null)
+		    name=vname[i];
+		if(!obj[name])
+		{
+			if(idx != null)
+			{
+				obj[name]=new Array();
+				obj=obj[name];
+				name=idx;
+			}
+			obj[name]=new Object();
+		}
+		else
+		{
+			if(idx != null)
+			{
+				obj = obj[name];
+				name = idx;
+				if(obj[name]==undefined)
+					obj[name]=new Object();
 			}
 		}
-		obj=obj[vname[i]];
+		lst_obj=obj;
+		obj=obj[name];
 	}
+	if(val!=undefined && val!="undefined") 
+		lst_obj[name]=val.getval();
+	else
+		lst_obj[name]=0; //undefined;
 }
 function obj2txt(base,obj)
 {
 	var out="";
 	var rslt;
+	rslt=Object.prototype.toString.call(obj);
+	if(rslt != '[object Undefined]' && rslt != '[object Function]' && rslt != '[object Null]' && rslt != '[object Object]' && rslt != "[object Array]")
+	{
+		return (base+"="+obj.toString()+"\n");
+	}
 	for (var prop in obj)
 	{
 		rslt=Object.prototype.toString.call(obj[prop]);

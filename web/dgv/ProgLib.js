@@ -2,7 +2,6 @@
 var RGBcolor=["rgb(0,0,0)","rgb(255,0,0)","rgb(255,255,0)","rgb(255,255,255)","rgb(0,255,0)"];
 var StrokeWidth=8;
 var CIntReg=15;
-var PlnIdx=0;
 var OptTypPln=[0,"Plan Aislado",1,"Plan Sincronico"];
 var OptSycPot=[	"??/??/???? 00:00:00","Todos los dias 00:00:00","01/01/1970 00:00:00","01/01/1970 00:00:00","01/01/2000 00:00:00","01/01/2000 00:00:00","??/??/????A00:00:00","En el horario del ultimo cambio"]; //,"01/01/1900 00:00:00","01/01/1900 00:00:00","01/01/2000 00:00:00"
 
@@ -30,6 +29,7 @@ function ShowStss()
 {
 	var out="";
 	var PlnSts=PLCs()[PlcIdx].Sts;
+	iPHASEs=PHASEs();
 	out+="<table border=\"0\" align=\"center\" cellpadding=\"2\" cellspacing=\"2\" class=\"table1\" >\n";// width=\"90%\"
 	out+="<tr>\n";
 	out+="<td valign=\"top\" align=\"center\">\n";
@@ -38,12 +38,12 @@ function ShowStss()
 	out+="<td valign=\"top\" align=\"center\">\n";
 	out+="<font size=\"1\" face=\"arial\">"+Str_Name_Stage+"</font>\n";
 	out+="</td>\n";
-	for(var y=0;y<PHASEs().length;y++)
+	for(var y=0;y<iPHASEs.length;y++)
 	{
-		if(PHASEs()[y].PLC&(1<<PlcIdx))
+		if(iPHASEs[y].PLC&(1<<PlcIdx))
 		{
 			out+="<td valign=\"top\" align=\"center\">\n";
-			out+="<font size=\"1\" face=\"arial\">"+PHASEs()[y].Name+"</font>\n";
+			out+="<font size=\"1\" face=\"arial\">"+iPHASEs[y].Name+"</font>\n";
 			out+="</td>\n";
 		}
 	}
@@ -67,6 +67,7 @@ function ShowStss()
 	out+="</table>\n";
 	return out;
 }
+
 function ShowSts(nsts)
 {
 	var colorn=0;
@@ -78,14 +79,15 @@ function ShowSts(nsts)
 		out+="<td align=\"center\">\n";
 	out+="<input type=\"text\" align=\"right\" class=\"CssInText\" value=\""+PlnSts.Name+"\" size=\"8\" maxlength=\"8\" onchange=\"PLCs()["+PlcIdx+"].Sts["+nsts+"].Name=this.value;ReDraw(-1);\" />\n";
 	out+="</td>\n";
+	iPHASEs=PHASEs();
 	for (var j = 0; j<PlnSts.Colors.length; j++)
 	{
-		if(PHASEs()[j].PLC&(1<<PlcIdx))
+		if(iPHASEs[j].PLC&(1<<PlcIdx))
 		{
 			out+="<td align=\"center\" valign=\"middle\" height=\"10\" width=\"10\" onclick=\"ChgColSts("+nsts+","+j+");\" ";
 			//out+="class=\"table2\" style=\"background-color:rgb("+((Color>>16)&255)+","+((Color>>8)&255)+","+(Color&255)+")\" ";
 			out+=">\n";
-			out+=ShwMov(PlnSts.Colors[j],PHASEs()[j].Type);
+			out+=ShwMov(PlnSts.Colors[j],iPHASEs[j].Type);
 			//out+=color2svg(PlnSts.Colors[j],"");
 			out+="</td>\n";
 		}
@@ -109,7 +111,7 @@ function UpSts(s)
 
 function ChkJmp(sts1,sts2)
 {
-	if(GlobalParms.MODEL.indexOf("RT")!=-1)
+	if(GlobalParms().Model.indexOf("RT")!=-1)
 	{
 		for(var i=0;i<OTU.CftPLCs[PlcIdx].length;i++)
 		{
@@ -173,21 +175,22 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 	var Trv=0;
 	var Tke=0;
 	var PlnSts=PLCs()[PlcIdx].Sts;
+	iPHASEs=PHASEs();
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
 		Color1=PlnSts[TP1].Colors[ph];
 		Color2=PlnSts[TP2].Colors[ph];
 		if(Color1==1 && Color2==4)
-			if(Trv<PHASEs()[ph].R2V.length)
-				Trv=PHASEs()[ph].R2V.length;
+			if(Trv<iPHASEs[ph].R2V.length)
+				Trv=iPHASEs[ph].R2V.length;
 		if(Color1==4 && Color2==1)
-			if(Tvr<PHASEs()[ph].V2R.length)
-				Tvr=PHASEs()[ph].V2R.length;
+			if(Tvr<iPHASEs[ph].V2R.length)
+				Tvr=iPHASEs[ph].V2R.length;
 	}
 	Tev=Tvr+Trv;
 	for (ph=0;ph<PlnSts[TP1].Colors.length;ph++)
 	{
-		if(PHASEs()[ph].PLC&(1<<PlcIdx))
+		if(iPHASEs[ph].PLC&(1<<PlcIdx))
 		{
 			Color1=PlnSts[TP1].Colors[ph];
 			Color2=PlnSts[TP2].Colors[ph];
@@ -197,17 +200,17 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==4 && Color2==1)
 			{
-				if(PHASEs()[ph].V2R.length)
+				if(iPHASEs[ph].V2R.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-(Trv+PHASEs()[ph].V2R.length);
+					Tke=Tev-(Trv+iPHASEs[ph].V2R.length);
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs()[ph].V2R.length; j++)
+					for (j=0; j<iPHASEs[ph].V2R.length; j++)
 					{
-						out+=MkLine(PHASEs()[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(iPHASEs[ph].V2R[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
-					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+PHASEs()[ph].V2R.length)),X+(xstp*Tev));
+					out+=MkLine(Color2,Y+(ystp*ph),X+(xstp*(Tke+iPHASEs[ph].V2R.length)),X+(xstp*Tev));
 				}
 				else
 				{
@@ -216,15 +219,15 @@ function MkEv(TP1,TP2,X,Y,xstp,ystp)
 			}
 			if(Color1==1 && Color2==4)
 			{
-				if(PHASEs()[ph].R2V.length)
+				if(iPHASEs[ph].R2V.length)
 				{
 					out+=MkLine(0,Y+(ystp*ph),X,X+(xstp*Tev));
-					Tke=Tev-PHASEs()[ph].R2V.length;
+					Tke=Tev-iPHASEs[ph].R2V.length;
 					if(Tke)
 						out+=MkLine(Color1,Y+(ystp*ph),X,X+(xstp*Tke));
-					for (j=0; j<PHASEs()[ph].R2V.length; j++)
+					for (j=0; j<iPHASEs[ph].R2V.length; j++)
 					{
-						out+=MkLine(PHASEs()[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
+						out+=MkLine(iPHASEs[ph].R2V[j],Y+(ystp*ph),X+(xstp*(Tke+j)),X+(xstp*(Tke+j))+xstp);
 					}
 				}
 				else
@@ -306,22 +309,49 @@ function chgColor(plc,nsts,ColIdx,posibles)
 
 function ChgColSts(nsts,j)
 {
+	var mask=MSK_V_ALL;
+	Model=GlobalParms().Model;
+	iPHASEs=PHASEs();
+	iPLCs=PLCs();
 	if(true==ChkCFTSts(nsts,j))
 	{
-		if(GlobalParms.MODEL.indexOf("RT")!=-1)
+		if(Model.indexOf("RT")!=-1)
 		{
-			MSKtemp=MSKC_ORV.slice();
+			mask = MSK_ORV;
 		}
 		else
 		{
-			MSKtemp=MSKC_ORVvar.slice();
+			switch(iPHASEs[iPLCs[PlcIdx].Phases[j]].Type)
+			{
+				case 0:
+					mask = MSK_V_ALL;
+				break;
+				case 1:
+					mask = MSK_P_ALL;
+				break;
+			}
 		}
 	}
 	else
 	{
-		MSKtemp=MSKC_OR.slice();
+		if(Model.indexOf("RT")!=-1)
+		{
+			mask = MSK_OR;
+		}
+		else
+		{
+			switch(iPHASEs[iPLCs[PlcIdx].Phases[j]].Type)
+			{
+				case 0:
+					mask = MSK_V_cft;
+				break;
+				case 1:
+					mask = MSK_P_cft;
+				break;
+			}
+		}
 	}
-	PLCs()[PlcIdx].Sts[nsts].Colors[j]=chgColor2(PLCs()[PlcIdx].Sts[nsts].Colors[j],MSKtemp);
+	iPLCs[PlcIdx].Sts[nsts].Colors[j]=chgColor2(iPLCs[PlcIdx].Sts[nsts].Colors[j],mask);
 	ReDraw(conf_sts);
 }
 
@@ -330,11 +360,12 @@ function ChkCFTSts(nsts,ncolor)
 	var color=4;
 	var PhN=0;
 	PhN=ncolor;//PLCs()[PlcIdx].Sts[nsts].Color[ncolor];
-	if(!(color&0x30) && color&0x06 && PHASEs()[PhN].Sec.length)
+	iPHASEs=PHASEs();
+	if(!(color&0x30) && color&0x06 && iPHASEs[PhN].Sec.length)
 	{
-		for (var i = 0; i<PHASEs()[PhN].Sec.length; i++)
+		for (var i = 0; i<iPHASEs[PhN].Sec.length; i++)
 		{
-			if(PHASEs()[PhN].Sec[i]!=null && PHASEs()[PhN].Sec[i]>0)
+			if(iPHASEs[PhN].Sec[i]!=null && iPHASEs[PhN].Sec[i]>0)
 			{
 				if((PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x30)==0 && (PLCs()[PlcIdx].Sts[nsts].Colors[i]&0x06)!=0)
 					return false;
@@ -478,6 +509,7 @@ if(ColorCode==255)
 	out="<font size=\"1\" face=\"arial\">"+Str_no_Change+"<br /></font>\n";
 return out;
 }
+
 function ShwLevel(value,min,max)
 {
 	var out="";
@@ -516,6 +548,7 @@ function ShwSignal(color)
 	out+='</svg>\n';
 	return out;
 }
+
 function ShwGPSSignal(lvl)
 {
 	var out="";
@@ -581,71 +614,78 @@ function ShwSwch(color)
 	out+='</svg>\n';
 	return out;
 }
+
 function ShwMov(sts,typ)
 {
 	var out="";
-	if(typ==null || typ==0) //[0,"Vehicular",1,"Peatonal",2,"Giro",3,"Ciclista"];
+	typ=parseInt('0'+typ);
+	switch(typ)
 	{
-		out+="<svg width=\"25\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-		out+="<rect x=\"1\" y=\"1\" width=\"23\" height=\"48\" fill=\"#606060\" stroke-width=\"0\" stroke=\"black\" rx=\"3\" ry=\"3\" />\n"
-		color="\"#600\">\n";
-		if (sts&1)
+		default: //[0,"Vehicular",2,"Giro",3,"Ciclista"];
 		{
-			color="\"#F00\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			out+="<svg width=\"25\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+			out+="<rect x=\"1\" y=\"1\" width=\"23\" height=\"48\" fill=\"#606060\" stroke-width=\"0\" stroke=\"black\" rx=\"3\" ry=\"3\" />\n"
+			color="\"#600\">\n";
+			if (sts&1)
+			{
+				color="\"#F00\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"10\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			color="\"#660\">\n";
+			if (sts&2)
+			{
+				color="\"#FF0\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#660;#FF0;#FF0;#660" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"25\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			color="\"#060\">\n";
+			if (sts&4)
+			{
+				color="\"#0F0\">\n";
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+="<circle cx=\"13\" cy=\"40\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
+			out+="</svg>\n"
 		}
-		out+="<circle cx=\"13\" cy=\"10\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		color="\"#660\">\n";
-		if (sts&2)
+		break;
+		case 1:	//"Peatonal"
 		{
-			color="\"#FF0\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#660;#FF0;#FF0;#660" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+="<circle cx=\"13\" cy=\"25\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		color="\"#060\">\n";
-		if (sts&4)
-		{
-			color="\"#0F0\">\n";
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+="<circle cx=\"13\" cy=\"40\" r=\"6\" stroke=\"black\" stroke-width=\"1\" fill="+color+"</circle>\n";
-		out+="</svg>\n"
-	}
-	if(typ!=null && typ==1)
-	{
-		out+='<svg width="25" height="50" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">\n';
-		out+='<rect x="1" y="1" rx="3" ry="3" width="23" height="48" fill="#666" stroke-width="0" stroke="black" />\n';
-		out+='<circle cx="12.5" cy="12.5" fill="#400" id="BgRed" r="8" stroke=\"black\" stroke-width="1"/>\n';
-		out+='<circle cx="12.5" cy="37.5" fill="#040" id="BgGreen" r="8" stroke=\"black\" stroke-width="1"/>\n';
-		color='"#600">\n';
-		if (sts&1)
-		{
-			color='"#F00">\n';
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+='<g id="RedBody" transform="translate(2.5 2.5) scale(0.2 0.2)">\n';
-		out+='<circle cx="50" cy="20" r="5.41039" fill='+color+'</circle>\n';
-		out+='<path d="m49.95485,27.84974c-0.79035,0.0127 -6.0781,0.0311 -6.42786,0.0604c-4.15725,0.34851 -3.48717,20.70199 -3.48717,23.61009c3.42693,1.3526 4.09119,-3.53407 4.67673,-17.15366l0.0966,17.73335l4.97563,0l0.60686,0l4.97563,0l0.0966,-17.73335c0.58554,13.61959 1.2498,18.50626 4.67673,17.15366c0,-2.9081 0.67008,-23.26158 -3.48717,-23.61009c-0.34976,-0.0293 -5.63752,-0.0477 -6.42787,-0.0604c-0.0181,-0.00029 -0.0895,0.00029 -0.10264,0c-0.007,0.0002 -0.0606,-0.00019 -0.0694,0c0,0 -0.10266,0 -0.10266,0l-0.00001,0z" fill='+color+'</path>\n';
-		out+='<path d="m44.79353,53.79066l-1.9202,31.2094c6.81754,-0.47252 6.82668,2.71272 6.8264,-23.96636c0.12179,-0.0131 0.26261,-0.0368 0.3925,-0.0543c0.13102,0.0177 0.27268,0.0413 0.39551,0.0543c-0.00029,26.67908 0.006,23.49384 6.82337,23.96636l-1.91719,-31.2094l-4.60728,0.003l-1.38883,0l-4.60428,-0.003z" fill='+color+'</path>\n';
-		out+='</g>\n';
-		color='"#060">\n';
-		if (sts&4)
-		{
-			color='"#0F0">\n';
-			if (sts&16)
-				color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
-		}
-		out+='<g id="GreenBody" transform="translate(2.5 7) scale(0.2 0.2)">\n';
-		out+='<circle cx="-5216.84849" cy="-970.38143" r="56" transform="matrix(0.0997151 0 0 0.0997151 567.948 217.346)"  fill='+color+'</circle>\n';
-		out+='<path d="m31.19658,152.69232c15.12346,-23.59924 13.69421,-24.26401 19.34473,-24.4302c3.2906,0.0997 3.39031,0.99715 8.97436,5.38461c6.88034,5.05224 6.38177,5.11871 6.28205,10.66952c-0.0332,6.68091 0.4321,6.18234 -4.88604,8.67521l0,-11.2678l-4.68661,-4.18804l0,15.8547l-11.16809,-0.0997l-0.0997,-12.5641c-9.17378,14.15954 -8.57549,13.36182 -13.76068,11.96581l-0.00002,-0.00001z" fill='+color+'</path>\n';
-		out+='<path d="m45.25641,154.98577l10.86895,0c0,2.49287 0.79772,2.29344 6.58119,13.16239c6.08262,11.20133 6.18234,10.43685 2.69231,16.85185l-15.05698,-27.02279c-14.25926,27.58784 -12.46439,26.75688 -20.34188,26.22507l7.87749,-14.75784c6.74739,-12.19848 7.11301,-12.23171 7.37892,-14.45868z" fill='+color+'</path>\n';
-		out+='</g>\n';
+			out+='<svg width="25" height="50" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">\n';
+			out+='<rect x="1" y="1" rx="3" ry="3" width="23" height="48" fill="#666" stroke-width="0" stroke="black" />\n';
+			out+='<circle cx="12.5" cy="12.5" fill="#400" id="BgRed" r="8" stroke=\"black\" stroke-width="1"/>\n';
+			out+='<circle cx="12.5" cy="37.5" fill="#040" id="BgGreen" r="8" stroke=\"black\" stroke-width="1"/>\n';
+			color='"#600">\n';
+			if (sts&1)
+			{
+				color='"#F00">\n';
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#600;#F00;#F00;#600" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+='<g id="RedBody" transform="translate(2.5 2.5) scale(0.2 0.2)">\n';
+			out+='<circle cx="50" cy="20" r="5.41039" fill='+color+'</circle>\n';
+			out+='<path d="m49.95485,27.84974c-0.79035,0.0127 -6.0781,0.0311 -6.42786,0.0604c-4.15725,0.34851 -3.48717,20.70199 -3.48717,23.61009c3.42693,1.3526 4.09119,-3.53407 4.67673,-17.15366l0.0966,17.73335l4.97563,0l0.60686,0l4.97563,0l0.0966,-17.73335c0.58554,13.61959 1.2498,18.50626 4.67673,17.15366c0,-2.9081 0.67008,-23.26158 -3.48717,-23.61009c-0.34976,-0.0293 -5.63752,-0.0477 -6.42787,-0.0604c-0.0181,-0.00029 -0.0895,0.00029 -0.10264,0c-0.007,0.0002 -0.0606,-0.00019 -0.0694,0c0,0 -0.10266,0 -0.10266,0l-0.00001,0z" fill='+color+'</path>\n';
+			out+='<path d="m44.79353,53.79066l-1.9202,31.2094c6.81754,-0.47252 6.82668,2.71272 6.8264,-23.96636c0.12179,-0.0131 0.26261,-0.0368 0.3925,-0.0543c0.13102,0.0177 0.27268,0.0413 0.39551,0.0543c-0.00029,26.67908 0.006,23.49384 6.82337,23.96636l-1.91719,-31.2094l-4.60728,0.003l-1.38883,0l-4.60428,-0.003z" fill='+color+'</path>\n';
+			out+='</g>\n';
+			color='"#060">\n';
+			if (sts&4)
+			{
+				color='"#0F0">\n';
+				if (sts&16)
+					color+='<animate attributeType="XML" attributeName="fill" values="#060;#0F0;#0F0;#060" dur="1s" repeatCount="indefinite"/>\n';
+			}
+			out+='<g id="GreenBody" transform="translate(2.5 7) scale(0.2 0.2)">\n';
+			out+='<circle cx="-5216.84849" cy="-970.38143" r="56" transform="matrix(0.0997151 0 0 0.0997151 567.948 217.346)"  fill='+color+'</circle>\n';
+			out+='<path d="m31.19658,152.69232c15.12346,-23.59924 13.69421,-24.26401 19.34473,-24.4302c3.2906,0.0997 3.39031,0.99715 8.97436,5.38461c6.88034,5.05224 6.38177,5.11871 6.28205,10.66952c-0.0332,6.68091 0.4321,6.18234 -4.88604,8.67521l0,-11.2678l-4.68661,-4.18804l0,15.8547l-11.16809,-0.0997l-0.0997,-12.5641c-9.17378,14.15954 -8.57549,13.36182 -13.76068,11.96581l-0.00002,-0.00001z" fill='+color+'</path>\n';
+			out+='<path d="m45.25641,154.98577l10.86895,0c0,2.49287 0.79772,2.29344 6.58119,13.16239c6.08262,11.20133 6.18234,10.43685 2.69231,16.85185l-15.05698,-27.02279c-14.25926,27.58784 -12.46439,26.75688 -20.34188,26.22507l7.87749,-14.75784c6.74739,-12.19848 7.11301,-12.23171 7.37892,-14.45868z" fill='+color+'</path>\n';
+			out+='</g>\n';
 
-		out+='</svg>\n';
+			out+='</svg>\n';
+		}
+		break;
 	}
 	//alert(out);
 	return out;
@@ -814,6 +854,7 @@ function GetTmin2(PLC,sts1,sts2)
 	if(PLC.Sts.length>sts1 && PLC.Sts.length>sts2)
 	{
 		RemoveUnusedItem(PLC.Sts[sts1].Colors);
+		iPHASEs=PHASEs();
 		for(var i=0;i<PLC.Sts[sts1].Colors.length;i++)
 		{
 			if(//
@@ -824,13 +865,13 @@ function GetTmin2(PLC,sts1,sts2)
 			{
 				if(PLC.Sts[sts1].Colors[i]==1)
 				{
-					tiempot=PHASEs()[i].MiGT;
-					evt=PHASEs()[i].R2V.length
+					tiempot=iPHASEs[i].MiGT;
+					evt=iPHASEs[i].R2V.length
 				}
 				else
 				{
-					tiempot=PHASEs()[i].MiRT;
-					evt=PHASEs()[i].V2R.length
+					tiempot=iPHASEs[i].MiRT;
+					evt=iPHASEs[i].V2R.length
 				}
 				if(tiempo<tiempot)
 					tiempo=tiempot;
@@ -849,15 +890,16 @@ function GetTmin(PLC,sts)
 	var tiempo=0;
 	var tiempot=0;
 	var ph=0;
+	iPHASEs=PHASEs();
 	if(PLC.Sts.length>sts)
 	{
 		for(var i=0;i<PLC.Sts[sts].Colors.length;i++)
 		{
 			ph=i;//PLC.Phases[i];
 			if(PLC.Sts[sts].Colors[i]==4)
-				tiempot=PHASEs()[ph].MiGT;
+				tiempot=iPHASEs[ph].MiGT;
 			if(PLC.Sts[sts].Colors[i]==1)
-				tiempot=PHASEs()[ph].MiRT;
+				tiempot=iPHASEs[ph].MiRT;
 			if(tiempo<tiempot)
 				tiempo=tiempot;
 		}
@@ -875,11 +917,13 @@ function SubSts(Nsts)
 
 function AddSts()
 {
-	var Nsts=PLCs()[PlcIdx].Sts.length
-	PLCs()[PlcIdx].Sts[Nsts]=new Object();
-	PLCs()[PlcIdx].Sts[Nsts].Colors= new Array();
-	for (var j = 0; j<PLCs()[PlcIdx].Phases.length; j++)
-		PLCs()[PlcIdx].Sts[Nsts].Colors[j]=1;
+	iplc = PLCs()[PlcIdx];
+	var Nsts=iplc.Sts.length
+	iplc.Sts[Nsts]=new Object();
+	iplc.Sts[Nsts].Name=""+String.fromCharCode(65+Nsts);
+	iplc.Sts[Nsts].Colors= new Array();
+	for (var j = 0; j<iplc.Phases.length; j++)
+		iplc.Sts[Nsts].Colors[j]=1;
 	ModParm("pPLCs.Sts");
 }
 
@@ -888,20 +932,25 @@ function RcvPlns(Dados)
 	var Code = Dados.responseText;
 	var j=0;
 	var i=0;
-	PLCs()[PlcIdx].Plans= new Array();
+	iplc=PLCs()[PlcIdx];
+	if(!iplc.Plans)
+		iplc.Plans = new Array();
+	Plans=iplc.Plans;
 	Code=Code.split('\n\n');
 	PlnIdx=0;
 	while(PlnIdx<Code.length)
 	{
 		Code[PlnIdx]=RemoveUnuseChar(Code[PlnIdx]);
 		Code[PlnIdx]=Code[PlnIdx].trim();
+		//Plans[PlnIdx]=new Object();
+		//RcvFile(Plans[PlnIdx], Code[PlnIdx]);
 		if(Code[PlnIdx]=="")
 		{
 			Code.splice(PlnIdx,1);
 		}
 		else
 		{
-			PLCs()[PlcIdx].Plans[PlnIdx]=new Object();
+			Plans[PlnIdx]=new Object();
 			Code[PlnIdx]=Code[PlnIdx].split('\n');
 			//----------------------------------------------------
 			j=0;
@@ -925,70 +974,70 @@ function RcvPlns(Dados)
 				switch(Code[PlnIdx][j][0])
 				{
 					case "PLNTYP":
-						PLCs()[PlcIdx].Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
+						Plans[PlnIdx]=myNewPlan(parseInt("0"+Code[PlnIdx][j][1]));
 					break;
 					case "PHC":
-						PLCs()[PlcIdx].Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
+						Plans[PlnIdx].EV=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTCI":	// tiempo de ciclo
-						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs()[PlcIdx].Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
+						if(Plans[PlnIdx].Typ==1)
+							Plans[PlnIdx].TC=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLSYCTOF":
-						if(PLCs()[PlcIdx].Plans[PlnIdx].Typ==1)
-							PLCs()[PlcIdx].Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
+						if(Plans[PlnIdx].Typ==1)
+							Plans[PlnIdx].OF=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "LCLASYDEMTYP":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Typ=Dados[i];
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Typ=Dados[i];
 						}
 					break;
 					case "LCLSYCDEMNUM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Num=Dados[i];
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Num=Dados[i];
 						}
 					break;
 					case "LCLASYDEXSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
 						for(i=0;i<Dados.length;i++)
 						{
-							if(!PLCs()[PlcIdx].Plans[PlnIdx].Dem[i])
-								PLCs()[PlcIdx].Plans[PlnIdx].Dem[i]= new Object();
-							PLCs()[PlcIdx].Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
+							if(!Plans[PlnIdx].Dem[i])
+								Plans[PlnIdx].Dem[i]= new Object();
+							Plans[PlnIdx].Dem[i].Dat=ConvToInt(Dados[i].split(' '));
 						}
 					break;
 					case "LCLLGCSTP":
 						Dados=Code[PlnIdx][j][1].split(',');
-						PLCs()[PlcIdx].Plans[PlnIdx].Logic=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].Logic=Dados.slice()
+						Plans[PlnIdx].Logic=new Array()
+						Plans[PlnIdx].Logic=Dados.slice()
 					break;
 					case "LGC":
-						i=PLCs()[PlcIdx].Plans[PlnIdx].LGCs.length;
-						PLCs()[PlcIdx].LGCs[i]=new Object();
-						PLCs()[PlcIdx].LGCs[i].Name=Code[PlnIdx][j][1];
-						PLCs()[PlcIdx].LGCs[i].Code=Code[PlnIdx][j][2];
+						i=Plans[PlnIdx].LGCs.length;
+						iplc.LGCs[i]=new Object();
+						iplc.LGCs[i].Name=Code[PlnIdx][j][1];
+						iplc.LGCs[i].Code=Code[PlnIdx][j][2];
 					break;
 					case "LCLASYTNOSTP":
 					case "LCLSYCTSTSTP":	//vector de tiempos de estados
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs()[PlcIdx].Plans[PlnIdx].TP=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].TP=Dados.slice()
+						Plans[PlnIdx].TP=new Array()
+						Plans[PlnIdx].TP=Dados.slice()
 					break;
 					case "PLNDIMTYP":
-						PLCs()[PlcIdx].Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
+						Plans[PlnIdx].DimTyp=parseInt("0"+Code[PlnIdx][j][1]);
 					break;
 					case "PLNDIM":
 						Dados=ConvToInt(Code[PlnIdx][j][1].split(','));
-						PLCs()[PlcIdx].Plans[PlnIdx].Dim=new Array()
-						PLCs()[PlcIdx].Plans[PlnIdx].Dim=Dados.slice()
+						Plans[PlnIdx].Dim=new Array()
+						Plans[PlnIdx].Dim=Dados.slice()
 					break;
 				}
 			}
@@ -997,9 +1046,11 @@ function RcvPlns(Dados)
 	}
 	PlnIdx=0;
 }
+
 function SendPlans(Plans)
 {
 	UpMode=10;
+	UpSeek=0;
 	UpPath="/"+PlcIdx;
 	UpType="txt";
 	UpData="";
@@ -1078,7 +1129,6 @@ function SendPlans(Plans)
 			UpData+="\n";
 	}
 	UpFile="plans.es3"
-	seek=0;
 	return UpData;
 }
 function myNewPlan(PLNTYP)

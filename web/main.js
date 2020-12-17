@@ -11,33 +11,33 @@ const { dialog } = require('electron').remote;
 
 const MnuTemplate = [
 	{
-		label:"Archivos",
+		label:Str_mnu_files,
 		submenu:[
 		{
-			label:"Nuevo",
-			click:function(){console.log("New")}
+			label:Str_mnu_new,
+			click:function(){console.log(Str_mnu_new);GetUrlError=""}
 		},{
-			label:"Cargar Conf.",
+			label:Str_mnu_load_conf,
 			submenu:[
 			{
-				label:"Desde Carpeta",
-				click:ShwLoadHd		
+				label:Str_mnu_from_folder,
+				click:function(){console.log(Str_mnu_from_folder);ShwLoadHd();GetUrlError="";}
 			},{
-				label:"Desde IP",
-				click:ShwLoadIP
+				label:Str_mnu_from_ip,
+				click:function(){console.log(Str_mnu_from_ip);ShwLoadIP();GetUrlError="";}
 			}/*,{
 				label:"Desde Serial",
 				click:ShwLoadSer
 			}*/]
 		},{
-			label:"Guardar Conf",
+			label:Str_mnu_save_conf,
 			enabled:false,
 			submenu:[
 			{
-				label:"En Carpeta",
+				label:Str_mnu_to_folder,
 				click:ShwSaveHd
 			},{
-				label:"En IP",
+				label:Str_mnu_to_ip,
 				click:ShwSaveIP
 			}/*,{
 				label:"Por Serial",
@@ -45,35 +45,42 @@ const MnuTemplate = [
 			}*/]
 		},{
 			type:"separator"
-		},{
-			label:"Salir",
+		},/*{
+			label:Str_mnu_reset,
+			click:function(){
+				console.log("Reset")
+				app.relaunch();
+				app.quit();
+			}
+		},*/{
+			label:Str_mnu_exit,
 			click:function(){
 				console.log("Exit")
 				app.quit()
 			}
 		}]
 	},{
-		label:"Configuraciones",
+		label:Str_mnu_configs,
 		submenu:[]
 	}];
 
 var std_submenu=[
 			{
-				label:"Estado",
+				label:Str_mnu_status,
 				click:ShwStatus
 			},{
-				label:"General",
+				label:Str_mnu_general,
 				click:ShwGeneral
 			},{
-				label:"Funcionamiento",
+				label:Str_mnu_functionalty,
 				click:ShwUtility
 			},{
-				label:"Comunicacion",
+				label:Str_mnu_comms,
 				click:ShwDrvs
 			},{
 			type:"separator"
 			},{
-				label:"Recargar",
+				label:Str_mnu_reload,
 				click:ReloadSrc
 			}];
 function Start()
@@ -87,7 +94,7 @@ function Start()
 	LanguageToES();
 	percent=0;
 	menu = Menu.buildFromTemplate(MnuTemplate);
-	menu.items[0].submenu.items[2].enabled=false;
+	//menu.items[0].submenu.items[2].enabled=false;
 	Menu.setApplicationMenu(menu);
 	AutoRefresh=setInterval("fnc0()",150); //executa fnc0 em 50 e 50 milissegundos
 	FlyMnu = document.getElementById("divFlyMnu");
@@ -95,6 +102,8 @@ function Start()
 
 function ShwStatus(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiS)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -105,6 +114,8 @@ function ShwStatus(menuItem, browserWindow, event)
 
 function ShwGeneral(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiG)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -114,6 +125,8 @@ function ShwGeneral(menuItem, browserWindow, event)
 }
 function ShwUtility(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiF)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -123,6 +136,8 @@ function ShwUtility(menuItem, browserWindow, event)
 }
 function ShwDrvs(menuItem, browserWindow, event)
 {
+	if(SrcIdx==menuItem.SrcIdx && Widx==WiD)
+		return;
 	SrcIdx = menuItem.SrcIdx;
 	TrgIdx=SrcIdx;
 	WizrdIdx=0;
@@ -171,7 +186,13 @@ function FncNewF()
 /*===========================================================================*/
 function LOG(log)
 {
-	if(Log_En && log)document.getElementById('dgv').innerHTML+=HTMLEncode(log)+"<br />"; //.replace("\n","<br />")
+	LOG_level(log, 0);
+}
+function LOG_level(log, level)
+{
+	if(Log_En > level && log)
+		document.getElementById('dgv').innerHTML+=HTMLEncode(log)+"<br />"; //.replace("\n","<br />")
+	console.log(log);
 }
 function ClsLOG()
 {
@@ -354,6 +375,52 @@ function getgroup(OBJ,Attrib,valor)
 		}
 	}
 	return rtn;
+}
+
+function sub_elements(element, type, attrib, value, exclude)
+{
+	element=element.getElementsByTagName('input')
+	for(idx in element)
+	{
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+		subelements=element[idx];
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+				subelements.setAttribute(attrib, value);
+		}
+	}
+}
+
+function disabled_elements(obj, type, value, exclude)
+{
+	element=obj.getElementsByTagName('input');
+	for(idx in element)
+	{
+		subelements=element[idx];
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+			continue;
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+			if(value!=false)
+				subelements.setAttribute('disabled', 'true');
+			else
+				subelements.removeAttribute('disabled');
+		}
+	}
+	element=obj.getElementsByTagName('select');
+	for(idx in element)
+	{
+		subelements=element[idx];
+		if(exclude && exclude.indexOf(sub_elements.id)!=-1)
+			continue;
+		if(subelements.type && type.indexOf(subelements.type)!= -1)
+		{
+			if(value!=false)
+				subelements.setAttribute('disabled', 'true');
+			else
+				subelements.removeAttribute('disabled');
+		}
+	}
 }
 
 /*===========================================================================*/

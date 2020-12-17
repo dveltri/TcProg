@@ -52,7 +52,7 @@ function ShwIos()
 	list +=Str_io_Time_out;
 	list +="</td>\n";
 	list +="</tr>\n";
-	for (var i=0; (i<IOs.length) && (i<(GlobalParms.HwIo+GlobalParms.Inputs+GlobalParms.Loops)); i++)
+	for (var i=0; (i<IOs.length) && (i<(GlobalParms().HwIo+GlobalParms().Inputs+GlobalParms().Loops)); i++)
 	{		
 		list +="<tr bordercolor=\"Silver\">\n";
 		list +="<td align=\"left\">["+(i+1)+"]"+IOs[i].Name+"</td>\n";

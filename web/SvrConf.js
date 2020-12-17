@@ -1,30 +1,73 @@
 function GlobalParms(i){if(i==undefined)return PrgEd[SrcIdx].GlobalParms;		else return PrgEd[i].GlobalParms;}
 function GlobalVars(i){	if(i==undefined)return PrgEd[SrcIdx].GlobalVars;		else return PrgEd[i].GlobalVars;}
-function PLCs(i){		if(i==undefined)return PrgEd[SrcIdx].PLCs;				else return PrgEd[i].PLCs;}
-function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].PHASEs;			else return PrgEd[i].PHASEs;}
+function PLCs(i)
+{
+	if(i==undefined)
+		return PrgEd[SrcIdx].PLCs;
+	else
+		return PrgEd[i].PLCs;
+}
+function PHASEs(i){		if(i==undefined)return PrgEd[SrcIdx].Phases;			else return PrgEd[i].Phases;}
 function ErrorsCfg(i){	if(i==undefined)return PrgEd[SrcIdx].ErrorsCfg;			else return PrgEd[i].ErrorsCfg;}
 function Iteris(i){		if(i==undefined)return PrgEd[SrcIdx].Iteris;			else return PrgEd[i].Iteris;}
-function SDgvP(i){		if(i==undefined)return PrgEd[SrcIdx].SDgvP;				else return PrgEd[i].SDgvP;}
-function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].GPS;				else return PrgEd[i].GPS;}
+function SdgvP(i){		if(i==undefined)return PrgEd[SrcIdx].sdgvp;				else return PrgEd[i].sdgvp;}
+function Pdgv(i){		if(i==undefined)return PrgEd[SrcIdx].pdgv;				else return PrgEd[i].pdgv;}
+function Mstr(i){		if(i==undefined)return PrgEd[SrcIdx].master;			else return PrgEd[i].master;}
+function GPS(i){		if(i==undefined)return PrgEd[SrcIdx].gps;				else return PrgEd[i].gps;}
 function IOs(i){		if(i==undefined)return PrgEd[SrcIdx].IOs;				else return PrgEd[i].IOs;}
-function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].OPCT;				else return PrgEd[i].OPCT;}
+function OPCT(i){		if(i==undefined)return PrgEd[SrcIdx].citar;				else return PrgEd[i].citar;}
 function OTU(i){		if(i==undefined)return PrgEd[SrcIdx].OTU;				else return PrgEd[i].OTU;}
 function DefIn(i){		if(i==undefined)return PrgEd[SrcIdx].DefIn;				else return PrgEd[i].DefIn;}
-function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].NTP;				else return PrgEd[i].NTP;}
+function NTP(i){		if(i==undefined)return PrgEd[SrcIdx].ntp;				else return PrgEd[i].ntp;}
 function DGVFTP(i){		if(i==undefined)return PrgEd[SrcIdx].DGVFTP;			else return PrgEd[i].DGVFTP;}
 function HOST(i){		if(i==undefined)return PrgEd[SrcIdx].host;				else return PrgEd[i].host;}
 function Links(i){		if(i==undefined)return PrgEd[SrcIdx].Links;				else return PrgEd[i].Links;}
 function GetSec(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Sec;		else return PrgEd[i].PLCs[x].Sec;}
 function GetSch(i,x){	if(i==undefined)return PrgEd[SrcIdx].PLCs[x].Scheduler;	else return PrgEd[i].PLCs[x].Scheduler;}
 
+function get_file_list_conf(model)
+{
+	conf_files = [
+		{file: "startup.ini", parser:  RcvStartup},
+		{file: "phconf.ini", parser:  RcvStartup},
+		{file: "def_in.ini", parser:  RcvStartup},
+		{file: "plcs.ini", parser:  RcvStartup},
+		{file: "error.ini", parser:  RcvStartup},
+		{file: PLCs()[PlcIdx].Sec, parser:  RcvStartup},
+		{file: PLCs()[PlcIdx].Scheduler, parser:  RcvStartup},
+		{file: "ip.ini", parser:  RcvStartup},
+		{file: "gps.ini", parser:  RcvStartup},
+		{file: "dgvp.ini", parser:  RcvStartup},
+		{file: "sdgvp.ini", parser:  RcvStartup},
+		{file: "ntp.ini", parser:  RcvStartup},
+		{file: "opct.ini", parser:  RcvStartup},
+		{file: "OTU.ini", parser:  RcvStartup},
+		{file: "Master.ini", parser:  RcvStartup},
+		{file: "phc.ini", parser:  RcvStartup},
+		{file: "planmc.es4", parser:  RcvStartup},
+		{file: "planotu.es4", parser:  RcvStartup},
+		{file: "plans.es4", parser:  RcvStartup},
+		{file: "ph_group.phg", parser:  RcvStartup},
+	];
+	return conf_files;
+}
+
 function ShwLoadHd()
 {
 	percent=0;
 	PBarOff();
-	var temp=dialog.showOpenDialog({ properties: ['openDirectory'],defaultPath:"./Conf" });
-	if(temp && temp!="")
+	var options={title:Str_dir_name_to_load, properties: ['openDirectory'], defaultPath:"./Conf", buttonLabel:"Load directorio"};
+	let loadDialog =dialog.showOpenDialog(null, options);
+	loadDialog.then(function(loadFrom) {load_hd(loadFrom);});
+}
+
+function load_hd(DirName)
+{
+	if(DirName.canceled)
+		return;
+	try
 	{
-		temp=temp[0];
+		temp=DirName.filePaths[0];
 		SvrIp=temp;
 		temp=temp.split("/Conf/");
 		if(temp.length>1)
@@ -33,20 +76,30 @@ function ShwLoadHd()
 			AddSrcNow(temp[1][0],'12345',0);
 		}
 	}
+	catch (e)
+	{
+		alert(e);
+	}
 }
+
 function ShwSaveHd()
 {
 	percent=0;
 	PBarOff();
 	UpPath="";
-	dialog.showSaveDialog( (DirName)=>{
+	var options={title:Str_dir_name_to_save, defaultPath:"./Conf", buttonLabel:"Crear directorio"};
+	let saveDialog = dialog.showSaveDialog(null, options);
+	saveDialog.then(function(saveTo) {save_hd(saveTo.filePath);});
+}
+function save_hd(DirName)
+{
 	if(DirName===undefined)
 		return;
 	try
 	{
 		fs.mkdir(DirName, { recursive: true }, (err) => {if(err)throw err;});
 		fs.mkdir(DirName+"/err", { recursive: true }, (err) => {if(err)throw err;});
-		for(var i=0;i<GlobalParms().Controllers;i++)
+		for(var i=0;i<4;i++)	//GlobalParms().Controllers
 		{
 			fs.mkdir(DirName+"/"+i, { recursive: true }, (err) => {if(err)throw err;});
 			fs.mkdir(DirName+"/"+i+"/err", { recursive: true }, (err) => {if(err)throw err;});
@@ -60,8 +113,8 @@ function ShwSaveHd()
 	{
 		alert(e);
 	}
-	});
 }
+
 function ShwLoadIP()
 {
 	percent=0;
@@ -351,7 +404,7 @@ function updIpToAdd(entry)
 }
 function GetEth()
 {
-	return document.getElementById("IPADD").value;
+	return Remplace(document.getElementById("IPADD").value, ',', '.');
 }
 function AddSrcNow(ID,wac,typ)
 {
@@ -364,52 +417,60 @@ function AddSrcNow(ID,wac,typ)
 	PrgEd[SrcIdx].GlobalParms=  new Object();
 	PrgEd[SrcIdx].GlobalVars=new Object();
 	PrgEd[SrcIdx].PLCs = new Array();
-	PrgEd[SrcIdx].PHASEs = new Array();
+	PrgEd[SrcIdx].Phases = new Array();
 	PrgEd[SrcIdx].IOs = new Array();
 	PrgEd[SrcIdx].Srv = new Array();
 	PrgEd[SrcIdx].Links = new Array();
-	PrgEd[SrcIdx].NTP = new Object();
-	PrgEd[SrcIdx].SDgvP=new Object();
-	PrgEd[SrcIdx].GPS = new Object();
 	PrgEd[SrcIdx].ErrorsCfg = new Object();
 	PrgEd[SrcIdx].OTU = new Object();
 	PrgEd[SrcIdx].DefIn = new Object();
-	PrgEd[SrcIdx].OPCT = new Object();
-	PrgEd[SrcIdx].Mstr = new Object();
+	PrgEd[SrcIdx].citar = new Object();
 	PrgEd[SrcIdx].Iteris = new Object();
 	PrgEd[SrcIdx].DgvSoft = new Object();
 	PrgEd[SrcIdx].GlobalParms.ID=ID;
 	//--------------------------------------------------------------
 	percent=0;
-	if(typ==0)
+	switch(typ)
 	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="file:/"+SvrIp;
-		PrgEd[SrcIdx].DGVFTP='info.jsp';
-		wizard=[[moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu		
-	}
-	if(typ==1)
-	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="http://"+ID+"/";
-		PrgEd[SrcIdx].DGVFTP='info.fls';
-		wizard=[[moni_general,moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu
-	}
-	if(typ==2)
-	{
-		PrgEd[SrcIdx].Typ=typ;
-		PrgEd[SrcIdx].host="http://"+ID+"/";
-		PrgEd[SrcIdx].DGVFTP='info.fls';
-		wizard=[[moni_general,moni_errors],
-		[conf_general],
-		[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
-		[conf_Comm]];//,conf_otu
+		case 0:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="file:/"+SvrIp;
+			PrgEd[SrcIdx].DGVFTP='info.jsp';
+			wizard=[
+				[moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu		
+		}
+		break;
+		case 1:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="http://"+ID+"/";
+			PrgEd[SrcIdx].DGVFTP='info.fls';
+			wizard=[
+				[moni_general,moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu
+		}
+		break;
+		case 2:
+		{
+			PrgEd[SrcIdx].Typ=typ;
+			PrgEd[SrcIdx].host="http://"+ID+"/";
+			PrgEd[SrcIdx].DGVFTP='info.fls';
+			wizard=[
+				[moni_general,moni_errors],
+				[conf_general],
+				[conf_phases,conf_ev,conf_sec,conf_sts,conf_plan,conf_sch],
+				[conf_Comm]
+			];//,conf_otu
+		}
+		break;
 	}
 	PrgEd[SrcIdx].host=Remplace(PrgEd[SrcIdx].host,'///','//');
 	//--------------------------------------------------------------
@@ -420,7 +481,7 @@ function AddSrcNow(ID,wac,typ)
 }
 
 //---------------------------------------
-function ShwListSrc()
+/*function ShwListSrc()
 {
 	var out="";
 	var dif="";
@@ -480,7 +541,7 @@ function ShwListSrc()
 			dif="";
 			dif+=compare2objects(PrgEd[SrcIdx].GlobalParms,	PrgEd[TrgIdx].GlobalParms);
 			dif+=compare2objects(PrgEd[SrcIdx].PLCs,		PrgEd[TrgIdx].PLCs);
-			dif+=compare2objects(PrgEd[SrcIdx].PHASEs,		PrgEd[TrgIdx].PHASEs);
+			dif+=compare2objects(PrgEd[SrcIdx].Phases,		PrgEd[TrgIdx].Phases);
 			dif+=compare2objects(PrgEd[SrcIdx].IOs,			PrgEd[TrgIdx].IOs);
 			dif+=compare2objects(PrgEd[SrcIdx].Srv,			PrgEd[TrgIdx].Srv);
 			dif+=compare2objects(PrgEd[SrcIdx].ErrorsCfg,	PrgEd[TrgIdx].ErrorsCfg);
@@ -491,7 +552,7 @@ function ShwListSrc()
 		dif="";
 		dif+=compare2objects(PrgEd[i].GlobalParms,	PrgBk[i].GlobalParms);
 		dif+=compare2objects(PrgEd[i].PLCs,			PrgBk[i].PLCs);
-		dif+=compare2objects(PrgEd[i].PHASEs,		PrgBk[i].PHASEs);
+		dif+=compare2objects(PrgEd[i].Phases,		PrgBk[i].Phases);
 		dif+=compare2objects(PrgEd[i].IOs,			PrgBk[i].IOs);
 		dif+=compare2objects(PrgEd[i].Srv,			PrgBk[i].Srv);
 		dif+=compare2objects(PrgEd[i].ErrorsCfg,	PrgBk[i].ErrorsCfg);
@@ -505,7 +566,7 @@ function ShwListSrc()
 		out+="		 <input type=\"radio\" id=\"SelSrc\" name=\"SelSrc\" value=\""+i+"\" onclick=\"chgsrc("+i+");\" "+(SrcIdx==i?"checked=\"checked\"":"")+" />\n";
 		out+="	</td>\n";
 		out+="	<td align=\"center\">\n";
-		out+="		<font size=\"1\" face=\"arial\">"+PrgEd[i].GlobalParms.ID+" "+GetOption(OptAddSrc,PrgEd[i].GlobalParms.MODEL);
+		out+="		<font size=\"1\" face=\"arial\">"+PrgEd[i].GlobalParms.ID+" "+GetOption(OptAddSrc,PrgEd[i].GlobalParms.Model);
 		if(PrgEd[i].Typ==0)
 			out+="			<a href=\"\" onclick=\"AddSrcNow('"+Remplace(""+PrgEd[i].GlobalParms.ETH0,",",".")+"','"+PrgEd[i].SrcWAC+"',1);return false;\" >["+Remplace(PrgEd[i].GlobalParms.ETH0,",",".")+"]</a>";
 		if(PrgEd[i].Typ==1)
@@ -527,7 +588,7 @@ function ShwListSrc()
 	}
 	out+="</table>\n";
 	return out;
-}
+}	// */
 function DelSrcItm(idx)
 {
 	PrgEd.splice(idx,1);
@@ -547,93 +608,95 @@ function chgtrg(idx)
 }
 
 //---------------------------------------
+var RcvConfFnc=0;
 function LoadConfSrc()
 {
 	var request=0;
 	PBarUpDate();
 	switch(percent)
 	{
-		case 0:
+		case 0://	startup.ini
 		{
 			PrgEd[SrcIdx].Log="";
 			percent=1;
 			ShwPBar('Loading General...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/startup.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/startup.ini',RcvConfSrc);
 		}
 		break;
-		case 2:
+		case 2://	addvar.ini
 		{
 			ShwPBar('Loading Global vars...');
 			request=1;
-			//request=GetUrl(PrgEd[SrcIdx].host+'/gvar.bin',RcvConfSrc);
+			//request=GetUrl(HOST()+'/gvar.bin',RcvConfSrc);
 			percent=3;
 		}
 		break;
-		case 3:
+		case 3://	phconf.ini
 		{
 			ShwPBar('Loading de Phases 2...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/phconf.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/phconf.ini',RcvConfSrc);
 		}
 		break;
-		case 4:
+		case 4://	plcs.ini
 		{
 			ShwPBar('Loading de Controladores...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/plcs.ini',RcvConfSrc);
+			request=GetUrlB(HOST()+'/plcs.ini',RcvConfSrc);
 		}
 		break;
-		case 6:
-		case 8:
-		case 10:
-		case 12:
+		case 6://	/0/ls *.eil
+		case 8://	/1/ls *.eil
+		case 10://	/2/ls *.eil
+		case 12://	/3/ls *.eil
 		{
 			ShwPBar('Loading Lista de Planes...');
 			FilterFileList='.eil';
 			if(PrgEd[SrcIdx].Typ==0)
-				GetFls(PrgEd[SrcIdx].host+'/'+PlcIdx,RcvConfSrc);
+				GetFls(HOST()+'/'+PlcIdx,RcvConfSrc);
 			else
-				request=GetUrl(PrgEd[SrcIdx].host+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
+				request=GetUrlB(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
 		}
 		break;
-		case 13:
+		case 13://	/err/ls *.txt
 		{
-			Errors.length=0;
+			Errors = new Array();
 			ShwPBar('Loading Lista de Errores generales');
 			FilterFileList='';
 			if(PrgEd[SrcIdx].Typ==0)
-				GetFls(PrgEd[SrcIdx].host+'/err',RcvConfSrc);
+				GetFls(HOST()+'/err',RcvConfSrc);
 			else
-				request=GetUrl(PrgEd[SrcIdx].host+'/'+DGVFTP()+'?path=/err',RcvConfSrc);
+				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/err',RcvConfSrc);
 		}
 		break;
-		case 14:
-		case 16:
-		case 18:
-		case 20:
+		case 14://	/0/err/ls *.txt
+		case 16://	/1/err/ls *.txt
+		case 18://	/2/err/ls *.txt
+		case 20://	/3/err/ls *.txt
 		{
 			ShwPBar('Loading Lista de Errores...');
 			FilterFileList='';
 			if(PrgEd[SrcIdx].Typ==0)
-				GetFls(PrgEd[SrcIdx].host+'/'+PlcIdx+'/err',RcvConfSrc);
+				GetFls(HOST()+'/'+PlcIdx+'/err',RcvConfSrc);
 			else
-				request=GetUrl(PrgEd[SrcIdx].host+'/'+DGVFTP()+'?path=/'+PlcIdx+'/err',RcvConfSrc);
+				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx+'/err',RcvConfSrc);
 		}
 		break;
-		case 22:
-		case 24:
-		case 26:
-		case 28:
+		case 22://	/0/sec.sec
+		case 24://	/1/sec.sec
+		case 26://	/2/sec.sec
+		case 28://	/3/sec.sec
 		{
-			if(PrgEd[SrcIdx].PLCs[PlcIdx].Sec!="")
+			iPLCs=PLCs();
+			if(iPLCs[PlcIdx].Sec)
 			{
 				ShwPBar('Loading Conflictos...');
-				request=GetUrl(PrgEd[SrcIdx].host+'/'+PrgEd[SrcIdx].PLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
+				request=GetUrl(HOST()+'/'+iPLCs[PlcIdx].Sec.replace("//","/"),RcvConfSrc);
 			}
 			else
 			{
 				request=1;
 				PlcIdx++;
 				percent+=2;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=30;
@@ -641,28 +704,29 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 30:
-		case 32:
-		case 34:
-		case 36:
+		case 30://	PLCs()[0].sch(ag.sch)
+		case 32://	PLCs()[1].sch(ag.sch)
+		case 34://	PLCs()[2].sch(ag.sch)
+		case 36://	PLCs()[3].sch(ag.sch)
 		{
 			ShwPBar('Loading Agenda...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/'+PrgEd[SrcIdx].PLCs[PlcIdx].Scheduler,RcvConfSrc);
+			iPLCs=PLCs();
+			request=GetUrl(HOST()+'/'+iPLCs[PlcIdx].Scheduler,RcvConfSrc);
 		}
 		break;
-		case 38:
+		case 38://	ip.ini
 		{
-			if(PrgEd[SrcIdx].GlobalParms.MODEL.indexOf("M4")!=-1)
+			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
 				ShwPBar('Loading Links...');
-				request=GetUrl(PrgEd[SrcIdx].host+'/ip.ini',RcvConfSrc);
+				request=GetUrl(HOST()+'/ip.ini',RcvConfSrc);
 			}
 			else
 			{
-				if(PrgEd[SrcIdx].GlobalParms.MODEL.indexOf("M3")!=-1)
+				if(GlobalParms().Model.indexOf("M3")!=-1)
 				{
 					ShwPBar('Loading Links...');
-					request=GetUrl(PrgEd[SrcIdx].host+'/comm.ini',RcvConfSrc);
+					request=GetUrl(HOST()+'/comm.ini',RcvConfSrc);
 				}
 				else
 				{
@@ -672,12 +736,12 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 39:
+		case 39://	ntp.ini
 		{
-			if(PrgEd[SrcIdx].GlobalParms.MODEL.indexOf("DGV-uTC1-M4")!=-1)
+			if(GlobalParms().Model.indexOf("DGV-uTC1-M4")!=-1)
 			{
 				ShwPBar('Loading NTP conf...');
-				request=GetUrl(PrgEd[SrcIdx].host+'/ntp.ini',RcvConfSrc);
+				request=GetUrl(HOST()+'/ntp.ini',RcvConfSrc);
 			}
 			else
 			{
@@ -686,18 +750,26 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 40:
+		case 40://	opct.ini
 		{
-			ShwPBar('Loading OPCT...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/opct.ini',RcvConfSrc);
+			if(GlobalParms().Model.indexOf("GW")==-1)
+			{
+				ShwPBar('Loading OPCT...');
+				request=GetUrl(HOST()+'/opct.ini',RcvConfSrc);
+			}
+			else
+			{
+				request=1;
+				percent=41;
+			}
 		}
 		break;
-		case 41:
+		case 41://	gps.ini
 		{
-			if(PrgEd[SrcIdx].GlobalParms.MODEL.indexOf("M4")!=-1)
+			if(GlobalParms().Model.indexOf("M4")!=-1)
 			{
 				ShwPBar('Loading GPS...');
-				request=GetUrl(PrgEd[SrcIdx].host+'/gps.ini',RcvConfSrc);
+				request=GetUrl(HOST()+'/gps.ini',RcvConfSrc);
 			}
 			else
 			{
@@ -706,26 +778,35 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 42:
-		case 44:
-		case 46:
-		case 48:
+		case 42://	/0/ls *.phc
+		case 44://	/1/ls *.phc
+		case 46://	/2/ls *.phc
+		case 48://	/3/ls *.phc
 		{
 			ShwPBar('Loading Lista de entre verdes...');
 			FilterFileList='.ini';
-			PrgEd[SrcIdx].PLCs[PlcIdx].PhcList.length=0;
-			if(PrgEd[SrcIdx].Typ==0)
-				GetFls(PrgEd[SrcIdx].host+'/'+PlcIdx,RcvConfSrc);
+			iPLCs=PLCs();
+			if(iPLCs[PlcIdx].PhcList)
+				iPLCs[PlcIdx].PhcList.length=0;
 			else
-				request=GetUrl(PrgEd[SrcIdx].host+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
+				iPLCs[PlcIdx].PhcList= new Array()
+			if(PrgEd[SrcIdx].Typ==0)
+				GetFls(HOST()+'/'+PlcIdx,RcvConfSrc);
+			else
+				request=GetUrl(HOST()+'/'+DGVFTP()+'?path=/'+PlcIdx,RcvConfSrc);
 		}
 		break;
-		case 49:
+		case 49://	PLCs()[PlcIdx].PhcList content of phc files	//TODO: no more phcX.ini
 		{
-			if (PrgEd[SrcIdx].PLCs[PlcIdx].PhcList.length)
+			iPLCs=PLCs();
+			if (iPLCs[PlcIdx].PhcList.length)
 			{
-				ShwPBar('Loading entre verdes...'+PrgEd[SrcIdx].PLCs[PlcIdx].PhcList[PrgEd[SrcIdx].PLCs[PlcIdx].EV.length].Path+"/"+PrgEd[SrcIdx].PLCs[PlcIdx].PhcList[PrgEd[SrcIdx].PLCs[PlcIdx].EV.length].Name);
-				request=GetUrl(PrgEd[SrcIdx].host+"/"+PrgEd[SrcIdx].PLCs[PlcIdx].PhcList[PrgEd[SrcIdx].PLCs[PlcIdx].EV.length].Path+"/"+PrgEd[SrcIdx].PLCs[PlcIdx].PhcList[PrgEd[SrcIdx].PLCs[PlcIdx].EV.length].Name,RcvConfSrc);
+				if(iPLCs[PlcIdx].EV)
+					iPLCs[PlcIdx].EV.length=0;
+				else
+					iPLCs[PlcIdx].EV = new Array()
+				ShwPBar('Loading entre verdes...'+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Path+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Name);
+				request=GetUrl(HOST()+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Path+"/"+iPLCs[PlcIdx].PhcList[iPLCs[PlcIdx].EV.length].Name,RcvConfSrc);
 			}
 			else
 			{
@@ -734,97 +815,113 @@ function LoadConfSrc()
 			}
 		}
 		break;
-		case 50:
+		case 50://	dgvp.ini
 		{
-			ShwPBar('Loading DgvP Conf...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/dgvp.ini',RcvConfSrc);
+			if(GlobalParms().Model.indexOf("GW")==-1)
+			{
+				ShwPBar('Loading DgvP Conf...');
+				request=GetUrl(HOST()+'/dgvp.ini',RcvConfSrc);
+			}
+			else
+			{
+				request=1;
+				percent=51;
+			}
 		}
 		break;
-		case 51:
+		case 51://	sdgvp.ini
 		{
-			ShwPBar('Loading SrvDgvP Conf...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/sdgvp.ini',RcvConfSrc);
+			if(GlobalParms().Model.indexOf("GW")==-1)
+			{
+				ShwPBar('Loading SrvDgvP Conf...');
+				request=GetUrl(HOST()+'/sdgvp.ini',RcvConfSrc);
+			}
+			else
+			{
+				request=1;
+				percent=52;
+			}
 		}
 		break;
-		case 52:
+		case 52://	error.ini
 		{
 			ShwPBar('Loading Error Conf...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/error.ini',RcvConfSrc);
+			request=GetUrl(HOST()+'/error.ini',RcvConfSrc);
 		}
 		break;
-		case 54:
-		case 55:
-		case 56:
-		case 57:
+		case 54://	/0/planmc.es3
+		case 55://	/1/planmc.es3
+		case 56://	/2/planmc.es3
+		case 57://	/3/planmc.es3
 		{
 			ShwPBar('Loading Plan Manual control...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/'+PlcIdx+'/'+'/planmc.es3',RcvConfSrc);
+			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/planmc.es3',RcvConfSrc);
 		}
 		break;
-		case 58:
-		case 59:
-		case 60:
-		case 61:
+		case 58://	/0/planotu.es3
+		case 59://	/1/planotu.es3
+		case 60://	/2/planotu.es3
+		case 61://	/3/planotu.es3
 		{
 			ShwPBar('Loading Plan Centralized control...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/'+PlcIdx+'/'+'/planotu.es3',RcvConfSrc);
+			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/planotu.es3',RcvConfSrc);
 		}
 		break;
-		case 62:
-		case 63:
-		case 64:
-		case 65:
+		case 62://	/0/plans.es3
+		case 63://	/4/plans.es3
+		case 64://	/5/plans.es3
+		case 65://	/6/plans.es3
 		{
 			ShwPBar('Loading Plans Local control...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/'+PlcIdx+'/'+'/plans.es3',RcvConfSrc);
+			request=GetUrl(HOST()+'/'+PlcIdx+'/'+'/plans.es3',RcvConfSrc);
 		}
 		break;
-		case 83:
+		case 83://	ph_group.phg
 		{
 			ShwPBar('Loading Phases Group..');
-			request=GetUrl(PrgEd[SrcIdx].host+'/ph_group.phg',RcvConfSrc);
+			request=GetUrl(HOST()+'/ph_group.phg',RcvConfSrc);
 		}
 		break;
-		case 84:
+		case 84://	def_in.ini
 		{
 			ShwPBar('Loading Def In...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/def_in.ini',RcvConfSrc);
+			request=GetUrl(HOST()+'/def_in.ini',RcvConfSrc);
 		}
 		break;
-		case 85:
+		case 85://	otu.ini
 		{
 			ShwPBar('Loading OTU...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/OTU.ini',RcvConfSrc);
+			request=GetUrl(HOST()+'/otu.ini',RcvConfSrc);
 		}
 		break;
-		case 86:
+		case 86://	master.ini
 		{
 			ShwPBar('Loading Master...');
-			request=GetUrl(PrgEd[SrcIdx].host+'/Master.ini',RcvConfSrc);
+			request=GetUrl(HOST()+'/master.ini',RcvConfSrc);
 		}
 		break;
-		case 87:
+		case 87://	iteris.ini
 		{
 			request=1;
 			percent=88;
 			//ShwPBar('Loading iteris...');
-			//request=GetUrl(PrgEd[SrcIdx].host+'/Iteris.ini',RcvConfSrc);
+			//request=GetUrl(HOST()+'/Iteris.ini',RcvConfSrc);
 		}
 		break;
-		case 88:
+		case 88://	dgvsoft.ini
 		{
 			request=1;
 			percent=90;
 			//ShwPBar('Loading dgv...');
-			//request=GetUrl(PrgEd[SrcIdx].host+'/dgvsoft.ini',RcvConfSrc);
+			//request=GetUrl(HOST()+'/dgvsoft.ini',RcvConfSrc);
 		}
 		break;
-		case 90:
+		case 90://	Error content of files
 		{
 			if (Errors.length)
 			{
 				ShwPBar('Loading Errors data...'+Errors[ErrIdx].Path+"/"+Errors[ErrIdx].Name);
-				request=GetUrl(PrgEd[SrcIdx].host+"/"+Errors[ErrIdx].Path+"/"+Errors[ErrIdx].Name,RcvConfSrc);
+				request=GetUrl(HOST()+"/"+Errors[ErrIdx].Path+"/"+Errors[ErrIdx].Name,RcvConfSrc);
 			}
 			else
 			{
@@ -911,11 +1008,12 @@ function RcvConfSrc(Datos)
 		switch(percent)
 		{
 			case 0:
-			case 1:// startup.ini
+			case 1://	startup.ini
 			{
 				if(Datos.status==200)
 				{
 					RcvStartup(Datos);
+					//RcvFile(PrgEd[SrcIdx].GlobalParms, Datos);	
 					percent=2;
 				}
 				else
@@ -927,11 +1025,11 @@ function RcvConfSrc(Datos)
 			case 2://	addvar.ini
 			{
 				if(Datos.status==200)
-					PrgEd[SrcIdx].GlobalParms.addvar=Datos.responseText;
+					GlobalParms().addvar=Datos.responseText;
 				percent=3;
 			}
 			break;
-			case 3:// phconf.ini
+			case 3://	phconf.ini
 			{
 				if(Datos.status==200)
 					RcvPhConf(Datos);
@@ -946,8 +1044,8 @@ function RcvConfSrc(Datos)
 				PlcIdx=0;
 			}
 			break;
-			case 6:	//	/0/ls *.eil
-			case 8:	//	/1/ls *.eil
+			case 6://	/0/ls *.eil
+			case 8://	/1/ls *.eil
 			case 10://	/2/ls *.eil
 			case 12://	/3/ls *.eil
 			{
@@ -960,7 +1058,7 @@ function RcvConfSrc(Datos)
 				}
 				PlcIdx++;
 				percent+=2;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=13;
@@ -993,7 +1091,7 @@ function RcvConfSrc(Datos)
 				}
 				PlcIdx++;
 				percent+=2;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					for(var i=0;i<Errors.length;i++)
 						Errors[i].Datos="";
@@ -1011,7 +1109,7 @@ function RcvConfSrc(Datos)
 					RcvSec(Datos);
 				PlcIdx++;
 				percent+=2;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=30;
@@ -1019,63 +1117,58 @@ function RcvConfSrc(Datos)
 				}
 			}
 			break;
-			case 30://PrgEd[SrcIdx].PLCs[0].sch(ag.sch)
-			case 32://PrgEd[SrcIdx].PLCs[1].sch(ag.sch)
-			case 34://PrgEd[SrcIdx].PLCs[2].sch(ag.sch)
-			case 36://PrgEd[SrcIdx].PLCs[3].sch(ag.sch)
+			case 30://	PLCs()[0].sch(ag.sch)
+			case 32://	PLCs()[1].sch(ag.sch)
+			case 34://	PLCs()[2].sch(ag.sch)
+			case 36://	PLCs()[3].sch(ag.sch)
 			{
 				if(Datos.status==200)
 				{
 					RcvAgenda(Datos);
-					PrgEd[SrcIdx].PLCs[PlcIdx].HolyDays=HolyDays.clone();
-					PrgEd[SrcIdx].PLCs[PlcIdx].WeekDays=WeekDays.clone();
-					PrgEd[SrcIdx].PLCs[PlcIdx].TimeScheduler=TimeScheduler.clone();
 				}
 				PlcIdx++;
 				percent+=2;
-				for(var i=1;i<PrgEd[SrcIdx].PLCs.length;i++)
+				iPLCs=PLCs();
+				for(var i=1;i<PLCs().length;i++)
 				{
-					if(PrgEd[SrcIdx].PLCs[i-1].Scheduler==PrgEd[SrcIdx].PLCs[i].Scheduler)
+					if(iPLCs[i-1].Scheduler==iPLCs[i].Scheduler)
 					{
-						PrgEd[SrcIdx].PLCs[i].HolyDays=HolyDays.clone();
-						PrgEd[SrcIdx].PLCs[i].WeekDays=WeekDays.clone();
-						PrgEd[SrcIdx].PLCs[i].TimeScheduler=TimeScheduler.clone();
 						PlcIdx++;
 						percent+=2;
 					}
 				}
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=38;
 				}
 			}
 			break;
-			case 38:// ip.ini
+			case 38://	ip.ini
 			{
 				if(Datos.status==200)
 				RcvIP(Datos);
 				percent=39;
 			}
 			break;
-			case 39:// NTP.ini
+			case 39://	NTP.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=40;
 			}
 			break;
-			case 40:// opct.ini
+			case 40://	opct.ini
 			{
 				if(Datos.status==200)
-					RcvOPCT(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);	//RcvOPCT(Datos);
 				percent=41;
 			}
 			break;
-			case 41:// gps.ini
+			case 41://	gps.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=42;
 			}
 			break;
@@ -1089,99 +1182,100 @@ function RcvConfSrc(Datos)
 					FileListDat=FileList2Txt(Datos);
 					FileListDat=FileList2Array(FileListDat);
 					FileListDat=FileList2Obj(FileListDat);
-					PrgEd[SrcIdx].PLCs[PlcIdx].PhcList=FileListDat.slice();
-					PrgEd[SrcIdx].PLCs[PlcIdx].EV.length=0;
+					PLCs()[PlcIdx].PhcList=FileListDat.slice();
 				}
 				PlcIdx++;
 				percent+=2;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=49;
 				}
 			}
 			break;
-			case 49:// PrgEd[SrcIdx].PLCs[PlcIdx].PhcList content of phc files
+			case 49://	PLCs()[PlcIdx].PhcList content of phc files
 			{
+				iPLCs=PLCs();
 				if(Datos.status==200)
 				{
 					Datos=Datos.responseText;
 					Datos=Datos.trim();
 					Datos=RemComment(Datos)
-					PrgEd[SrcIdx].PLCs[PlcIdx].EV[PrgEd[SrcIdx].PLCs[PlcIdx].EV.length]=Datos;
+					iPLCs[PlcIdx].EV[iPLCs[PlcIdx].EV.length]=Datos;
 				}
-				if(PrgEd[SrcIdx].PLCs[PlcIdx].PhcList.length==PrgEd[SrcIdx].PLCs[PlcIdx].EV.length)
+				if(iPLCs[PlcIdx].PhcList.length==iPLCs[PlcIdx].EV.length)
 					PlcIdx++;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=50;
 				}
 			}
 			break;
-			case 50: // dgvp.ini
+			case 50://	dgvp.ini
 			{
 				if(Datos.status==200)
-				RcvFile(Datos);
+				RcvFile(PrgEd[SrcIdx], Datos);
 				percent=51;
 			}
 			break;
-			case 51: // sdgvp.ini
+			case 51://	sdgvp.ini
 			{
 				if(Datos.status==200)
-					RcvSDgvP(Datos); //RcvFile
+					RcvFile(PrgEd[SrcIdx], Datos);
+					SdgvP_Tsk();
 					percent=52;
 				}
 			break;
-			case 52: // error.ini
+			case 52://	error.ini
 			{
 				if(Datos.status==200)
 					RcvError(Datos);
 				percent=54;
 			}
 			break;
-			case 54:// /0/planmc.es3
-			case 55:// /1/planmc.es3
-			case 56:// /2/planmc.es3
-			case 57:// /3/planmc.es3
+			case 54://	/0/planmc.es3
+			case 55://	/1/planmc.es3
+			case 56://	/2/planmc.es3
+			case 57://	/3/planmc.es3
 			{
 				if(Datos.status==200)
 				{
-					//PrgEd[SrcIdx].PLCs[PlcIdx].McPlan=RcvES3(Datos);
-					//if(PrgEd[SrcIdx].PLCs[PlcIdx].McPlan.length==1)PrgEd[SrcIdx].PLCs[PlcIdx].McPlan=PrgEd[SrcIdx].PLCs[PlcIdx].McPlan[0];
+					//PLCs()[PlcIdx].McPlan=RcvES3(Datos);
+					//if(PLCs()[PlcIdx].McPlan.length==1)PLCs()[PlcIdx].McPlan=PLCs()[PlcIdx].McPlan[0];
 				}
 				PlcIdx++;
 				percent++;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=58;
 				}
 			}
 			break;
-			case 58:// /0/planotu.es3
-			case 59:// /1/planotu.es3
-			case 60:// /2/planotu.es3
-			case 61:// /3/planotu.es3
+			case 58://	/0/planotu.es3
+			case 59://	/1/planotu.es3
+			case 60://	/2/planotu.es3
+			case 61://	/3/planotu.es3
 			{
 				if(Datos.status==200)
 				{
-					//PrgEd[SrcIdx].PLCs[PlcIdx].OTUPlan=RcvES3(Datos);
-					//if(PrgEd[SrcIdx].PLCs[PlcIdx].OTUPlan.length==1)PrgEd[SrcIdx].PLCs[PlcIdx].OTUPlan=PrgEd[SrcIdx].PLCs[PlcIdx].OTUPlan[0];
+					//PLCs()[PlcIdx].OTUPlan=RcvES3(Datos);
+					//if(PLCs()[PlcIdx].OTUPlan.length==1)PLCs()[PlcIdx].OTUPlan=PLCs()[PlcIdx].OTUPlan[0];
 				}
 				PlcIdx++;
 				percent++;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=62;
 				}
 			}
 			break;
-			case 62:// /0/plans.es3
-			case 63:// /1/plans.es3
-			case 64:// /2/plans.es3
-			case 65:// /3/plans.es3
+			case 62://	/0/plans.es3
+			case 63://	/1/plans.es3
+			case 64://	/2/plans.es3
+			case 65://	/3/plans.es3
 			{
 				if(Datos.status==200)
 				{
@@ -1189,49 +1283,49 @@ function RcvConfSrc(Datos)
 				}
 				PlcIdx++;
 				percent++;
-				if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+				if(PlcIdx>=GlobalParms().Controllers)
 				{
 					PlcIdx=0;
 					percent=84;
 				}
 			}
 			break;
-			case 83:// ph_group.phg
+			case 83://	ph_group.phg
 			{
 				if(Datos.status==200)
 					RcvPHG(Datos);
 				percent=84;
 			}
 			break;
-			case 84:// def_in.ini
+			case 84://	def_in.ini
 			{
 				if(Datos.status==200)
 					RcvDefIn(Datos);
 				percent=85;
 			}
 			break;
-			case 85:// otu.ini
+			case 85://	otu.ini
 			{
 				if(Datos.status==200)
 					RcvOTU(Datos);
 				percent=86;
 			}
 			break;
-			case 86:// master.ini
+			case 86://	master.ini
 			{
 				if(Datos.status==200)
-					RcvFile(Datos);
+					RcvFile(PrgEd[SrcIdx], Datos);
 				percent=87;
 			}
 			break;
-			case 87:// iteris.ini
+			case 87://	iteris.ini
 			{
 				if(Datos.status==200)
 					RcvIteris(Datos);
 				percent=88;
 			}
 			break;
-			case 88:// dgvsoft.ini
+			case 88://	dgvsoft.ini
 			{
 				if(Datos.status==200)
 					RcvDGV(Datos);
@@ -1239,7 +1333,7 @@ function RcvConfSrc(Datos)
 				ErrIdx=0;
 			}
 			break;
-			case 90:// Error content of files
+			case 90://	Error content of files
 			{
 				if(Datos.status==200)
 				{
@@ -1274,12 +1368,23 @@ function RcvConfSrc(Datos)
 		setTimeout("ShwAddSrcCtl()",500);
 	}
 }
+
 function SendConf()
 {
 	var temp=0;
 	var stemp="";
 	var ttemp="";
 	PBarUpDate();
+	if(SrcIdx==TrgIdx)
+	{
+		PrgSrc = PrgEd[SrcIdx];
+		PrgTrg = PrgBk[TrgIdx];
+	}
+	else
+	{
+		PrgSrc = PrgEd[SrcIdx];
+		PrgTrg = PrgEd[TrgIdx];
+	}
 	if(UpMode==0)
 	{
 		switch(percent)
@@ -1287,20 +1392,21 @@ function SendConf()
 			case 0:
 			{
 				ShwPBar(Str_Uploading);
-				if(PrgBk[TrgIdx].Typ==0)
+				if(PrgTrg.Typ==0)
 				{
-					if(PrgEd[SrcIdx].GlobalParms.ID!=PrgBk[SrcIdx].GlobalParms.ID)	// cambio de nombre
+					if(PrgSrc.GlobalParms.ID!=PrgTrg.GlobalParms.ID)	// cambio de nombre
 					{
+						LOG('Cambio de nombre'+PrgSrc.GlobalParms.ID+'->'+PrgTrg.GlobalParms.ID)
 					}
 				}
 				percent+=3;
 			}
 			break;
-			case 3://autoini
+			case 3://	autoini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Initial_Plan;
-				ttemp=SendPlanAI(PrgBk[TrgIdx]);
-				stemp=SendPlanAI(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Initial_Plan);
+				ttemp=SendPlanAI(PrgTrg);
+				stemp=SendPlanAI(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1308,11 +1414,11 @@ function SendConf()
 				percent+=2;
 			}
 			break;
-			case 5://plan98
+			case 5://	plan98
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Initial_Plan;
-				ttemp=SendPlan98A(PrgBk[TrgIdx]);
-				stemp=SendPlan98A(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Initial_Plan);
+				ttemp=SendPlan98(PrgTrg);
+				stemp=SendPlan98(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1320,10 +1426,10 @@ function SendConf()
 				percent+=2;
 			}
 			break;
-			case 7://ip.ini
+			case 7://	ip.ini
 			{
-				ttemp=SendIP(PrgBk[TrgIdx]);
-				stemp=SendIP(PrgEd[SrcIdx]);
+				ttemp=SendIP(PrgTrg);
+				stemp=SendIP(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1331,10 +1437,10 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 8://ntp
+			case 8://	ntp
 			{
-				ttemp=SendNTP(PrgBk[TrgIdx]);
-				stemp=SendNTP(PrgEd[SrcIdx]);
+				ttemp=SendNTP(PrgTrg);
+				stemp=SendNTP(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1342,10 +1448,10 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 9://gps.ini
+			case 9://	gps.ini
 			{
-				ttemp=SendGPS(PrgBk[TrgIdx]);
-				stemp=SendGPS(PrgEd[SrcIdx]);
+				ttemp=SendGPS(PrgTrg);
+				stemp=SendGPS(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1353,11 +1459,11 @@ function SendConf()
 				percent+=3;
 			}
 			break;
-			case 12://def_in.ini
+			case 12://	def_in.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Config_Inputs;
-				ttemp=SendDefIn(PrgBk[TrgIdx]);
-				stemp=SendDefIn(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Config_Inputs);
+				ttemp=SendDefIn(PrgTrg);
+				stemp=SendDefIn(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1365,86 +1471,93 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 16://otu.ini
+			case 16://	otu.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_OTU;
-				ttemp=SendOTU(PrgBk[TrgIdx]);
-				stemp=SendOTU(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_OTU);
+				ttemp=SendOTU(PrgTrg);
+				stemp=SendOTU(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx=0;
-				CEV=0;
-				if(PrgEd[SrcIdx].PLCs[PlcIdx] && PrgBk[TrgIdx].PLCs[PlcIdx])
-					if(PrgEd[SrcIdx].PLCs[PlcIdx].EV.length<PrgBk[TrgIdx].PLCs[PlcIdx].EV.length)
-						PrgBk[TrgIdx].PLCs[PlcIdx].EV.length=PrgEd[SrcIdx].PLCs[PlcIdx].EV.length;
+
 				percent+=4;
 			}
 			break;
+			case 20:// master.ini
+			{
+				ttemp=SendMaster(PrgTrg);
+				stemp=SendMaster(PrgSrc);
+				if(ttemp!==stemp || FoceUpLoad)
+					rcvUpFileFileEdit();
+				else
+					UpMode=0;
+				PlcIdx=0;
+				percent=32;	//for DGVuTc solo tiene el entre verde principal
+				percent+=4;
+			}
+			break;
+			/*
 			case 20://entreverdes
+				CEV=0;
+				if(PrgSrc.PLCs[PlcIdx] && PrgTrg.PLCs[PlcIdx])
+					if(PrgSrc.PLCs[PlcIdx].EV.length<PrgTrg.PLCs[PlcIdx].EV.length)
+						PrgTrg.PLCs[PlcIdx].EV.length=PrgSrc.PLCs[PlcIdx].EV.length;
 			case 24:
 			case 28:
 			case 32:
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_OTU_Menu2+" "+(PlcIdx+1);
-				ttemp=SendEv(PrgBk[TrgIdx]);
-				stemp=SendEv(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_OTU_Menu2+" "+(PlcIdx+1));
+				ttemp=SendEv(PrgTrg);
+				stemp=SendEv(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				percent-=4;
 				CEV++;
-				if(CEV>=PrgEd[SrcIdx].PLCs[PlcIdx].EV.length)
+				if(CEV>=PrgSrc.PLCs[PlcIdx].EV.length)
 				{
 					CEV=0;
 					PlcIdx++;
-					if(PlcIdx>=PrgEd[SrcIdx].GlobalParms.Controllers)
+					if(PlcIdx>=PrgSrc.GlobalParms.Controllers)
 					{
 						PlcIdx=0;
 						percent=32;
 						PlnIdx=0;
 					}
-					if(PrgEd[SrcIdx].PLCs[PlcIdx] && PrgBk[TrgIdx].PLCs[PlcIdx])
-						if(PrgEd[SrcIdx].PLCs[PlcIdx].EV.length<PrgBk[TrgIdx].PLCs[PlcIdx].EV.length)
-							PrgBk[TrgIdx].PLCs[PlcIdx].EV.length=PrgEd[SrcIdx].PLCs[PlcIdx].EV.length;
+					else
+					{
+						if(PrgSrc.PLCs[PlcIdx] && PrgTrg.PLCs[PlcIdx])
+							if(PrgSrc.PLCs[PlcIdx].EV.length<PrgTrg.PLCs[PlcIdx].EV.length)
+								PrgTrg.PLCs[PlcIdx].EV.length=PrgSrc.PLCs[PlcIdx].EV.length;
+					}
 				}
 				percent+=4;
 			}
-			break;
-			case 36://planes .txt
+			break;// */
+			case 36://	planes .txt
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1);
-				if(PlnIdx<PrgEd[SrcIdx].PLCs[PlcIdx].Plans.length)
+				if(PlnIdx<PrgSrc.PLCs[PlcIdx].Plans.length)
 				{
 					//------------------------
 					ttemp="";
-					if(PlnIdx<PrgBk[SrcIdx].PLCs[PlcIdx].Plans.length)
+					if(PlnIdx<PrgTrg.PLCs[PlcIdx].Plans.length)
 					{
-						PlanGen=PrgBk[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-						if(PlanGen.EV!=0)
-							SetPhConf(PrgBk[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-						else
-							SetPhConf(PrgBk[SrcIdx].GlobalParms.phconf);
-						UpdateTimes(PrgBk[SrcIdx].PLCs[PlcIdx],PlanGen);
-						ttemp=SavePlan(PrgBk[SrcIdx].PLCs[PlcIdx],PrgBk[SrcIdx].GlobalParms,PlanGen);
+						PlanGen=get_plan(PrgTrg, PrgTrg.PLCs[PlcIdx].Plans[PlnIdx]);
+						ttemp=SavePlan(PrgTrg.PLCs[PlcIdx], PrgTrg.GlobalParms, PlanGen);
 						//------------------------
-						PlanGen=PrgEd[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-						if(PlanGen.EV!=0)
-							SetPhConf(PrgEd[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-						else
-							SetPhConf(PrgEd[SrcIdx].GlobalParms.phconf);
-						UpdateTimes(PrgEd[SrcIdx].PLCs[PlcIdx],PlanGen);
-						stemp=SavePlan(PrgEd[SrcIdx].PLCs[PlcIdx],PrgEd[SrcIdx].GlobalParms,PlanGen);
+						PlanGen=get_plan(PrgSrc, PrgSrc.PLCs[PlcIdx].Plans[PlnIdx]);
+						stemp=SavePlan(PrgSrc.PLCs[PlcIdx], PrgSrc.GlobalParms, PlanGen);
 						//------------------------
 						if(ttemp!==stemp || FoceUpLoad)
 						{
 							UpData=stemp;
 							UpMode=10;
+							UpSeek=0;
 							UpPath="/"+PlcIdx;
 							UpType="txt";
-							seek=0;
 							UpFile="plan"+(PlnIdx+1)+".txt"
 							//UpData=compilador(UpData);
 							rcvUpFileFileEdit();
@@ -1459,7 +1572,7 @@ function SendConf()
 						PlnIdx=0;
 						PlcIdx++;
 						percent-=2;
-						if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+						if(PlcIdx>=PrgSrc.PLCs.length)
 						{
 							UpType="txt";
 							PlcIdx=0;
@@ -1473,7 +1586,7 @@ function SendConf()
 					PlnIdx=0;
 					PlcIdx++;
 					percent-=2;
-					if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+					if(PlcIdx>=PrgSrc.PLCs.length)
 					{
 						UpType="txt";
 						PlcIdx=0;
@@ -1484,39 +1597,29 @@ function SendConf()
 				percent+=2;
 			}
 			break;			
-			case 38://planes .eil
+			case 38://	planes .eil
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1);
-				if(PlnIdx<PrgEd[SrcIdx].PLCs[PlcIdx].Plans.length)
+				//ShwPBar(Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1));
+				if(PlnIdx<PrgSrc.PLCs[PlcIdx].Plans.length)
 				{
 					//------------------------
 					ttemp="";
-					if(PlnIdx<PrgBk[SrcIdx].PLCs[PlcIdx].Plans.length)
+					if(PlnIdx<PrgTrg.PLCs[PlcIdx].Plans.length)
 					{
-						PlanGen=PrgBk[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-						if(PlanGen.EV!=0)
-							SetPhConf(PrgBk[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-						else
-							SetPhConf(PrgBk[SrcIdx].GlobalParms.phconf);
-						UpdateTimes(PrgBk[SrcIdx].PLCs[PlcIdx],PlanGen);
-						ttemp=SavePlan(PrgBk[SrcIdx].PLCs[PlcIdx],PrgBk[SrcIdx].GlobalParms,PlanGen);
+						PlanGen=get_plan(PrgTrg, PrgTrg.PLCs[PlcIdx].Plans[PlnIdx]);
+						ttemp=SavePlan(PrgTrg.PLCs[PlcIdx],PrgTrg.GlobalParms,PlanGen);
 					}
 					//------------------------
-					PlanGen=PrgEd[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-					if(PlanGen.EV!=0)
-						SetPhConf(PrgEd[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-					else
-						SetPhConf(PrgEd[SrcIdx].GlobalParms.phconf);
-					UpdateTimes(PrgEd[SrcIdx].PLCs[PlcIdx],PlanGen);
-					stemp=SavePlan(PrgEd[SrcIdx].PLCs[PlcIdx],PrgEd[SrcIdx].GlobalParms,PlanGen);
+					PlanGen=get_plan(PrgSrc, PrgSrc.PLCs[PlcIdx].Plans[PlnIdx]);
+					stemp=SavePlan(PrgSrc.PLCs[PlcIdx],PrgSrc.GlobalParms,PlanGen);
 					//------------------------
 					if(ttemp!==stemp || FoceUpLoad)
 					{
 						UpData=stemp;
 						UpMode=10;
+						UpSeek=0;
 						UpPath="/"+PlcIdx;
 						UpType="txt";
-						seek=0;
 						UpFile="plan"+(PlnIdx+1)+".eil";
 						//UpData=compilador(UpData);
 						rcvUpFileFileEdit();
@@ -1531,7 +1634,7 @@ function SendConf()
 					PlnIdx=0;
 					PlcIdx++;
 					percent-=2;
-					if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+					if(PlcIdx>=PrgSrc.PLCs.length)
 					{
 						UpType="txt";
 						PlcIdx=0;
@@ -1542,18 +1645,18 @@ function SendConf()
 				percent+=2;				
 			}
 			break;
-			case 40://planmc.es3
+			case 40://	planmc.es3
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1);
-				ttemp=SendMcPlan(PrgBk[SrcIdx].PLCs[PlcIdx].McPlan);
-				stemp=SendMcPlan(PrgEd[SrcIdx].PLCs[PlcIdx].McPlan);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1));
+				ttemp=SendMcPlan(PrgTrg.PLCs[PlcIdx].McPlan);
+				stemp=SendMcPlan(PrgSrc.PLCs[PlcIdx].McPlan);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx++;
 				percent-=4;
-				if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+				if(PlcIdx>=PrgSrc.PLCs.length)
 				{
 					PlcIdx=0;
 					percent=40;
@@ -1561,18 +1664,18 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 44://planotu.es3
+			case 44://	planotu.es3
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1);
-				ttemp=SendOTUPlan(PrgBk[SrcIdx].PLCs[PlcIdx].OTUPlan);
-				stemp=SendOTUPlan(PrgEd[SrcIdx].PLCs[PlcIdx].OTUPlan);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1));
+				ttemp=SendOTUPlan(PrgTrg.PLCs[PlcIdx].OTUPlan);
+				stemp=SendOTUPlan(PrgSrc.PLCs[PlcIdx].OTUPlan);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx++;
 				percent-=4;
-				if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+				if(PlcIdx>=PrgSrc.PLCs.length)
 				{
 					PlcIdx=0;
 					percent=44;
@@ -1580,18 +1683,18 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 48://plans.es3
+			case 48://	plans.es3
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1);
-				ttemp=SendPlans(PrgBk[SrcIdx].PLCs[PlcIdx].Plans);
-				stemp=SendPlans(PrgEd[SrcIdx].PLCs[PlcIdx].Plans);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Plans+" "+(PlcIdx+1));
+				ttemp=SendPlans(PrgTrg.PLCs[PlcIdx].Plans);
+				stemp=SendPlans(PrgSrc.PLCs[PlcIdx].Plans);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx++;
 				percent-=1;
-				if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+				if(PlcIdx>=PrgSrc.PLCs.length)
 				{
 					PlcIdx=0;
 					ErrIdx=0;
@@ -1600,11 +1703,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 49://dgvp.ini
+			case 49://	dgvp.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML="Conf Protocolo";
-				ttemp=SendDgvP(PrgBk[TrgIdx]);
-				stemp=SendDgvP(PrgEd[SrcIdx]);
+				ShwPBar("Conf Protocolo");
+				ttemp=SendPdgv(PrgTrg);
+				stemp=SendPdgv(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1612,11 +1715,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 50://sdgvp.ini
+			case 50://	sdgvp.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML="Conf Reportes";
-				ttemp=SendSdgvP(PrgBk[TrgIdx]);
-				stemp=SendSdgvP(PrgEd[SrcIdx]);
+				ShwPBar("Conf Reportes");
+				ttemp=SendSdgvP(PrgTrg);
+				stemp=SendSdgvP(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1624,17 +1727,17 @@ function SendConf()
 				percent+=2;
 			}
 			break;
-			case 52://er000000.txt
+			case 52://	er000000.txt
 			{
-				if(PrgBk[TrgIdx].Typ==0)
+				if(PrgTrg.Typ==0)
 				{
 					if(ErrIdx<Errors.length)
 					{
 						UpMode=10;
+						UpSeek=0;
 						UpPath=Errors[ErrIdx].Path+"/";
 						UpPath=Remplace(UpPath,"//","/");
 						UpType="txt";
-						seek=0;
 						UpFile="/"+Errors[ErrIdx].Name;
 						UpFile=Remplace(UpFile,"//","/");
 						UpData=Errors[ErrIdx].Datos;
@@ -1659,28 +1762,28 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 56://ag.sch
+			case 56://	ag.sch
 			case 60:
 			case 64:
 			case 68:
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_scheduler+" "+(PlcIdx+1);
-				ttemp=MakeSchToFile(PrgBk[TrgIdx]);
-				stemp=MakeSchToFile(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_scheduler+" "+(PlcIdx+1));
+				ttemp=MakeSchToFile(PrgTrg);
+				stemp=MakeSchToFile(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx++;
-				for(var i=1;i<PrgEd[SrcIdx].PLCs.length;i++)
+				for(var i=1;i<PrgSrc.PLCs.length;i++)
 				{
-					if(PrgEd[SrcIdx].PLCs[i-1].Scheduler==PrgEd[SrcIdx].PLCs[i].Scheduler)
+					if(PrgSrc.PLCs[i-1].Scheduler==PrgSrc.PLCs[i].Scheduler)
 					{
 						PlcIdx++;
 						percent+=4;
 					}
 				}
-				if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+				if(PlcIdx>=PrgSrc.PLCs.length)
 				{
 					PlcIdx=0;
 					percent=68;
@@ -1688,20 +1791,20 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 72://sec.sec
+			case 72://	sec.sec
 			case 76:
 			case 80:
 			case 84:
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Conflict+" "+(PlcIdx+1);
-				ttemp=SendSec(PrgBk[TrgIdx]);
-				stemp=SendSec(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Conflict+" "+(PlcIdx+1));
+				ttemp=SendSec(PrgTrg);
+				stemp=SendSec(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
 					UpMode=0;
 				PlcIdx++;
-				if(PlcIdx>=PrgEd[SrcIdx].PLCs.length)
+				if(PlcIdx>=PrgSrc.PLCs.length)
 				{
 					PlcIdx=0;
 					percent=84;
@@ -1709,11 +1812,11 @@ function SendConf()
 				percent+=4;
 			}
 			break;
-			case 88://error.ini
+			case 88://	error.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML="Conf Error";
-				ttemp=SendErrCfg(PrgBk[TrgIdx]);
-				stemp=SendErrCfg(PrgEd[SrcIdx]);
+				ShwPBar("Conf Error");
+				ttemp=SendErrCfg(PrgTrg);
+				stemp=SendErrCfg(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1721,11 +1824,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 89://opct.ini
+			case 89://	opct.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML="Conf Error";
-				ttemp=SendOPCT(PrgBk[TrgIdx]);
-				stemp=SendOPCT(PrgEd[SrcIdx]);
+				ShwPBar("Conf Error");
+				ttemp=SendOPCT(PrgTrg);
+				stemp=SendOPCT(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1733,11 +1836,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 90://plcs.ini
+			case 90://	plcs.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_Controllers;
-				ttemp=SendPlc(PrgBk[TrgIdx]);
-				stemp=SendPlc(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_Controllers);
+				ttemp=SendPlc(PrgTrg);
+				stemp=SendPlc(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1745,11 +1848,11 @@ function SendConf()
 				percent+=2;
 			}
 			break;
-			case 92://phconf.ini
+			case 92://	phconf.ini
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" "+Str_MN_Config;
-				ttemp=SendPhConf(PrgBk[TrgIdx]);
-				stemp=SendPhConf(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" "+Str_MN_Config);
+				ttemp=SendPhConf(PrgTrg);
+				stemp=SendPhConf(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1757,31 +1860,18 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 93://autorun.eil"
+			case 93://	autorun.eil"
 			{
-				PlanGen=PrgBk[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-				if(PlanGen.EV!=0)
-					SetPhConf(PrgBk[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-				else
-					SetPhConf(PrgBk[SrcIdx].GlobalParms.phconf);
-				UpdateTimes(PrgBk[SrcIdx].PLCs[PlcIdx],PlanGen);
-				ttemp=SaveCtrlParms(PrgBk[SrcIdx].PLCs[PlcIdx],PrgBk[SrcIdx].GlobalParms,PlanGen);
-				//------------------------
-				PlanGen=PrgEd[SrcIdx].PLCs[PlcIdx].Plans[PlnIdx];
-				if(PlanGen.EV!=0)
-					SetPhConf(PrgEd[SrcIdx].PLCs[PlcIdx].EV[PlanGen.EV-1]);
-				else
-					SetPhConf(PrgEd[SrcIdx].GlobalParms.phconf);
-				UpdateTimes(PrgEd[SrcIdx].PLCs[PlcIdx],PlanGen);
-				stemp=SaveCtrlParms(PrgEd[SrcIdx].PLCs[PlcIdx],PrgEd[SrcIdx].GlobalParms,PlanGen);
+				ttemp=SendPlanAR(PrgTrg);
+				stemp=SendPlanAR(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 				{
 					UpData=stemp;
 					UpMode=10;
+					UpSeek=0;
 					UpPath="/";
 					UpType="txt";
 					UpFile="autorun.txt"
-					seek=0;
 					rcvUpFileFileEdit();
 				}
 				else
@@ -1789,11 +1879,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 94://plan97
+			case 94://	plan97
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" ";
-				ttemp=SendPlan97(PrgBk[TrgIdx]);
-				stemp=SendPlan97(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" lamp off plan");
+				ttemp=SendPlan97(PrgTrg);
+				stemp=SendPlan97(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1801,11 +1891,11 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 95://plan99
+			case 95://	plan99
 			{
-				//document.getElementById("LOADINGTXT2").innerHTML=Str_looking_for_difference+" ";
-				ttemp=SendPlan99(PrgBk[TrgIdx]);
-				stemp=SendPlan99(PrgEd[SrcIdx]);
+				//ShwPBar(Str_looking_for_difference+" flashing plan");
+				ttemp=SendPlan99(PrgTrg);
+				stemp=SendPlan99(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1813,10 +1903,10 @@ function SendConf()
 				percent+=1;
 			}
 			break;
-			case 96://startup.ini
+			case 96://	startup.ini
 			{
-				ttemp=SendStartup(PrgBk[TrgIdx]);
-				stemp=SendStartup(PrgEd[SrcIdx]);
+				ttemp=SendStartup(PrgTrg);
+				stemp=SendStartup(PrgSrc);
 				if(ttemp!==stemp || FoceUpLoad)
 					rcvUpFileFileEdit();
 				else
@@ -1827,8 +1917,8 @@ function SendConf()
 			break;
 			case 97:
 			{
-				if(PrgBk[TrgIdx].Typ!=0)
-					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldall.dgv',fncnone);
+				if(PrgTrg.Typ!=0)
+					request=GetUrlB(HOST()+'/web/rldall.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}
@@ -1836,8 +1926,8 @@ function SendConf()
 			case 98:
 			{
 				//rst pln
-				if(PrgBk[TrgIdx].Typ!=0)
-					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldpln.dgv',fncnone);
+				if(PrgTrg.Typ!=0)
+					request=GetUrlB(HOST()+'/web/rldpln.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}
@@ -1845,14 +1935,19 @@ function SendConf()
 			case 99:
 			{
 				//rst sch
-				if(PrgBk[TrgIdx].Typ!=0)
-					request=GetUrlB(PrgEd[SrcIdx].host+'/web/rldsch.dgv',fncnone);
+				if(PrgTrg.Typ!=0)
+					request=GetUrlB(HOST()+'/web/rldsch.dgv',fncnone);
 				percent=96;
 				percent+=4;
 			}
 			break;
 			case 100:
 			{
+				PrgBk[TrgIdx]=PrgTrg.clone()
+				if(SrcIdx!=TrgIdx)
+				{
+					PrgEd[TrgIdx]=PrgTrg.clone()
+				}
 				PBarUpDate();
 				percent=0;
 				FoceUpLoad=0;
@@ -1863,8 +1958,8 @@ function SendConf()
 				WizrdIdx=0;
 				ReDraw(wizard[Widx][WizrdIdx]);
 				//----------------------------------------------------- Force ReLoad
-				for(var p=0;p<PrgEd[SrcIdx].PLCs.length;p++)
-					PrgEd[SrcIdx].PLCs[p].PlanList.length=0;
+				for(var p=0;p<PrgSrc.PLCs.length;p++)
+					PrgSrc.PLCs[p].PlanList.length=0;
 				//----------------------------------------------------- Force ReLoad
 				return;
 			}
@@ -1901,13 +1996,13 @@ function UpDateRtc()
 	rtc=parseInt(ourDate.getTime()/1000);
 	TimeZone=(ourDate.getTimezoneOffset()*60);
 	rtc+=parseInt(document.getElementById("ClockOffSet").value);
-	if(PrgEd[SrcIdx].GlobalParms.MODEL.indexOf("M3")!=-1)
+	if(GlobalParms().Model.indexOf("M3")!=-1)
 	{
 	}
 	else
 	{
 		rtc-=TimeZone;
 	}
-	GetUrl(PrgEd[SrcIdx].host+'/GbVars.bin?rtc='+rtc,RcvMoni);
+	GetUrl(HOST()+'/GbVars.bin?rtc='+rtc,RcvMoni);
 }
 percent=58;

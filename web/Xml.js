@@ -53,15 +53,25 @@ function GetUrl(url,fnc)
 			url=url.replace("file:/","/");
 		}
 		http.urlx=url;
+		http.timeout=500;
 		http.open("GET", url, true);//"POST"
 		http.onreadystatechange = handleHttpResponse;
-		//http.onload = handleHttpResponse;
+		//http.onload = handleHttpOnLoad;
+		http.ontimeout = handleHttpTimeOut
 		http.send(null);
 		return 0;
 	}
 	return 1;
 }
 
+function handleHttpOnLoad()
+{
+	/* XMLHttpRequest timed out. Do something here. */
+}
+function handleHttpTimeOut(e)
+{
+	/* XMLHttpRequest timed out. Do something here. */
+}
 function handleHttpResponse()  
 { 
 	switch(http.readyState)
@@ -94,7 +104,15 @@ function handleHttpResponse()
 				{
 					if(Log_En>1)LOG("http.status:"+http.readyState+","+http.status+"\n");
 					enProceso = 0;
-					response(http);
+					try
+					{
+						response(http);
+					}
+					catch(e)
+					{
+						GetUrlError = "Error HttpResponse:"+e.message+"\n"+e.stack;
+						alert(GetUrlError);
+					}
 				}
 				else
 				{
@@ -103,7 +121,7 @@ function handleHttpResponse()
 			}
 			else
 			{
-				if(Log_En)LOG("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
+				LOG("Error:"+http.readyState+","+http.status+":"+http.statusText+"\n");
 				enProceso = 0;
 				response(http);
 			}

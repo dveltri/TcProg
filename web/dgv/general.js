@@ -1,5 +1,4 @@
-var last_step;
-//--------------------------------------------------
+/* //--------------------------------------------------
 function goWizrdNext()
 {
 	WizrdIdx++;
@@ -42,21 +41,15 @@ function ClearAllHome()
 		document.getElementById("HOME4").innerHTML+="<input type=\"checkbox\" onchange=\"FoceUpLoad=this.checked\" />Compile always<br />\n";
 	}
 }
-function wizard_step_change(step, fnc)
-{
-	if(step != last_step)
-		fnc()
-}
 function ReDraw(Fnc)
 {
 	var out="";
-	last_step = wizard_step;
 	if(Fnc>=0)
-	wizard_step=Fnc;
+		Refresh=Fnc;
 	else
 		hideFlyMnu(FlyMnu.idx);
 	ClearAllHome();
-	LOG("wizard["+Widx+"]["+WizrdIdx+"]");
+	LOG("Refresh:"+Refresh);
 	//-----------------------------------------------------
 	out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
 	out+="<tr>\n";
@@ -72,7 +65,7 @@ function ReDraw(Fnc)
 	out+="</table>\n";
 	document.getElementById("WizNavButton").innerHTML+=out;
 	//-----------------------------------------------------
-	switch(wizard_step)
+	switch(Refresh)
 	{
 		case moni_general:
 		{
@@ -137,7 +130,6 @@ function ReDraw(Fnc)
 		//-----------------------------------------------------
 		case conf_plan:
 		{
-			wizard_step_change(wizard_step, ini_step_plan);
 			document.getElementById("HOME1").innerHTML=ShowPlan();
 		}
 		break;
@@ -150,11 +142,20 @@ function ReDraw(Fnc)
 		//----------------------------------------------------- */
 		case conf_Comm:
 		{
-			document.getElementById('HOME1').innerHTML=ShowComms();
-			ShowDgvpConf(document.getElementById('comm_sdgvp_conf'));
-			ShwSutec(document.getElementById('comm_sute_conf'));
-			ShwMaster(document.getElementById('comm_master_conf'));
-			//ShwScoot((document.getElementById('comm_otu_conf'));
+			out="<hr />\n";
+			out+="<table border=\"0\" align=\"center\" cellpadding=\"10\" cellspacing=\"10\" width=\"90%\" >\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShowDgvpConf();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			out+=ShwSutec();
+			out+="</td></tr>\n";
+			out+="<tr><td valign=\"top\" align=\"left\" >\n";
+			out+=ShwMaster();
+			out+="</td><td valign=\"top\" align=\"right\" >\n";
+			//out+=ShwScoot();
+			out+="</td></tr>\n";
+			out+="</table>\n";
+			document.getElementById('HOME1').innerHTML=out;
 			//document.getElementById('HOME2').innerHTML=ShwSutec();
 			//document.getElementById('HOME3').innerHTML=ShwMaster();
 		}
@@ -188,7 +189,7 @@ function ReDraw(Fnc)
 	}
 }
 
-//--------------------------------------------------
+//--------------------------------------------------*/
 function ShwPHHW()
 {
 	var j=0;
@@ -232,16 +233,13 @@ function ShwPHHW()
 	{
 		out+="<td align=\"center\" valign=\"middle\" >\n";
 		out+="<select class=\"CssSelect\" onchange=\"PHASEs()["+j+"].FState=this.value;ReDraw(-1);\">\n";
-		/*if(PHASEs()[j].Type!=1)
+		if(PHASEs()[j].Type!=1)
 			out+=GenOptions(OptColorFF,PHASEs()[j].FState);
 		else
-			out+=GenOptions(OptColorFFp,PHASEs()[j].FState);// */
-		out+=GenOptions(OptColorFFtyp[PHASEs()[j].Type],PHASEs()[j].FState);
+			out+=GenOptions(OptColorFFp,PHASEs()[j].FState);
 		out+="</select><br />\n";
 		//out+=color2svg(PHASEs()[j].FState,"");
-		out+="<div onclick=\"PHASEs()["+j+"].FState=chgColor2(PHASEs()["+j+"].FState,MSKEVPhTyp[PHASEs()["+j+"].Type],MSK_V_ALL);ReDraw(-1);\" >";
-		out+=ShwMov(PHASEs()[j].FState, PHASEs()[j].Type);
-		out+="</div>\n";
+		out+=ShwMov(PHASEs()[j].FState,PHASEs()[j].Type);
 		out+="</td>\n";
 	}
 	out+="</tr>\n";
