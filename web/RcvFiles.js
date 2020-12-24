@@ -131,7 +131,7 @@ function RcvStartup(Datos)
 	//--------------------------------------------------
 	if(!base_obj.Controllers)base_obj.Controllers=1;
 	if(!base_obj.Phases)base_obj.Phases=4;
-	if(!base_obj.Inputs)base_obj.Inputs=16;
+	if(!base_obj.Inputs)base_obj.Inputs=0;
 	//--------------------------------------------------
 	PhasesStructSize=0;
 	if(base_obj.Model.indexOf("MAC_TC1")!=-1 || base_obj.Model.indexOf("MAC-TC1")!=-1)
@@ -212,6 +212,7 @@ function RcvStartup(Datos)
 	IOs().length=0;
 	UpdateSizeOfStruct();
 }
+
 function UpdateSizeOfStruct()
 {
 	if(PLCs().length!=GlobalParms().Controllers)
@@ -241,9 +242,9 @@ function UpdateSizeOfStruct()
 					PLCs()[j].Phase1="";
 					PLCs()[j].ErrorOut="0";
 					PLCs()[j].Svg="";
-					if(GlobalParms().Model.indexOf("M4")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
+					if(GlobalParms().Model.indexOf("M4")!=-1)	// com indexof é possivel retornar a posição de um caractere numa string
 						PLCs()[j].Sec="/"+j+"/sec.sec";
-					if(GlobalParms().Model.indexOf("M3")!=-1)// com indexof é possivel retornar a posição de um caractere numa string
+					if(GlobalParms().Model.indexOf("M3")!=-1)	// com indexof é possivel retornar a posição de um caractere numa string
 						PLCs()[j].Sec="sec.sec";
 					PLCs()[j].HolyDays=new Array();
 					PLCs()[j].WeekDays=new Array();
@@ -312,7 +313,7 @@ function UpdateSizeOfStruct()
 	}
 	//----------------------------------------
 	{
-		for(var j=0;j<GlobalParms().HwIo;j++)
+		for(var j=0; j < GlobalParms().HwIo; j++)
 		{
 			if(j>=IOs().length)
 			{
@@ -328,7 +329,7 @@ function UpdateSizeOfStruct()
 				IOs()[j].neg=0;
 			}
 		}
-		for(var j=GlobalParms().HwIo;j<(GlobalParms().HwIo+8);j++)
+		for (var j=GlobalParms().HwIo; j < (GlobalParms().HwIo + GlobalParms().Inputs); j++)
 		{
 			if(j>=IOs().length)
 			{
@@ -344,7 +345,7 @@ function UpdateSizeOfStruct()
 				IOs()[j].neg=0;
 			}
 		}
-		for(var j=(GlobalParms().HwIo+8);j<(GlobalParms().HwIo+8+16);j++)
+		for (var j=(GlobalParms().HwIo + GlobalParms().Inputs); j < (GlobalParms().HwIo + GlobalParms().Inputs + GlobalParms().Loops); j++)
 		{
 			if(j>=IOs().length)
 			{
@@ -359,7 +360,7 @@ function UpdateSizeOfStruct()
 				IOs()[j].TimeOut=10;
 				IOs()[j].neg=0;
 			}
-			if(j>=(GlobalParms().HwIo+8+16))
+			if(j >= (GlobalParms().HwIo + GlobalParms().Inputs + GlobalParms().Loops))
 				IOs()[j].Enable=0;
 		}
 	}

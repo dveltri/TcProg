@@ -1034,7 +1034,7 @@ function rcvIOs(Datos)
 	Datos=Datos.responseText;
 	if((Datos.length%StructSizeIO)!=0)
 	return "";
-	Number_Of_Inputs=(Datos.length/StructSizeIO)
+	Number_Of_Inputs=(Datos.length / StructSizeIO)
 	ioflags[hindex]= new Array(Number_Of_Inputs);
 	tiempo[hindex]= new Array(Number_Of_Inputs);
 	ocupacion[hindex]= new Array(Number_Of_Inputs);
@@ -1101,6 +1101,7 @@ function rcvIOs(Datos)
 	else
 	return "";
 }
+
 function rcvIOs2()
 {
 	var iIOs=IOs();
@@ -1115,13 +1116,18 @@ function rcvIOs2()
 	var ocup=0;
 	var count=0;
 	var times=0;
+	out+="<hr/><br/>\n";
 	//---------------------------------Title
-	out1+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Title_io+"&#160;</b></font></td>\n";
-	out2+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_MN_Info+"&#160;</b></font></td>\n";
-	out3+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Count+"&#160;</b></font></td>\n";
-	out4+="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Occupation+"&#160;</b></font></td>\n";
 	while(Tcount<Number_Of_Inputs)
 	{
+		if(Tcount%10 == 0)
+		{
+			out+="<table border=\"0\" align=\"left\" >\n";
+			out1="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Title_io+"&#160;</b></font></td>\n";
+			out2="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_MN_Info+"&#160;</b></font></td>\n";
+			out3="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Count+"&#160;</b></font></td>\n";
+			out4="<tr>\n<td align=\"center\"><font size=\"2\" face=\"arial\"><b>&#160;"+Str_Occupation+"&#160;</b></font></td>\n";
+		}
 		if(iIOs[Tcount].Name.indexOf("NoShw")==-1)
 		{
 			Pcount++;
@@ -1194,19 +1200,40 @@ function rcvIOs2()
 			}
 		}
 		Tcount++;
+		if(Tcount%10 == 0)
+		{
+			out1+="</tr>\n";
+			out2+="</tr>\n";
+			out3+="</tr>\n";
+			out4+="</tr>\n";
+			out+=out1;
+			out+=out2;
+			out+=out3;
+			out+=out4;
+			out+="</table><br/>\n";
+			out1="";
+			out2="";
+			out3="";
+			out4="";
+		}
 	}
-	out1+="</tr>\n";
-	out2+="</tr>\n";
-	out3+="</tr>\n";
-	out4+="</tr>\n";
-	//-------------------------------
-	out+="<hr/><br/>\n";
-	out+="<table border=\"0\" align=\"center\" >\n";
-	out+=out1;
-	out+=out2;
-	out+=out3;
-	out+=out4;
-	out+="</table>\n";
+	if(out1 != "")
+	{
+		out1+="</tr>\n";
+		out2+="</tr>\n";
+		out3+="</tr>\n";
+		out4+="</tr>\n";
+		out+=out1;
+		out+=out2;
+		out+=out3;
+		out+=out4;
+		out+="</table><br/>\n";
+		out1="";
+		out2="";
+		out3="";
+		out4="";
+	}
+//-------------------------------
 	return out;
 }
 
